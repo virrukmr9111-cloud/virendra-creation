@@ -7,838 +7,459 @@
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="FabPrint"/>
-<meta name="description" content="FabPrint Textile Production Tracker"/>
-<title>FabPrint Textile Tracker</title>
+<title>FabPrint Textile Tracker v3.0</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
---blue:#1565C0;--blue-lt:#E3F2FD;--blue-md:#1976D2;--blue-dk:#0D47A1;--blue-xdk:#082C6E;
---orange:#E65100;--orange-lt:#FFF3E0;--orange-md:#F57C00;
---dgray:#1A2332;--mgray:#37474F;--lgray:#ECEFF1;--slgray:#F5F7FA;
---white:#FFFFFF;
---success:#2E7D32;--success-lt:#E8F5E9;
---warn:#E65100;--warn-lt:#FFF8E1;
---danger:#C62828;--danger-lt:#FFEBEE;
---text:#1A2332;--text2:#546E7A;--text3:#90A4AE;
---border:rgba(0,0,0,0.1);--border2:rgba(0,0,0,0.06);
---radius:14px;--radius-sm:10px;
---shadow:0 2px 16px rgba(0,0,0,0.08);--shadow-md:0 4px 24px rgba(0,0,0,0.13);
+--blue:#1565C0;--orange:#E65100;--green:#2E7D32;--red:#C62828;
+--purple:#6A1B9A;--teal:#00695C;--brown:#4E342E;
+--text:#1A2332;--text2:#546E7A;--border:rgba(0,0,0,0.1);
+--radius:14px;--shadow:0 2px 16px rgba(0,0,0,0.08);
 }
 html,body{height:100%;overflow:hidden;background:#0D47A1;font-family:'Poppins',sans-serif}
-#app{position:fixed;inset:0;display:flex;flex-direction:column;max-width:480px;margin:0 auto;background:var(--slgray);overflow:hidden}
+#app{position:fixed;inset:0;display:flex;flex-direction:column;max-width:480px;margin:0 auto;background:#F5F7FA;overflow:hidden}
 .screen{display:none;flex-direction:column;height:100%;animation:fadeUp .22s ease}
 .screen.active{display:flex}
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-
-/* TOPBAR */
-.topbar{background:linear-gradient(135deg,var(--blue-xdk) 0%,var(--blue-dk) 60%,var(--blue-md) 100%);display:flex;align-items:center;padding:14px 16px 12px;gap:10px;flex-shrink:0;position:relative}
-.topbar-logo{width:40px;height:40px;background:var(--orange-md);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(245,124,0,0.4)}
-.topbar-logo svg{width:24px;height:24px}
-.topbar-text{flex:1;min-width:0}
-.topbar-text h1{font-size:16px;font-weight:700;color:#fff;letter-spacing:.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topbar{background:linear-gradient(135deg,#082C6E 0%,#0D47A1 60%,#1976D2 100%);display:flex;align-items:center;padding:14px 16px 12px;gap:10px;flex-shrink:0}
+.topbar-logo{width:40px;height:40px;background:#F57C00;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(245,124,0,0.4)}
+.topbar-text{flex:1}
+.topbar-text h1{font-size:16px;font-weight:700;color:#fff}
 .topbar-text p{font-size:11px;color:rgba(255,255,255,0.65)}
-.topbar-back{background:rgba(255,255,255,0.15);border:none;color:#fff;cursor:pointer;padding:7px;border-radius:10px;display:flex;margin-right:2px}
-.topbar-back i{font-size:20px}
-.topbar-badge{background:var(--orange-md);color:#fff;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;letter-spacing:.3px;flex-shrink:0}
-
-/* BOTTOM NAV */
-.botnav{background:var(--dgray);display:flex;align-items:stretch;flex-shrink:0;border-top:1px solid rgba(255,255,255,0.06)}
-.nav-btn{flex:1;background:none;border:none;color:rgba(255,255,255,0.4);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:9.5px;font-family:'Poppins',sans-serif;font-weight:500;padding:10px 4px 12px;position:relative;transition:color .2s}
-.nav-btn i{font-size:21px;transition:transform .2s}
-.nav-btn.active{color:var(--orange-md)}
-.nav-btn.active i{transform:scale(1.12)}
-.nav-btn.active::after{content:'';position:absolute;top:0;left:25%;right:25%;height:2.5px;background:var(--orange-md);border-radius:0 0 4px 4px}
-
-/* CONTENT */
-.content{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding:14px 14px 10px}
-.content::-webkit-scrollbar{width:3px}
-.content::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.1);border-radius:3px}
-
-/* CARDS */
-.card{background:var(--white);border-radius:var(--radius);padding:15px 16px;margin-bottom:12px;box-shadow:var(--shadow);border:1px solid var(--border2)}
+.topbar-back{background:rgba(255,255,255,0.15);border:none;color:#fff;cursor:pointer;padding:7px;border-radius:10px;display:flex}
+.topbar-badge{background:#F57C00;color:#fff;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600}
+.botnav{background:#1A2332;display:flex;align-items:stretch;flex-shrink:0;border-top:1px solid rgba(255,255,255,0.06)}
+.nav-btn{flex:1;background:none;border:none;color:rgba(255,255,255,0.4);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:9px;font-family:'Poppins',sans-serif;font-weight:500;padding:10px 2px 12px;position:relative;transition:color .2s}
+.nav-btn.active{color:#F57C00}
+.nav-btn.active::after{content:'';position:absolute;top:0;left:20%;right:20%;height:2.5px;background:#F57C00;border-radius:0 0 4px 4px}
+.content{flex:1;overflow-y:auto;padding:14px}
+.card{background:#fff;border-radius:var(--radius);padding:15px;margin-bottom:12px;box-shadow:var(--shadow);border:1px solid rgba(0,0,0,0.06)}
 .card-title{font-size:12px;font-weight:600;color:var(--text2);letter-spacing:.4px;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:6px}
-.card-title i{font-size:16px;color:var(--blue-md)}
-
-/* STAT GRID */
 .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
-.stat-card{border-radius:var(--radius);padding:14px 14px 12px;display:flex;flex-direction:column;gap:4px;position:relative;overflow:hidden;box-shadow:0 4px 15px rgba(0,0,0,0.15)}
-.stat-card i.bg-icon{position:absolute;right:-4px;bottom:-6px;font-size:52px;opacity:.12;color:#fff}
-.stat-card label{font-size:11px;color:rgba(255,255,255,0.85);font-weight:500}
-.stat-card .val{font-size:28px;font-weight:700;color:#fff;line-height:1.1}
-.stat-card .sub{font-size:10px;color:rgba(255,255,255,0.7)}
+.stat-card{border-radius:var(--radius);padding:14px;display:flex;flex-direction:column;gap:4px;color:#fff;box-shadow:0 4px 15px rgba(0,0,0,0.15)}
 .stat-card.blue{background:linear-gradient(135deg,#0D47A1,#1976D2)}
-.stat-card.orange{background:linear-gradient(135deg,#BF360C,#F57C00)}
-.stat-card.green{background:linear-gradient(135deg,#1B5E20,#43A047)}
-.stat-card.red{background:linear-gradient(135deg,#B71C1C,#E53935)}
-.stat-card.purple{background:linear-gradient(135deg,#4A148C,#7B1FA2)}
-
-/* PILLS */
-.pill{display:inline-flex;align-items:center;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600;letter-spacing:.2px}
-.pill.blue{background:var(--blue-lt);color:var(--blue-dk)}
-.pill.orange{background:var(--orange-lt);color:var(--orange)}
-.pill.green{background:var(--success-lt);color:var(--success)}
-.pill.red{background:var(--danger-lt);color:var(--danger)}
-.pill.gray{background:var(--lgray);color:var(--mgray)}
-
-/* ALERTS */
-.alert{border-radius:var(--radius-sm);padding:11px 13px;font-size:12px;margin-bottom:10px;display:flex;align-items:flex-start;gap:8px;border-left:3px solid}
-.alert i{font-size:17px;flex-shrink:0;margin-top:1px}
-.alert-text{flex:1;line-height:1.5}
-.alert.warn{background:#FFF8E1;color:#E65100;border-color:#F57C00}
-.alert.danger{background:#FFEBEE;color:#C62828;border-color:#E53935}
-.alert.success{background:#E8F5E9;color:#2E7D32;border-color:#43A047}
-.alert.info{background:#E3F2FD;color:#1565C0;border-color:#1976D2}
-
-/* MACHINE ROW */
-.mrow{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border2)}
-.mrow:last-child{border:none;padding-bottom:0}
-.m-icon{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
-.m-info{flex:1;min-width:0}
-.m-info b{font-size:13px;font-weight:600;display:block}
-.m-info span{font-size:11px;color:var(--text2)}
-.m-val{text-align:right;flex-shrink:0}
-.m-val b{font-size:14px;font-weight:700;color:var(--blue-dk);display:block}
-.m-val span{font-size:10px;color:var(--text3)}
-.pbar{height:5px;background:var(--lgray);border-radius:3px;overflow:hidden;margin-top:5px}
-.pbar .fill{height:100%;border-radius:3px}
-.fill-blue{background:linear-gradient(90deg,#0D47A1,#42A5F5)}
-.fill-orange{background:linear-gradient(90deg,#E65100,#FFB74D)}
-.fill-green{background:linear-gradient(90deg,#1B5E20,#81C784)}
-
-/* FORM */
+.stat-card.purple{background:linear-gradient(135deg,#4A148C,#8E24AA)}
+.stat-card.teal{background:linear-gradient(135deg,#004D40,#00897B)}
+.stat-card.brown{background:linear-gradient(135deg,#3E2723,#6D4C41)}
+.stat-card .val{font-size:26px;font-weight:700;line-height:1.1}
+.pill{display:inline-flex;align-items:center;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600}
+.pill.green{background:#E8F5E9;color:var(--green)}
+.pill.red{background:#FFEBEE;color:var(--red)}
+.btn{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;padding:13px;border-radius:10px;border:none;cursor:pointer;font-size:13px;font-weight:600;font-family:'Poppins',sans-serif;letter-spacing:.3px;margin-bottom:9px;transition:all .15s;text-transform:uppercase}
+.btn:active{transform:scale(0.97);opacity:.9}
+.btn.primary{background:linear-gradient(135deg,#082C6E,#1976D2);color:#fff}
+.btn.purple-btn{background:linear-gradient(135deg,#4A148C,#8E24AA);color:#fff}
+.btn.teal-btn{background:linear-gradient(135deg,#004D40,#00897B);color:#fff}
+.btn.brown-btn{background:linear-gradient(135deg,#3E2723,#6D4C41);color:#fff}
+.btn.wa-btn{background:linear-gradient(135deg,#075E54,#25D366);color:#fff}
+.btn.outline{background:none;border:1.5px solid var(--border);color:var(--text)}
 .fg{margin-bottom:12px}
 .fg label{font-size:11px;color:var(--text2);font-weight:600;letter-spacing:.3px;text-transform:uppercase;display:block;margin-bottom:5px}
-.fg input,.fg select,.fg textarea{width:100%;font-size:13px;padding:10px 13px;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:var(--white);color:var(--text);font-family:'Poppins',sans-serif;outline:none;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none}
-.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--blue-md);box-shadow:0 0 0 3px rgba(25,118,210,0.1)}
-.fg textarea{resize:vertical;min-height:72px;line-height:1.5}
-.fg select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%23546E7A' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+.fg input,.fg select,.fg textarea{width:100%;font-size:13px;padding:10px 13px;border:1.5px solid var(--border);border-radius:10px;background:#fff;color:var(--text);font-family:'Poppins',sans-serif;outline:none;transition:border-color .2s}
+.fg input:focus,.fg select:focus{border-color:var(--blue)}
 .fgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.fg .hint{font-size:10px;color:var(--text3);margin-top:4px}
-.shift-btns{display:flex;gap:8px}
-.shift-btn{flex:1;padding:10px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:none;cursor:pointer;font-size:15px;font-weight:700;font-family:'Poppins',sans-serif;color:var(--text2);transition:all .2s}
-.shift-btn.sel{border-color:var(--blue-md);background:var(--blue-lt);color:var(--blue-dk)}
-
-/* BUTTONS */
-.btn{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;padding:13px;border-radius:var(--radius-sm);border:none;cursor:pointer;font-size:13px;font-weight:600;font-family:'Poppins',sans-serif;letter-spacing:.3px;margin-bottom:9px;transition:all .15s;text-transform:uppercase}
-.btn:active{transform:scale(0.97);opacity:.9}
-.btn i{font-size:18px}
-.btn.primary{background:linear-gradient(135deg,var(--blue-xdk),var(--blue-md));color:#fff;box-shadow:0 4px 14px rgba(13,71,161,0.35)}
-.btn.orange-btn{background:linear-gradient(135deg,#BF360C,#F57C00);color:#fff;box-shadow:0 4px 14px rgba(230,81,0,0.35)}
-.btn.green-btn{background:linear-gradient(135deg,#1B5E20,#43A047);color:#fff;box-shadow:0 4px 14px rgba(46,125,50,0.3)}
-.btn.red-btn{background:linear-gradient(135deg,#B71C1C,#E53935);color:#fff}
-.btn.outline{background:none;border:1.5px solid var(--border);color:var(--text)}
-.btn.wa-btn{background:linear-gradient(135deg,#075E54,#25D366);color:#fff;box-shadow:0 4px 14px rgba(37,211,102,0.3)}
-
-/* TABLE */
-.tbl-wrap{overflow-x:auto}
-.tbl{width:100%;border-collapse:collapse;font-size:12px}
-.tbl th{background:var(--slgray);padding:8px 10px;text-align:left;font-weight:600;color:var(--text2);font-size:11px;letter-spacing:.3px;white-space:nowrap}
-.tbl td{padding:9px 10px;border-bottom:1px solid var(--border2);color:var(--text);white-space:nowrap}
-.tbl tr:last-child td{border:none}
-.tbl tr:hover td{background:var(--slgray)}
-
-/* FILTER BAR */
-.fbar{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px;-ms-overflow-style:none;scrollbar-width:none}
-.fbar::-webkit-scrollbar{display:none}
-.fbtn{white-space:nowrap;padding:7px 15px;border-radius:20px;border:1.5px solid var(--border);background:none;font-size:12px;cursor:pointer;color:var(--text2);font-weight:500;font-family:'Poppins',sans-serif;transition:all .2s}
-.fbtn.active{background:var(--blue-dk);border-color:var(--blue-dk);color:#fff}
-
-/* STOCK ROW */
-.srow{display:flex;align-items:center;padding:11px 0;border-bottom:1px solid var(--border2);gap:10px}
-.srow:last-child{border:none}
-.s-icon{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
-.s-info{flex:1;min-width:0}
-.s-info b{font-size:13px;font-weight:600;display:block}
-.s-info span{font-size:11px;color:var(--text2)}
-.s-qty{text-align:right}
-.s-qty b{font-size:14px;font-weight:700;display:block}
-.s-qty span{font-size:10px;color:var(--text3)}
-
-/* MACHINE CHIP */
-.mchip{display:flex;align-items:center;gap:10px;background:var(--white);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 13px;margin-bottom:8px;box-shadow:0 1px 5px rgba(0,0,0,0.05)}
-.mchip .mname{flex:1;font-size:13px;font-weight:600}
-.mchip .mname small{font-size:10px;font-weight:400;color:var(--text2);display:block}
-.mchip .mactions{display:flex;gap:5px}
-.mchip .mactions button{background:none;border:1px solid var(--border);cursor:pointer;font-size:16px;color:var(--text2);padding:6px;border-radius:8px}
-.mchip .mactions .del{color:var(--danger)}
-.toggle{width:42px;height:24px;background:var(--lgray);border-radius:12px;position:relative;cursor:pointer;flex-shrink:0;border:none;transition:background .3s}
-.toggle.on{background:var(--blue-md)}
-.toggle::after{content:'';width:20px;height:20px;background:#fff;border-radius:50%;position:absolute;top:2px;left:2px;transition:left .25s;box-shadow:0 1px 4px rgba(0,0,0,0.2)}
-.toggle.on::after{left:20px}
-
-/* SEC LABEL */
-.sec{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;margin:14px 0 8px;display:flex;align-items:center;gap:5px}
-.sec i{font-size:14px}
-.divider{height:1px;background:var(--border2);margin:10px 0}
-
-/* ORDER ROW */
-.orow{display:flex;align-items:center;padding:10px 0;border-bottom:1px solid var(--border2);gap:10px}
-.orow:last-child{border:none}
-.o-info{flex:1;min-width:0}
-.o-info b{font-size:13px;font-weight:600;display:block}
-.o-info span{font-size:11px;color:var(--text2)}
-
-/* WA */
-.wa-bg{background:#E2D9D0;border-radius:var(--radius);padding:14px}
-.wa-bubble{background:#fff;border-radius:0 12px 12px 12px;padding:13px;box-shadow:0 1px 4px rgba(0,0,0,0.12)}
-.wa-bubble h3{font-size:14px;font-weight:700;color:#075E54;margin-bottom:8px}
-.wa-bubble p{font-size:12px;color:#333;line-height:1.65;margin-bottom:3px}
-.wa-div{height:1px;background:rgba(0,0,0,0.08);margin:8px 0}
-.wa-time{font-size:10px;color:#999;text-align:right;margin-top:8px}
-
-/* LOGIN */
-.login-wrap{flex:1;overflow-y:auto;background:var(--slgray)}
-.login-hero{background:linear-gradient(160deg,var(--blue-xdk) 0%,var(--blue-dk) 55%,var(--blue-md) 100%);padding:44px 24px 56px;display:flex;flex-direction:column;align-items:center;position:relative;overflow:hidden}
-.hero-circle1{position:absolute;right:-40px;top:-40px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,0.05)}
-.hero-circle2{position:absolute;left:-30px;bottom:-50px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,0.05)}
-.hero-circle3{position:absolute;right:40px;bottom:20px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,0.04)}
-
-/* LOGO SVG */
+.sec{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.7px;margin:14px 0 8px;display:flex;align-items:center;gap:5px}
+.del-actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
+.del-btn{border-radius:10px;padding:12px 8px;text-align:center;cursor:pointer;border:none;font-family:'Poppins',sans-serif;font-weight:600;font-size:11px;display:flex;flex-direction:column;align-items:center;gap:5px;color:#fff;transition:all .15s}
+.del-btn i{font-size:22px}
+.del-btn.first{background:linear-gradient(135deg,#E65100,#FF8F00)}
+.del-btn.last{background:linear-gradient(135deg,#1565C0,#1976D2)}
+.del-btn.all{background:linear-gradient(135deg,#B71C1C,#E53935)}
+.machine-timer{background:#fff;border-radius:var(--radius);padding:14px;margin-bottom:10px;box-shadow:var(--shadow);border:1px solid rgba(0,0,0,0.06)}
+.mt-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.mt-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.mt-info{flex:1}
+.mt-info b{font-size:14px;font-weight:700;display:block}
+.mt-status{display:flex;align-items:center;gap:6px;margin-bottom:10px}
+.status-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.status-dot.running{background:#43A047;animation:pulse 1.5s infinite}
+.status-dot.stopped{background:#E53935}
+.status-dot.idle{background:#F57C00}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(1.3)}}
+.mt-timer{font-size:28px;font-weight:800;color:var(--blue);letter-spacing:2px;text-align:center;padding:10px;background:#F5F7FA;border-radius:10px;margin-bottom:10px;font-family:'Poppins',sans-serif}
+.mt-timer.running{color:#43A047;background:#E8F5E9}
+.mt-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mt-btn{padding:10px;border-radius:10px;border:none;cursor:pointer;font-size:13px;font-weight:600;font-family:'Poppins',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;color:#fff;transition:all .15s}
+.mt-btn.start{background:linear-gradient(135deg,#1B5E20,#43A047)}
+.mt-btn.stop{background:linear-gradient(135deg,#B71C1C,#E53935)}
+.mt-btn:disabled{opacity:.5;cursor:not-allowed}
+.rec-card{background:#fff;border-radius:10px;padding:13px;margin-bottom:8px;box-shadow:0 1px 6px rgba(0,0,0,0.07);border:1px solid rgba(0,0,0,0.06)}
+.rec-header{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.rec-machine{background:#E3F2FD;color:var(--blue);border-radius:8px;padding:4px 10px;font-size:12px;font-weight:700}
+.rec-shift{background:#FFF3E0;color:var(--orange);border-radius:8px;padding:4px 10px;font-size:12px;font-weight:700}
+.rec-date{font-size:11px;color:var(--text2);margin-left:auto}
+.rec-body{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px}
+.rec-stat{text-align:center;background:#F5F7FA;border-radius:8px;padding:7px 4px}
+.rec-stat b{font-size:15px;font-weight:700;display:block;color:var(--text)}
+.rec-stat span{font-size:10px;color:var(--text2)}
+.rec-del-btn{background:#FFEBEE;border:none;color:var(--red);border-radius:8px;padding:5px 10px;cursor:pointer;font-size:12px;font-weight:600;display:flex;align-items:center;gap:4px}
+.empty-state{text-align:center;padding:32px 16px;color:#90A4AE}
+.empty-state i{font-size:48px;display:block;margin-bottom:12px;opacity:.4}
+#toast{position:fixed;bottom:75px;left:50%;transform:translateX(-50%) translateY(16px);background:rgba(26,35,50,0.95);color:#fff;padding:10px 20px;border-radius:24px;font-size:12px;font-weight:500;z-index:9999;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.login-wrap{flex:1;overflow-y:auto;background:#F5F7FA}
+.login-hero{background:linear-gradient(160deg,#082C6E 0%,#0D47A1 55%,#1976D2 100%);padding:44px 24px 56px;display:flex;flex-direction:column;align-items:center;position:relative}
 .app-logo{width:80px;height:80px;margin-bottom:18px;filter:drop-shadow(0 8px 24px rgba(0,0,0,0.3))}
-.hero-title{font-size:26px;font-weight:800;color:#fff;letter-spacing:.5px;margin-bottom:4px}
-.hero-sub{font-size:12px;color:rgba(255,255,255,0.65);letter-spacing:.3px;margin-bottom:4px}
-.hero-tagline{font-size:11px;color:rgba(255,255,255,0.45);background:rgba(255,255,255,0.1);padding:3px 12px;border-radius:20px;margin-top:6px}
-.login-card{background:#fff;margin:-22px 16px 0;border-radius:var(--radius);padding:22px;box-shadow:var(--shadow-md);position:relative;z-index:1}
+.hero-title{font-size:26px;font-weight:800;color:#fff;margin-bottom:4px}
+.hero-sub{font-size:12px;color:rgba(255,255,255,0.65)}
+.login-card{background:#fff;margin:-22px 16px 0;border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);position:relative;z-index:1}
 .login-card h2{font-size:18px;font-weight:700;color:var(--text);margin-bottom:4px}
 .login-card p{font-size:12px;color:var(--text2);margin-bottom:18px}
-.login-footer{text-align:center;padding:18px 16px;font-size:11px;color:var(--text3);line-height:1.6}
-
-/* CHART LEGEND */
-.clegend{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:8px}
-.cl-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2)}
-.cl-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
-
-/* TOAST */
-#toast{position:fixed;bottom:75px;left:50%;transform:translateX(-50%) translateY(16px);background:rgba(26,35,50,0.95);color:#fff;padding:10px 20px;border-radius:24px;font-size:12px;font-weight:500;z-index:9999;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;max-width:90vw;backdrop-filter:blur(8px)}
-#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
-/* MODAL */
-#modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:1000;display:none;align-items:flex-end;backdrop-filter:blur(3px)}
-#modal-overlay.open{display:flex}
-.modal-sheet{background:var(--white);border-radius:var(--radius) var(--radius) 0 0;padding:22px;width:100%;max-width:480px;margin:0 auto;animation:slideUp .3s ease}
-@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
-.modal-handle{width:40px;height:4px;background:var(--lgray);border-radius:2px;margin:0 auto 18px}
-.modal-title{font-size:18px;font-weight:700;color:var(--text);margin-bottom:16px}
-
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{background:#F5F7FA;padding:8px 10px;text-align:left;font-weight:600;color:var(--text2);font-size:11px}
+.tbl td{padding:9px 10px;border-bottom:1px solid rgba(0,0,0,0.06);color:var(--text)}
+.tbl tr:last-child td{border:none}
+.alert{border-radius:10px;padding:11px 13px;font-size:12px;margin-bottom:10px;display:flex;align-items:flex-start;gap:8px;border-left:3px solid}
+.alert.warn{background:#FFF8E1;color:var(--orange);border-color:var(--orange)}
+.alert.danger{background:#FFEBEE;color:var(--red);border-color:var(--red)}
+.alert.info{background:#E3F2FD;color:var(--blue);border-color:var(--blue)}
+.mrow{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid rgba(0,0,0,0.06)}
+.mrow:last-child{border:none}
+.m-icon{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.m-info{flex:1}
+.m-info b{font-size:13px;font-weight:600;display:block}
+.m-info span{font-size:11px;color:var(--text2)}
+.m-val b{font-size:14px;font-weight:700;color:var(--blue);display:block}
+.pbar{height:5px;background:#ECEFF1;border-radius:3px;overflow:hidden;margin-top:5px}
+.pbar .fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#0D47A1,#42A5F5)}
+.chem-item{display:flex;align-items:center;padding:10px 0;border-bottom:1px solid rgba(0,0,0,0.06);gap:10px}
+.chem-item:last-child{border:none}
+.chem-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.chem-info{flex:1}
+.chem-info b{font-size:13px;font-weight:600;display:block}
+.chem-info span{font-size:11px;color:var(--text2)}
+.fuel-summary{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.fuel-box{border-radius:10px;padding:14px;text-align:center;position:relative;color:#fff}
+.fuel-box.coal{background:linear-gradient(135deg,#212121,#616161)}
+.fuel-box.wood{background:linear-gradient(135deg,#3E2723,#8D6E63)}
+.fuel-box i{font-size:28px;opacity:.3;display:block;margin-bottom:6px}
+.fuel-box .fval{font-size:24px;font-weight:700}
+.fuel-box .flabel{font-size:11px;color:rgba(255,255,255,0.7)}
 @media(prefers-color-scheme:dark){
-:root{--slgray:#1A2332;--white:#22303C;--text:#ECF0F1;--text2:#90A4AE;--text3:#607D8B;--border:rgba(255,255,255,0.1);--border2:rgba(255,255,255,0.06);--lgray:#2C3E50}
-.tbl th{background:#1E2D3D}.login-card{background:#22303C}.modal-sheet{background:#22303C}
-.fg input,.fg select,.fg textarea{background:#1E2D3D;border-color:rgba(255,255,255,0.1);color:var(--text)}
-.mchip{background:#22303C}.wa-bubble{background:#1E2D3D}.wa-bubble p{color:#ccc}
+:root{--text:#ECF0F1;--text2:#90A4AE}
+.login-card{background:#22303C}
+.fg input,.fg select{background:#1E2D3D;border-color:rgba(255,255,255,0.1);color:#fff}
 }
-@supports(padding:max(0px)){.botnav{padding-bottom:max(0px,env(safe-area-inset-bottom))}.topbar{padding-top:max(14px,calc(env(safe-area-inset-top) + 6px))}}
 </style>
 </head>
 <body>
 <div id="app">
+<svg style="display:none"><defs><symbol id="fablogo" viewBox="0 0 80 80"><rect width="80" height="80" rx="18" fill="#F57C00"/><rect x="20" y="16" width="40" height="48" rx="4" fill="white" opacity="0.9"/><rect x="26" y="24" width="28" height="3" rx="1.5" fill="#0D47A1"/><rect x="26" y="31" width="20" height="3" rx="1.5" fill="#0D47A1" opacity=".7"/><rect x="26" y="38" width="24" height="3" rx="1.5" fill="#0D47A1" opacity=".5"/><rect x="26" y="50" width="6" height="10" rx="2" fill="#0D47A1"/><rect x="34" y="45" width="6" height="15" rx="2" fill="#F57C00"/><rect x="42" y="47" width="6" height="13" rx="2" fill="#0D47A1" opacity=".7"/><rect x="50" y="43" width="6" height="17" rx="2" fill="#43A047"/><circle cx="40" cy="12" r="5" fill="#F57C00"/><circle cx="40" cy="12" r="2.5" fill="white"/></symbol></defs></svg>
 
-<!-- SVG LOGO DEFINITION -->
-<svg style="display:none">
-<defs>
-<symbol id="fablogo" viewBox="0 0 80 80">
-  <rect width="80" height="80" rx="18" fill="#F57C00"/>
-  <rect x="16" y="12" width="48" height="56" rx="6" fill="white" opacity="0.15"/>
-  <rect x="20" y="16" width="40" height="48" rx="4" fill="white" opacity="0.9"/>
-  <!-- Fabric lines -->
-  <rect x="26" y="24" width="28" height="3" rx="1.5" fill="#0D47A1"/>
-  <rect x="26" y="31" width="20" height="3" rx="1.5" fill="#0D47A1" opacity=".7"/>
-  <rect x="26" y="38" width="24" height="3" rx="1.5" fill="#0D47A1" opacity=".5"/>
-  <!-- Chart bars -->
-  <rect x="26" y="50" width="6" height="10" rx="2" fill="#0D47A1"/>
-  <rect x="34" y="45" width="6" height="15" rx="2" fill="#F57C00"/>
-  <rect x="42" y="47" width="6" height="13" rx="2" fill="#0D47A1" opacity=".7"/>
-  <rect x="50" y="43" width="6" height="17" rx="2" fill="#43A047"/>
-  <!-- Top thread -->
-  <circle cx="40" cy="12" r="5" fill="#F57C00"/>
-  <circle cx="40" cy="12" r="2.5" fill="white"/>
-</symbol>
-</defs>
-</svg>
-
-<!-- ========== LOGIN ========== -->
+<!-- LOGIN SCREEN -->
 <div class="screen active" id="screen-login">
   <div class="login-wrap">
     <div class="login-hero">
-      <div class="hero-circle1"></div>
-      <div class="hero-circle2"></div>
-      <div class="hero-circle3"></div>
       <svg class="app-logo" viewBox="0 0 80 80"><use href="#fablogo"/></svg>
       <div class="hero-title">FabPrint Textile</div>
-      <div class="hero-sub">Production Tracker</div>
-      <div class="hero-tagline">v2.0 · Chikhli, Maharashtra</div>
+      <div class="hero-sub">Production Tracker v3.0</div>
     </div>
     <div class="login-card">
-      <h2>Welcome Back 👋</h2>
+      <h2>Welcome 👋</h2>
       <p>Sign in to your factory dashboard</p>
-      <div class="fg"><label>Username</label><input type="text" id="l-user" value="virendra.kumar" placeholder="Enter username"/></div>
-      <div class="fg"><label>Password</label><input type="password" id="l-pass" value="fabprint2026" placeholder="Enter password"/></div>
-      <div class="fg"><label>Role</label>
-        <select id="l-role"><option>Admin</option><option>Supervisor</option><option>Operator</option></select>
-      </div>
-      <button class="btn primary" onclick="doLogin()"><i class="ti ti-login"></i>Sign In to Dashboard</button>
-      <button class="btn outline" onclick="showToast('Demo: any credentials work ✓')"><i class="ti ti-info-circle"></i>Demo Mode</button>
-    </div>
-    <div class="login-footer">
-      <svg width="22" height="22" viewBox="0 0 80 80" style="vertical-align:middle;margin-right:6px"><use href="#fablogo"/></svg>
-      FabPrint Textile Manufacturing &amp; Printing<br/>
-      Admin: Virendra Kumar · Est. 2020
+      <div class="fg"><label>Username</label><input type="text" id="l-user" value="virendra.kumar"/></div>
+      <div class="fg"><label>Password</label><input type="password" id="l-pass" value="fabprint2026"/></div>
+      <div class="fg"><label>Role</label><select id="l-role"><option>Admin</option><option>Supervisor</option><option>Operator</option></select></div>
+      <button class="btn primary" onclick="doLogin()"><i class="ti ti-login"></i>Sign In</button>
     </div>
   </div>
 </div>
 
-<!-- ========== DASHBOARD ========== -->
+<!-- DASHBOARD -->
 <div class="screen" id="screen-dashboard">
   <div class="topbar">
     <svg class="topbar-logo" viewBox="0 0 80 80"><use href="#fablogo"/></svg>
-    <div class="topbar-text"><h1>FabPrint Textile</h1><p id="dash-greet">Good morning, Virendra Kumar</p></div>
+    <div class="topbar-text"><h1>FabPrint</h1><p id="dash-greet">Welcome</p></div>
     <span class="topbar-badge" id="role-badge">Admin</span>
   </div>
   <div class="content">
-    <div class="alert warn"><i class="ti ti-alert-triangle"></i><div class="alert-text"><b>Low Stock Alert:</b> Polyester Grey — only 120 m left. Reorder needed!</div></div>
-    <div class="alert danger"><i class="ti ti-alert-circle"></i><div class="alert-text"><b>High Rejection:</b> Jilong machine — 8.2% rejection today. Review required.</div></div>
-    <div class="sec"><i class="ti ti-calendar-stats"></i>Today — <span id="today-date">Loading...</span></div>
+    <div class="alert warn"><i class="ti ti-alert-triangle"></i><div>Low Stock: Polyester Grey — 120 m!</div></div>
     <div class="stat-grid">
-      <div class="stat-card blue"><i class="ti ti-ruler-measure bg-icon"></i><label>Total Production</label><div class="val">4,820</div><div class="sub">↑ 6.3% vs yesterday</div></div>
-      <div class="stat-card red"><i class="ti ti-x bg-icon"></i><label>Total Rejection</label><div class="val">312</div><div class="sub">6.5% of output</div></div>
-      <div class="stat-card green"><i class="ti ti-package bg-icon"></i><label>Finished Stock</label><div class="val">9,240</div><div class="sub">metres ready</div></div>
-      <div class="stat-card orange"><i class="ti ti-clock bg-icon"></i><label>Pending Orders</label><div class="val">7</div><div class="sub">3 due this week</div></div>
+      <div class="stat-card blue"><div class="val">4,820</div><div style="font-size:10px;opacity:.8">Production (m)</div></div>
+      <div class="stat-card purple"><div class="val" id="dash-records">0</div><div style="font-size:10px;opacity:.8">Total Records</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+      <button onclick="goTo('entry')" style="background:linear-gradient(135deg,#0D47A1,#1976D2);color:#fff;border:none;border-radius:10px;padding:14px;cursor:pointer;font-family:'Poppins',sans-serif;font-weight:600;font-size:12px;display:flex;align-items:center;gap:8px"><i class="ti ti-plus-circle" style="font-size:20px"></i>Entry</button>
+      <button onclick="goTo('timers')" style="background:linear-gradient(135deg,#004D40,#00897B);color:#fff;border:none;border-radius:10px;padding:14px;cursor:pointer;font-family:'Poppins',sans-serif;font-weight:600;font-size:12px;display:flex;align-items:center;gap:8px"><i class="ti ti-clock-play" style="font-size:20px"></i>Timers</button>
+      <button onclick="goTo('chemicals')" style="background:linear-gradient(135deg,#4A148C,#8E24AA);color:#fff;border:none;border-radius:10px;padding:14px;cursor:pointer;font-family:'Poppins',sans-serif;font-weight:600;font-size:12px;display:flex;align-items:center;gap:8px"><i class="ti ti-flask" style="font-size:20px"></i>Chemicals</button>
+      <button onclick="goTo('fuel')" style="background:linear-gradient(135deg,#3E2723,#6D4C41);color:#fff;border:none;border-radius:10px;padding:14px;cursor:pointer;font-family:'Poppins',sans-serif;font-weight:600;font-size:12px;display:flex;align-items:center;gap:8px"><i class="ti ti-flame" style="font-size:20px"></i>Fuel</button>
     </div>
     <div class="card">
-      <div class="card-title"><i class="ti ti-chart-bar"></i>Machine-wise Production</div>
-      <div class="mrow">
-        <div class="m-icon" style="background:#E3F2FD"><i class="ti ti-printer" style="color:#0D47A1"></i></div>
-        <div class="m-info"><b>DGE — Digital Print</b><span>Target: 2,400 m · Shift A</span><div class="pbar"><div class="fill fill-blue" style="width:82%"></div></div></div>
-        <div class="m-val"><b>1,980 m</b><span>82% eff.</span></div>
-      </div>
-      <div class="mrow">
-        <div class="m-icon" style="background:#FFF3E0"><i class="ti ti-tool" style="color:#E65100"></i></div>
-        <div class="m-info"><b>Jilong — Weaving</b><span>Target: 2,300 m · Shift A</span><div class="pbar"><div class="fill fill-orange" style="width:71%"></div></div></div>
-        <div class="m-val"><b>1,640 m</b><span>71% eff.</span></div>
-      </div>
-      <div class="mrow">
-        <div class="m-icon" style="background:#E8F5E9"><i class="ti ti-droplet" style="color:#2E7D32"></i></div>
-        <div class="m-info"><b>Dyeing — Color Process</b><span>Target: 1,800 m · Shift A</span><div class="pbar"><div class="fill fill-green" style="width:67%"></div></div></div>
-        <div class="m-val"><b>1,200 m</b><span>67% eff.</span></div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title"><i class="ti ti-chart-line"></i>Weekly Production Trend</div>
-      <div class="clegend"><span class="cl-item"><span class="cl-dot" style="background:#0D47A1"></span>Production</span><span class="cl-item"><span class="cl-dot" style="background:#E65100"></span>Rejection</span></div>
-      <div style="position:relative;height:148px"><canvas id="trendChart"></canvas></div>
-    </div>
-    <div class="card">
-      <div class="card-title"><i class="ti ti-clock-2"></i>Shift-wise Summary</div>
-      <div class="tbl-wrap"><table class="tbl">
-        <tr><th>Shift</th><th>Incharge</th><th>Prod.</th><th>Rej.</th><th>Status</th></tr>
-        <tr><td>A (6–14h)</td><td>Ramesh K.</td><td>1,840 m</td><td>92</td><td><span class="pill green">Active</span></td></tr>
-        <tr><td>B (14–22h)</td><td>Sunil P.</td><td>1,620 m</td><td>134</td><td><span class="pill gray">Done</span></td></tr>
-        <tr><td>C (22–6h)</td><td>Anil S.</td><td>1,360 m</td><td>86</td><td><span class="pill gray">Done</span></td></tr>
-      </table></div>
-    </div>
-    <div class="card">
-      <div class="card-title"><i class="ti ti-shopping-cart"></i>Pending Orders</div>
-      <div class="orow"><div class="o-info"><b>Design #TX-2241</b><span>Raj Textiles — 2,000 m Cotton Print</span></div><span class="pill orange">27 May</span></div>
-      <div class="orow"><div class="o-info"><b>Design #TX-2238</b><span>Mehta Fabrics — 1,500 m Dyeing</span></div><span class="pill red">Overdue</span></div>
-      <div class="orow"><div class="o-info"><b>Design #TX-2235</b><span>Star Garments — 3,200 m Jilong</span></div><span class="pill green">On track</span></div>
-      <div class="orow"><div class="o-info"><b>Design #TX-2231</b><span>Kumar Co — 1,800 m DGE Print</span></div><span class="pill blue">Pending</span></div>
+      <div class="card-title"><i class="ti ti-chart-bar"></i>Machine Production</div>
+      <div class="mrow"><div class="m-icon" style="background:#E3F2FD"><i class="ti ti-printer" style="color:var(--blue)"></i></div><div class="m-info"><b>DGE — Digital Print</b><span>Target: 2,400 m</span><div class="pbar"><div class="fill" style="width:82%"></div></div></div><div class="m-val"><b>1,980 m</b></div></div>
+      <div class="mrow"><div class="m-icon" style="background:#FFF3E0"><i class="ti ti-tool" style="color:var(--orange)"></i></div><div class="m-info"><b>Jilong — Weaving</b><span>Target: 2,300 m</span><div class="pbar"><div class="fill" style="width:71%"></div></div></div><div class="m-val"><b>1,640 m</b></div></div>
+      <div class="mrow"><div class="m-icon" style="background:#E8F5E9"><i class="ti ti-droplet" style="color:var(--green)"></i></div><div class="m-info"><b>Dyeing — Color</b><span>Target: 1,800 m</span><div class="pbar"><div class="fill" style="width:67%"></div></div></div><div class="m-val"><b>1,200 m</b></div></div>
     </div>
     <div style="height:6px"></div>
   </div>
   <div class="botnav">
     <button class="nav-btn active" onclick="goTo('dashboard')"><i class="ti ti-layout-dashboard"></i>Dashboard</button>
     <button class="nav-btn" onclick="goTo('entry')"><i class="ti ti-plus-circle"></i>Entry</button>
-    <button class="nav-btn" onclick="goTo('stock')"><i class="ti ti-package"></i>Stock</button>
+    <button class="nav-btn" onclick="goTo('timers')"><i class="ti ti-clock-play"></i>Timers</button>
+    <button class="nav-btn" onclick="goTo('records')"><i class="ti ti-database"></i>Records</button>
     <button class="nav-btn" onclick="goTo('reports')"><i class="ti ti-report"></i>Reports</button>
-    <button class="nav-btn" onclick="goTo('machines')"><i class="ti ti-settings"></i>Machines</button>
   </div>
 </div>
 
-<!-- ========== PRODUCTION ENTRY ========== -->
+<!-- PRODUCTION ENTRY -->
 <div class="screen" id="screen-entry">
-  <div class="topbar">
-    <button class="topbar-back" onclick="goTo('dashboard')"><i class="ti ti-arrow-left"></i></button>
-    <div class="topbar-text"><h1>Production Entry</h1><p>Add new daily record</p></div>
-  </div>
+  <div class="topbar"><button class="topbar-back" onclick="goTo('dashboard')"><i class="ti ti-arrow-left"></i></button><div class="topbar-text"><h1>Production Entry</h1><p>Add new record</p></div></div>
   <div class="content">
     <div class="card">
       <div class="card-title"><i class="ti ti-calendar"></i>Date & Shift</div>
-      <div class="fgrid">
-        <div class="fg"><label>Date</label><input type="date" id="f-date"/></div>
-        <div class="fg"><label>Shift</label>
-          <div class="shift-btns">
-            <button class="shift-btn sel" data-s="A">A</button>
-            <button class="shift-btn" data-s="B">B</button>
-            <button class="shift-btn" data-s="C">C</button>
-          </div>
-        </div>
-      </div>
+      <div class="fgrid"><div class="fg"><label>Date</label><input type="date" id="f-date"/></div><div class="fg"><label>Shift</label><div style="display:flex;gap:8px"><button class="shift-btn sel" data-s="A" style="flex:1;padding:10px;border-radius:10px;border:1.5px solid var(--border);background:none;cursor:pointer;font-size:15px;font-weight:700;font-family:'Poppins',sans-serif;color:var(--text2)">A</button><button class="shift-btn" data-s="B" style="flex:1;padding:10px;border-radius:10px;border:1.5px solid var(--border);background:none;cursor:pointer;font-size:15px;font-weight:700;font-family:'Poppins',sans-serif;color:var(--text2)">B</button><button class="shift-btn" data-s="C" style="flex:1;padding:10px;border-radius:10px;border:1.5px solid var(--border);background:none;cursor:pointer;font-size:15px;font-weight:700;font-family:'Poppins',sans-serif;color:var(--text2)">C</button></div></div></div>
     </div>
     <div class="card">
-      <div class="card-title"><i class="ti ti-cpu"></i>Machine & Quantities</div>
-      <div class="fg"><label>Machine Name</label>
-        <select id="f-machine">
-          <option value="DGE">DGE — Digital Print</option>
-          <option value="Jilong">Jilong — Weaving</option>
-          <option value="Dyeing">Dyeing — Color Process</option>
-        </select>
-      </div>
-      <div class="fgrid">
-        <div class="fg"><label>Production (m)</label><input type="number" id="f-prod" placeholder="e.g. 1800" min="0"/></div>
-        <div class="fg"><label>Rejection (m)</label><input type="number" id="f-rej" placeholder="e.g. 45" min="0"/></div>
-      </div>
-      <div class="fg"><label>Stock Qty (m)</label><input type="number" id="f-stock" placeholder="e.g. 9200" min="0"/><div class="hint">Auto-updates finished stock</div></div>
+      <div class="card-title"><i class="ti ti-cpu"></i>Machine & Production</div>
+      <div class="fg"><label>Machine</label><select id="f-machine"><option value="DGE">DGE — Digital Print</option><option value="Jilong">Jilong — Weaving</option><option value="Dyeing">Dyeing — Color</option></select></div>
+      <div class="fgrid"><div class="fg"><label>Production (m)</label><input type="number" id="f-prod" placeholder="1800" min="0"/></div><div class="fg"><label>Rejection (m)</label><input type="number" id="f-rej" placeholder="45" min="0"/></div></div>
+      <div class="fg"><label>Stock (m)</label><input type="number" id="f-stock" placeholder="9200" min="0"/></div>
     </div>
     <div class="card">
-      <div class="card-title"><i class="ti ti-tag"></i>Design & Party Details</div>
-      <div class="fg"><label>Design Number</label><input type="text" id="f-design" placeholder="e.g. TX-2242"/></div>
-      <div class="fg"><label>Party Name</label><input type="text" id="f-party" placeholder="e.g. Raj Textiles Pvt Ltd"/></div>
-      <div class="fg"><label>Fabric Details</label><input type="text" id="f-fabric" placeholder="e.g. 60×60 Cotton, 200GSM, White base"/></div>
+      <div class="card-title"><i class="ti ti-tag"></i>Design & Party</div>
+      <div class="fg"><label>Design #</label><input type="text" id="f-design" placeholder="TX-2242"/></div>
+      <div class="fg"><label>Party Name</label><input type="text" id="f-party" placeholder="Raj Textiles"/></div>
+      <div class="fg"><label>Fabric</label><input type="text" id="f-fabric" placeholder="60x60 Cotton"/></div>
     </div>
     <div class="card">
-      <div class="card-title"><i class="ti ti-user"></i>Shift Information</div>
-      <div class="fg"><label>Shift Incharge Name</label><input type="text" id="f-incharge" placeholder="e.g. Ramesh Kumar"/></div>
-      <div class="fg"><label>Remarks</label><textarea id="f-remarks" placeholder="Quality issues, downtime, special instructions..."></textarea></div>
+      <div class="card-title"><i class="ti ti-user"></i>Shift Info</div>
+      <div class="fg"><label>Incharge</label><input type="text" id="f-incharge" placeholder="Ramesh Kumar"/></div>
+      <div class="fg"><label>Remarks</label><input type="text" id="f-remarks" placeholder="Quality notes..."/></div>
     </div>
-    <button class="btn primary" onclick="saveEntry()"><i class="ti ti-device-floppy"></i>Save Production Entry</button>
-    <button class="btn wa-btn" onclick="saveAndShare()"><i class="ti ti-brand-whatsapp"></i>Save & Share on WhatsApp</button>
-    <button class="btn outline" onclick="clearForm()"><i class="ti ti-x"></i>Clear Form</button>
+    <button class="btn primary" onclick="saveEntry()"><i class="ti ti-device-floppy"></i>Save Entry</button>
+    <button class="btn outline" onclick="clearForm()"><i class="ti ti-x"></i>Clear</button>
     <div style="height:6px"></div>
   </div>
   <div class="botnav">
     <button class="nav-btn" onclick="goTo('dashboard')"><i class="ti ti-layout-dashboard"></i>Dashboard</button>
     <button class="nav-btn active" onclick="goTo('entry')"><i class="ti ti-plus-circle"></i>Entry</button>
-    <button class="nav-btn" onclick="goTo('stock')"><i class="ti ti-package"></i>Stock</button>
+    <button class="nav-btn" onclick="goTo('timers')"><i class="ti ti-clock-play"></i>Timers</button>
+    <button class="nav-btn" onclick="goTo('records')"><i class="ti ti-database"></i>Records</button>
     <button class="nav-btn" onclick="goTo('reports')"><i class="ti ti-report"></i>Reports</button>
-    <button class="nav-btn" onclick="goTo('machines')"><i class="ti ti-settings"></i>Machines</button>
   </div>
 </div>
 
-<!-- ========== STOCK ========== -->
-<div class="screen" id="screen-stock">
-  <div class="topbar">
-    <button class="topbar-back" onclick="goTo('dashboard')"><i class="ti ti-arrow-left"></i></button>
-    <div class="topbar-text"><h1>Stock Management</h1><p>Live inventory status</p></div>
-    <button style="background:rgba(255,255,255,0.15);border:none;color:#fff;border-radius:10px;padding:7px 11px;cursor:pointer;font-size:12px;font-weight:600;display:flex;align-items:center;gap:4px;font-family:'Poppins',sans-serif" onclick="openAddStock()"><i class="ti ti-plus" style="font-size:15px"></i>Add</button>
-  </div>
+<!-- MACHINE TIMERS -->
+<div class="screen" id="screen-timers">
+  <div class="topbar"><button class="topbar-back" onclick="goTo('dashboard')"><i class="ti ti-arrow-left"></i></button><div class="topbar-text"><h1>Machine Timers</h1><p>Auto start/stop</p></div></div>
   <div class="content">
-    <div class="stat-grid">
-      <div class="stat-card blue"><i class="ti ti-roll bg-icon"></i><label>Raw Fabric</label><div class="val">24,500</div><div class="sub">metres available</div></div>
-      <div class="stat-card green"><i class="ti ti-package bg-icon"></i><label>Finished Stock</label><div class="val">9,240</div><div class="sub">metres ready</div></div>
-      <div class="stat-card orange"><i class="ti ti-truck bg-icon"></i><label>Dispatched</label><div class="val">6,800</div><div class="sub">this month</div></div>
-      <div class="stat-card red"><i class="ti ti-alert-triangle bg-icon"></i><label>Low Stock</label><div class="val">3</div><div class="sub">items critical</div></div>
+    <div class="alert info"><i class="ti ti-info-circle"></i>Press START when machine begins. Time records automatically!</div>
+    <div class="machine-timer">
+      <div class="mt-header"><div class="mt-icon" style="background:#E3F2FD"><i class="ti ti-printer" style="color:var(--blue)"></i></div><div class="mt-info"><b>DGE — Digital Print</b><span>Today's running time</span></div><span class="pill green" id="dge-status">Idle</span></div>
+      <div class="mt-status"><div class="status-dot idle" id="dge-dot"></div><span id="dge-text" style="font-size:12px;color:var(--text2)">Machine is idle</span></div>
+      <div class="mt-timer" id="dge-timer">00:00:00</div>
+      <div class="mt-btns"><button class="mt-btn start" id="dge-start" onclick="startMachine('dge')"><i class="ti ti-player-play"></i>Start</button><button class="mt-btn stop" id="dge-stop" onclick="stopMachine('dge')" disabled><i class="ti ti-player-stop"></i>Stop</button></div>
     </div>
-    <div class="alert warn"><i class="ti ti-alert-triangle"></i><div class="alert-text">Polyester Grey at <b>120 m</b> — below reorder level of 500 m. Place order now!</div></div>
-    <div class="card">
-      <div class="card-title"><i class="ti ti-roll"></i>Raw Fabric Inventory</div>
-      <div class="srow">
-        <div class="s-icon" style="background:#E3F2FD"><i class="ti ti-roll" style="color:#0D47A1"></i></div>
-        <div class="s-info"><b>Cotton White — 60×60</b><span>Lot #CW-441 · Reorder: 1,000 m</span></div>
-        <div class="s-qty"><b style="color:#2E7D32">8,200 m</b><span class="pill green" style="font-size:10px;padding:2px 7px">Safe</span></div>
-      </div>
-      <div class="srow">
-        <div class="s-icon" style="background:#FFEBEE"><i class="ti ti-roll" style="color:#C62828"></i></div>
-        <div class="s-info"><b>Polyester Grey — 100D</b><span>Lot #PG-109 · Reorder: 500 m</span></div>
-        <div class="s-qty"><b style="color:#C62828">120 m</b><span class="pill red" style="font-size:10px;padding:2px 7px">Critical</span></div>
-      </div>
-      <div class="srow">
-        <div class="s-icon" style="background:#E8F5E9"><i class="ti ti-roll" style="color:#2E7D32"></i></div>
-        <div class="s-info"><b>Viscose Rayon — Dyed</b><span>Lot #VR-228 · Reorder: 800 m</span></div>
-        <div class="s-qty"><b style="color:#2E7D32">5,400 m</b><span class="pill green" style="font-size:10px;padding:2px 7px">Safe</span></div>
-      </div>
-      <div class="srow">
-        <div class="s-icon" style="background:#FFF8E1"><i class="ti ti-roll" style="color:#F57C00"></i></div>
-        <div class="s-info"><b>Blended TC 65/35</b><span>Lot #BF-017 · Reorder: 600 m</span></div>
-        <div class="s-qty"><b style="color:#E65100">780 m</b><span class="pill orange" style="font-size:10px;padding:2px 7px">Low</span></div>
-      </div>
-      <div class="srow">
-        <div class="s-icon" style="background:#F3E5F5"><i class="ti ti-roll" style="color:#7B1FA2"></i></div>
-        <div class="s-info"><b>Silk Blend — Premium</b><span>Lot #SB-055 · Reorder: 300 m</span></div>
-        <div class="s-qty"><b style="color:#2E7D32">2,100 m</b><span class="pill green" style="font-size:10px;padding:2px 7px">Safe</span></div>
-      </div>
+    <div class="machine-timer">
+      <div class="mt-header"><div class="mt-icon" style="background:#FFF3E0"><i class="ti ti-tool" style="color:var(--orange)"></i></div><div class="mt-info"><b>Jilong — Weaving</b><span>Today's running time</span></div><span class="pill green" id="jilong-status">Idle</span></div>
+      <div class="mt-status"><div class="status-dot idle" id="jilong-dot"></div><span id="jilong-text" style="font-size:12px;color:var(--text2)">Machine is idle</span></div>
+      <div class="mt-timer" id="jilong-timer">00:00:00</div>
+      <div class="mt-btns"><button class="mt-btn start" id="jilong-start" onclick="startMachine('jilong')"><i class="ti ti-player-play"></i>Start</button><button class="mt-btn stop" id="jilong-stop" onclick="stopMachine('jilong')" disabled><i class="ti ti-player-stop"></i>Stop</button></div>
     </div>
-    <div class="card">
-      <div class="card-title"><i class="ti ti-truck"></i>Recent Dispatches</div>
-      <div class="tbl-wrap"><table class="tbl">
-        <tr><th>Date</th><th>Party</th><th>Design</th><th>Qty</th><th>Status</th></tr>
-        <tr><td>24 May</td><td>Raj Tex</td><td>TX-2230</td><td>1,200 m</td><td><span class="pill green">Sent</span></td></tr>
-        <tr><td>23 May</td><td>Mehta Fab</td><td>TX-2229</td><td>800 m</td><td><span class="pill green">Sent</span></td></tr>
-        <tr><td>22 May</td><td>Star Gar</td><td>TX-2225</td><td>2,400 m</td><td><span class="pill blue">Transit</span></td></tr>
-        <tr><td>21 May</td><td>Kumar Co</td><td>TX-2220</td><td>600 m</td><td><span class="pill green">Sent</span></td></tr>
-      </table></div>
+    <div class="machine-timer">
+      <div class="mt-header"><div class="mt-icon" style="background:#E8F5E9"><i class="ti ti-droplet" style="color:var(--green)"></i></div><div class="mt-info"><b>Dyeing — Color</b><span>Today's running time</span></div><span class="pill green" id="dyeing-status">Idle</span></div>
+      <div class="mt-status"><div class="status-dot idle" id="dyeing-dot"></div><span id="dyeing-text" style="font-size:12px;color:var(--text2)">Machine is idle</span></div>
+      <div class="mt-timer" id="dyeing-timer">00:00:00</div>
+      <div class="mt-btns"><button class="mt-btn start" id="dyeing-start" onclick="startMachine('dyeing')"><i class="ti ti-player-play"></i>Start</button><button class="mt-btn stop" id="dyeing-stop" onclick="stopMachine('dyeing')" disabled><i class="ti ti-player-stop"></i>Stop</button></div>
     </div>
-    <button class="btn primary" onclick="openAddStock()"><i class="ti ti-plus"></i>Add Stock Entry</button>
-    <button class="btn outline" onclick="showToast('Dispatch form opening...')"><i class="ti ti-truck"></i>Record Dispatch</button>
     <div style="height:6px"></div>
   </div>
   <div class="botnav">
     <button class="nav-btn" onclick="goTo('dashboard')"><i class="ti ti-layout-dashboard"></i>Dashboard</button>
     <button class="nav-btn" onclick="goTo('entry')"><i class="ti ti-plus-circle"></i>Entry</button>
-    <button class="nav-btn active" onclick="goTo('stock')"><i class="ti ti-package"></i>Stock</button>
+    <button class="nav-btn active" onclick="goTo('timers')"><i class="ti ti-clock-play"></i>Timers</button>
+    <button class="nav-btn" onclick="goTo('records')"><i class="ti ti-database"></i>Records</button>
     <button class="nav-btn" onclick="goTo('reports')"><i class="ti ti-report"></i>Reports</button>
-    <button class="nav-btn" onclick="goTo('machines')"><i class="ti ti-settings"></i>Machines</button>
   </div>
 </div>
 
-<!-- ========== REPORTS ========== -->
+<!-- CHEMICALS & COLOURS -->
+<div class="screen" id="screen-chemicals">
+  <div class="topbar"><button class="topbar-back" onclick="goTo('dashboard')"><i class="ti ti-arrow-left"></i></button><div class="topbar-text"><h1>Chemicals & Colours</h1><p>Daily usage</p></div></div>
+  <div class="content">
+    <div class="stat-grid">
+      <div class="stat-card purple"><div class="val">24.5</div><div style="font-size:10px;opacity:.8">Chemicals Used (kg)</div></div>
+      <div class="stat-card teal"><div class="val">8.2</div><div style="font-size:10px;opacity:.8">Colours Used (kg)</div></div>
+    </div>
+    <div class="alert danger"><i class="ti ti-alert-triangle"></i>Low Stock: Reactive Red — 2.5 kg only!</div>
+    <div class="card">
+      <div class="card-title"><i class="ti ti-plus-circle"></i>Add Usage</div>
+      <div class="fg"><label>Date</label><input type="date" id="chem-date"/></div>
+      <div class="fg"><label>Item Name</label><input type="text" id="chem-name" placeholder="Reactive Red"/></div>
+      <div class="fgrid"><div class="fg"><label>Category</label><select id="chem-cat"><option>Colour</option><option>Chemical</option><option>Dye</option><option>Softener</option></select></div><div class="fg"><label>Machine</label><select id="chem-machine"><option>DGE</option><option>Jilong</option><option>Dyeing</option></select></div></div>
+      <div class="fgrid"><div class="fg"><label>Quantity Used</label><input type="number" id="chem-qty" placeholder="2.5" min="0" step="0.1"/></div><div class="fg"><label>Unit</label><select id="chem-unit"><option>kg</option><option>litre</option><option>gram</option></select></div></div>
+      <div class="fgrid"><div class="fg"><label>Stock Remaining</label><input type="number" id="chem-stock" placeholder="50" min="0"/></div><div class="fg"><label>Batch #</label><input type="text" id="chem-batch" placeholder="B-441"/></div></div>
+      <button class="btn purple-btn" onclick="saveChemEntry()"><i class="ti ti-device-floppy"></i>Save Chemical</button>
+    </div>
+    <div class="sec"><i class="ti ti-palette"></i>Colour Inventory</div>
+    <div class="card">
+      <div class="chem-item"><div class="chem-icon" style="background:#FFEBEE"><i class="ti ti-circle-filled" style="color:#E53935"></i></div><div class="chem-info"><b>Reactive Red</b><span>Lot #RR-221</span></div><div style="text-align:right"><b style="color:var(--red)">2.5 kg</b><div class="pill red" style="font-size:10px;padding:1px 6px">Low</div></div></div>
+      <div class="chem-item"><div class="chem-icon" style="background:#E3F2FD"><i class="ti ti-circle-filled" style="color:var(--blue)"></i></div><div class="chem-info"><b>Reactive Blue</b><span>Lot #RB-118</span></div><div style="text-align:right"><b style="color:var(--green)">18.0 kg</b><div class="pill green" style="font-size:10px;padding:1px 6px">Safe</div></div></div>
+      <div class="chem-item"><div class="chem-icon" style="background:#E8F5E9"><i class="ti ti-circle-filled" style="color:var(--green)"></i></div><div class="chem-info"><b>Reactive Green</b><span>Lot #RG-077</span></div><div style="text-align:right"><b style="color:var(--green)">22.5 kg</b><div class="pill green" style="font-size:10px;padding:1px 6px">Safe</div></div></div>
+    </div>
+    <div style="height:6px"></div>
+  </div>
+  <div class="botnav">
+    <button class="nav-btn" onclick="goTo('dashboard')"><i class="ti ti-layout-dashboard"></i>Dashboard</button>
+    <button class="nav-btn" onclick="goTo('entry')"><i class="ti ti-plus-circle"></i>Entry</button>
+    <button class="nav-btn" onclick="goTo('timers')"><i class="ti ti-clock-play"></i>Timers</button>
+    <button class="nav-btn" onclick="goTo('records')"><i class="ti ti-database"></i>Records</button>
+    <button class="nav-btn" onclick="goTo('reports')"><i class="ti ti-report"></i>Reports</button>
+  </div>
+</div>
+
+<!-- COAL & WOOD FUEL -->
+<div class="screen" id="screen-fuel">
+  <div class="topbar"><button class="topbar-back" onclick="goTo('dashboard')"><i class="ti ti-arrow-left"></i></button><div class="topbar-text"><h1>Coal & Wood Usage</h1><p>Fuel tracking</p></div></div>
+  <div class="content">
+    <div class="fuel-summary">
+      <div class="fuel-box coal"><i class="ti ti-stack-3"></i><div class="fval">840 kg</div><div class="flabel">Coal Today</div></div>
+      <div class="fuel-box wood"><i class="ti ti-trees"></i><div class="fval">320 kg</div><div class="flabel">Wood Today</div></div>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-card brown"><div class="val">18.4 T</div><div style="font-size:10px;opacity:.8">Coal This Month</div></div>
+      <div class="stat-card brown"><div class="val">6.8 T</div><div style="font-size:10px;opacity:.8">Wood This Month</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><i class="ti ti-plus-circle"></i>Add Fuel Entry</div>
+      <div class="fg"><label>Date</label><input type="date" id="fuel-date"/></div>
+      <div class="fgrid"><div class="fg"><label>Fuel Type</label><select id="fuel-type"><option>Coal</option><option>Wood</option><option>Coal Dust</option></select></div><div class="fg"><label>Machine</label><select id="fuel-machine"><option>Dyeing Boiler</option><option>DGE Boiler</option><option>Generator</option></select></div></div>
+      <div class="fgrid"><div class="fg"><label>Quantity (kg)</label><input type="number" id="fuel-qty" placeholder="280" min="0"/></div><div class="fg"><label>Shift</label><select id="fuel-shift"><option>A</option><option>B</option><option>C</option><option>Full Day</option></select></div></div>
+      <div class="fg"><label>Supplier</label><input type="text" id="fuel-supplier" placeholder="Ravi Coal Depot"/></div>
+      <div class="fg"><label>Remarks</label><input type="text" id="fuel-remarks" placeholder="Quality, temperature..."/></div>
+      <button class="btn brown-btn" onclick="saveFuelEntry()"><i class="ti ti-device-floppy"></i>Save Fuel</button>
+    </div>
+    <div class="sec"><i class="ti ti-stack-3"></i>Coal Stock</div>
+    <div class="card">
+      <div class="mrow"><div class="m-icon" style="background:#EFEBE9"><i class="ti ti-stack-3" style="color:#4E342E"></i></div><div class="m-info"><b>Premium Coal Grade A</b><span>Ravi Coal Depot</span><div class="pbar"><div class="fill" style="width:72%;background:linear-gradient(90deg,#3E2723,#8D6E63)"></div></div></div><div class="m-val"><b>5,200 kg</b></div></div>
+      <div class="mrow"><div class="m-icon" style="background:#EFEBE9"><i class="ti ti-stack-3" style="color:#6D4C41"></i></div><div class="m-info"><b>Coal Dust Mixed</b><span>Kumar Fuel</span><div class="pbar"><div class="fill" style="width:38%;background:linear-gradient(90deg,#3E2723,#8D6E63)"></div></div></div><div class="m-val"><b>1,900 kg</b></div></div>
+    </div>
+    <div class="sec"><i class="ti ti-trees"></i>Wood Stock</div>
+    <div class="card">
+      <div class="mrow"><div class="m-icon" style="background:#EFEBE9"><i class="ti ti-trees" style="color:#5D4037"></i></div><div class="m-info"><b>Hardwood Teak</b><span>Forest Depot</span><div class="pbar"><div class="fill" style="width:55%;background:linear-gradient(90deg,#3E2723,#8D6E63)"></div></div></div><div class="m-val"><b>2,750 kg</b></div></div>
+      <div class="mrow"><div class="m-icon" style="background:#EFEBE9"><i class="ti ti-trees" style="color:#8D6E63"></i></div><div class="m-info"><b>Softwood Mixed</b><span>Sharma Traders</span><div class="pbar"><div class="fill" style="width:22%;background:linear-gradient(90deg,#3E2723,#8D6E63)"></div></div></div><div class="m-val"><b style="color:var(--red)">550 kg</b></div></div>
+    </div>
+    <div style="height:6px"></div>
+  </div>
+  <div class="botnav">
+    <button class="nav-btn" onclick="goTo('dashboard')"><i class="ti ti-layout-dashboard"></i>Dashboard</button>
+    <button class="nav-btn" onclick="goTo('entry')"><i class="ti ti-plus-circle"></i>Entry</button>
+    <button class="nav-btn" onclick="goTo('timers')"><i class="ti ti-clock-play"></i>Timers</button>
+    <button class="nav-btn" onclick="goTo('records')"><i class="ti ti-database"></i>Records</button>
+    <button class="nav-btn" onclick="goTo('reports')"><i class="ti ti-report"></i>Reports</button>
+  </div>
+</div>
+
+<!-- RECORDS -->
+<div class="screen" id="screen-records">
+  <div class="topbar"><button class="topbar-back" onclick="goTo('dashboard')"><i class="ti ti-arrow-left"></i></button><div class="topbar-text"><h1>Records & Delete</h1><p>Manage entries</p></div><span class="topbar-badge" id="rec-badge">0</span></div>
+  <div class="content">
+    <div class="sec"><i class="ti ti-trash"></i>Quick Delete</div>
+    <div class="del-actions">
+      <button class="del-btn first" onclick="deleteFirst()"><i class="ti ti-arrow-bar-to-up"></i>Delete Latest</button>
+      <button class="del-btn last" onclick="deleteLast()"><i class="ti ti-arrow-bar-to-down"></i>Delete Oldest</button>
+      <button class="del-btn all" onclick="deleteAll()"><i class="ti ti-trash-x"></i>Delete All</button>
+    </div>
+    <div class="sec"><i class="ti ti-list"></i>All Records (<span id="rec-count">0</span>)</div>
+    <div id="records-list"><div class="empty-state"><i class="ti ti-database-off"></i><p>No records yet</p></div></div>
+    <div style="height:6px"></div>
+  </div>
+  <div class="botnav">
+    <button class="nav-btn" onclick="goTo('dashboard')"><i class="ti ti-layout-dashboard"></i>Dashboard</button>
+    <button class="nav-btn" onclick="goTo('entry')"><i class="ti ti-plus-circle"></i>Entry</button>
+    <button class="nav-btn" onclick="goTo('timers')"><i class="ti ti-clock-play"></i>Timers</button>
+    <button class="nav-btn active" onclick="goTo('records')"><i class="ti ti-database"></i>Records</button>
+    <button class="nav-btn" onclick="goTo('reports')"><i class="ti ti-report"></i>Reports</button>
+  </div>
+</div>
+
+<!-- REPORTS -->
 <div class="screen" id="screen-reports">
-  <div class="topbar">
-    <button class="topbar-back" onclick="goTo('dashboard')"><i class="ti ti-arrow-left"></i></button>
-    <div class="topbar-text"><h1>Reports & Analytics</h1><p>Production analysis</p></div>
-  </div>
+  <div class="topbar"><button class="topbar-back" onclick="goTo('dashboard')"><i class="ti ti-arrow-left"></i></button><div class="topbar-text"><h1>Reports</h1><p>Analytics</p></div></div>
   <div class="content">
-    <div class="fbar">
-      <button class="fbtn active" onclick="setF(this)">Daily</button>
-      <button class="fbtn" onclick="setF(this)">Weekly</button>
-      <button class="fbtn" onclick="setF(this)">Monthly</button>
-      <button class="fbtn" onclick="setF(this)">Machine</button>
-      <button class="fbtn" onclick="setF(this)">Shift</button>
-      <button class="fbtn" onclick="setF(this)">Party</button>
-    </div>
-    <div class="stat-grid">
-      <div class="stat-card blue"><i class="ti ti-chart-line bg-icon"></i><label>Avg Daily Prod.</label><div class="val">4,310</div><div class="sub">this week</div></div>
-      <div class="stat-card red"><i class="ti ti-percentage bg-icon"></i><label>Avg Rejection</label><div class="val">5.8%</div><div class="sub">this week</div></div>
-    </div>
     <div class="card">
-      <div class="card-title"><i class="ti ti-chart-bar"></i>Production vs Rejection — This Week</div>
-      <div class="clegend"><span class="cl-item"><span class="cl-dot" style="background:#0D47A1"></span>Production (m)</span><span class="cl-item"><span class="cl-dot" style="background:#E65100"></span>Rejection (m)</span></div>
-      <div style="position:relative;height:158px"><canvas id="pvrChart"></canvas></div>
+      <div class="card-title"><i class="ti ti-report"></i>Daily Summary</div>
+      <div class="tbl"><tr><th>Machine</th><th>Production</th><th>Rejection</th><th>%</th></tr><tr><td>DGE</td><td>1,980 m</td><td>42</td><td>2.1%</td></tr><tr><td>Jilong</td><td>1,640 m</td><td>134</td><td>8.2%</td></tr><tr><td>Dyeing</td><td>1,200 m</td><td>136</td><td>11.3%</td></tr></table>
     </div>
-    <div class="card">
-      <div class="card-title"><i class="ti ti-chart-donut"></i>Machine Efficiency Breakdown</div>
-      <div style="display:flex;align-items:center;gap:14px">
-        <div style="position:relative;width:108px;height:108px;flex-shrink:0"><canvas id="donutChart"></canvas></div>
-        <div style="flex:1">
-          <div style="margin-bottom:10px"><div class="cl-item" style="margin-bottom:3px"><span class="cl-dot" style="background:#0D47A1"></span><b>DGE Digital Print</b></div><div class="pbar"><div class="fill fill-blue" style="width:82%"></div></div><div style="font-size:11px;color:var(--text2);margin-top:2px">1,980 m · 41% share · 82% eff.</div></div>
-          <div style="margin-bottom:10px"><div class="cl-item" style="margin-bottom:3px"><span class="cl-dot" style="background:#F57C00"></span><b>Jilong Weaving</b></div><div class="pbar"><div class="fill fill-orange" style="width:71%"></div></div><div style="font-size:11px;color:var(--text2);margin-top:2px">1,640 m · 34% share · 71% eff.</div></div>
-          <div><div class="cl-item" style="margin-bottom:3px"><span class="cl-dot" style="background:#43A047"></span><b>Dyeing Process</b></div><div class="pbar"><div class="fill fill-green" style="width:67%"></div></div><div style="font-size:11px;color:var(--text2);margin-top:2px">1,200 m · 25% share · 67% eff.</div></div>
-        </div>
-      </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px">
+      <button class="btn" style="background:#2E7D32;color:#fff;margin:0" onclick="showToast('Exporting Excel...')"><i class="ti ti-file-spreadsheet"></i>Excel</button>
+      <button class="btn" style="background:#C62828;color:#fff;margin:0" onclick="showToast('Exporting PDF...')"><i class="ti ti-file-type-pdf"></i>PDF</button>
     </div>
-    <div class="card">
-      <div class="card-title"><i class="ti ti-search"></i>Search Production Log</div>
-      <div class="fg" style="margin-bottom:10px"><input type="text" id="search-log" placeholder="Search by design # or party name…" oninput="filterLog(this.value)"/></div>
-      <div class="tbl-wrap"><table class="tbl" id="log-tbl">
-        <tr><th>Machine</th><th>Design</th><th>Party</th><th>Prod</th><th>Rej</th><th>Shift</th></tr>
-        <tr data-s="DGE TX-2241 Raj Tex"><td>DGE</td><td>TX-2241</td><td>Raj Tex</td><td>680 m</td><td>22</td><td><span class="pill blue">A</span></td></tr>
-        <tr data-s="Jilong TX-2240 Mehta"><td>Jilong</td><td>TX-2240</td><td>Mehta</td><td>540 m</td><td>48</td><td><span class="pill orange">B</span></td></tr>
-        <tr data-s="Dyeing TX-2239 Star"><td>Dyeing</td><td>TX-2239</td><td>Star</td><td>420 m</td><td>18</td><td><span class="pill blue">A</span></td></tr>
-        <tr data-s="DGE TX-2237 Raj Tex"><td>DGE</td><td>TX-2237</td><td>Raj Tex</td><td>760 m</td><td>24</td><td><span class="pill gray">C</span></td></tr>
-        <tr data-s="Jilong TX-2236 Kumar"><td>Jilong</td><td>TX-2236</td><td>Kumar Co</td><td>440 m</td><td>32</td><td><span class="pill orange">B</span></td></tr>
-        <tr data-s="Dyeing TX-2234 Mehta"><td>Dyeing</td><td>TX-2234</td><td>Mehta Fab</td><td>560 m</td><td>28</td><td><span class="pill blue">A</span></td></tr>
-      </table></div>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px">
-      <button class="btn green-btn" style="margin:0" onclick="showToast('Generating Excel report ⬇')"><i class="ti ti-file-spreadsheet"></i>Excel</button>
-      <button class="btn red-btn" style="margin:0" onclick="showToast('Generating PDF report ⬇')"><i class="ti ti-file-type-pdf"></i>PDF</button>
-    </div>
-    <div style="height:9px"></div>
-    <button class="btn wa-btn" onclick="goTo('whatsapp')"><i class="ti ti-brand-whatsapp"></i>Share Report on WhatsApp</button>
     <div style="height:6px"></div>
   </div>
   <div class="botnav">
     <button class="nav-btn" onclick="goTo('dashboard')"><i class="ti ti-layout-dashboard"></i>Dashboard</button>
     <button class="nav-btn" onclick="goTo('entry')"><i class="ti ti-plus-circle"></i>Entry</button>
-    <button class="nav-btn" onclick="goTo('stock')"><i class="ti ti-package"></i>Stock</button>
+    <button class="nav-btn" onclick="goTo('timers')"><i class="ti ti-clock-play"></i>Timers</button>
+    <button class="nav-btn" onclick="goTo('records')"><i class="ti ti-database"></i>Records</button>
     <button class="nav-btn active" onclick="goTo('reports')"><i class="ti ti-report"></i>Reports</button>
-    <button class="nav-btn" onclick="goTo('machines')"><i class="ti ti-settings"></i>Machines</button>
-  </div>
-</div>
-
-<!-- ========== MACHINES ========== -->
-<div class="screen" id="screen-machines">
-  <div class="topbar">
-    <button class="topbar-back" onclick="goTo('dashboard')"><i class="ti ti-arrow-left"></i></button>
-    <div class="topbar-text"><h1>Machine Management</h1><p>Admin: Virendra Kumar</p></div>
-  </div>
-  <div class="content">
-    <div class="stat-grid">
-      <div class="stat-card blue"><i class="ti ti-cpu bg-icon"></i><label>Total Machines</label><div class="val" id="total-m">3</div><div class="sub">registered</div></div>
-      <div class="stat-card green"><i class="ti ti-circle-check bg-icon"></i><label>Active Today</label><div class="val" id="active-m">3</div><div class="sub">running</div></div>
-    </div>
-    <div class="sec"><i class="ti ti-list"></i>Registered Machines</div>
-    <div id="mlist">
-      <div class="mchip" data-id="DGE">
-        <div class="m-icon" style="background:#E3F2FD;width:40px;height:40px;border-radius:11px"><i class="ti ti-printer" style="color:#0D47A1;font-size:19px"></i></div>
-        <div class="mname">DGE<small>Digital Print</small></div>
-        <span class="pill green" style="font-size:10px">Active</span>
-        <button class="toggle on" onclick="toggleM(this)"></button>
-        <div class="mactions">
-          <button onclick="editM('DGE','Digital Print')" title="Edit"><i class="ti ti-edit"></i></button>
-          <button class="del" onclick="deleteM(this,'DGE')" title="Delete"><i class="ti ti-trash"></i></button>
-        </div>
-      </div>
-      <div class="mchip" data-id="Jilong">
-        <div class="m-icon" style="background:#FFF3E0;width:40px;height:40px;border-radius:11px"><i class="ti ti-tool" style="color:#E65100;font-size:19px"></i></div>
-        <div class="mname">Jilong<small>Weaving</small></div>
-        <span class="pill green" style="font-size:10px">Active</span>
-        <button class="toggle on" onclick="toggleM(this)"></button>
-        <div class="mactions">
-          <button onclick="editM('Jilong','Weaving')" title="Edit"><i class="ti ti-edit"></i></button>
-          <button class="del" onclick="deleteM(this,'Jilong')" title="Delete"><i class="ti ti-trash"></i></button>
-        </div>
-      </div>
-      <div class="mchip" data-id="Dyeing">
-        <div class="m-icon" style="background:#E8F5E9;width:40px;height:40px;border-radius:11px"><i class="ti ti-droplet" style="color:#2E7D32;font-size:19px"></i></div>
-        <div class="mname">Dyeing<small>Color Process</small></div>
-        <span class="pill green" style="font-size:10px">Active</span>
-        <button class="toggle on" onclick="toggleM(this)"></button>
-        <div class="mactions">
-          <button onclick="editM('Dyeing','Color Process')" title="Edit"><i class="ti ti-edit"></i></button>
-          <button class="del" onclick="deleteM(this,'Dyeing')" title="Delete"><i class="ti ti-trash"></i></button>
-        </div>
-      </div>
-    </div>
-    <div class="card" style="border:1.5px dashed var(--border);box-shadow:none;margin-top:4px">
-      <div class="card-title"><i class="ti ti-plus"></i>Add New Machine</div>
-      <div class="fgrid">
-        <div class="fg"><label>Machine ID</label><input type="text" id="nm-id" placeholder="e.g. M4"/></div>
-        <div class="fg"><label>Name</label><input type="text" id="nm-name" placeholder="e.g. Rotary"/></div>
-      </div>
-      <div class="fg"><label>Process Type</label><input type="text" id="nm-type" placeholder="e.g. Screen Print"/></div>
-      <button class="btn primary" onclick="addM()"><i class="ti ti-plus"></i>Add Machine</button>
-    </div>
-    <div class="card">
-      <div class="card-title"><i class="ti ti-chart-bar"></i>Weekly Productivity (metres)</div>
-      <div style="position:relative;height:128px"><canvas id="mbarChart"></canvas></div>
-    </div>
-    <div style="height:6px"></div>
-  </div>
-  <div class="botnav">
-    <button class="nav-btn" onclick="goTo('dashboard')"><i class="ti ti-layout-dashboard"></i>Dashboard</button>
-    <button class="nav-btn" onclick="goTo('entry')"><i class="ti ti-plus-circle"></i>Entry</button>
-    <button class="nav-btn" onclick="goTo('stock')"><i class="ti ti-package"></i>Stock</button>
-    <button class="nav-btn" onclick="goTo('reports')"><i class="ti ti-report"></i>Reports</button>
-    <button class="nav-btn active" onclick="goTo('machines')"><i class="ti ti-settings"></i>Machines</button>
-  </div>
-</div>
-
-<!-- ========== WHATSAPP ========== -->
-<div class="screen" id="screen-whatsapp">
-  <div class="topbar">
-    <button class="topbar-back" onclick="goTo('reports')"><i class="ti ti-arrow-left"></i></button>
-    <div class="topbar-text"><h1>WhatsApp Share</h1><p>Report preview & send</p></div>
-    <i class="ti ti-brand-whatsapp" style="font-size:26px;color:#25D366"></i>
-  </div>
-  <div class="content">
-    <div class="alert info"><i class="ti ti-info-circle"></i><div class="alert-text">Preview your report before sharing. Tap <b>Open in WhatsApp</b> to send.</div></div>
-    <div class="sec"><i class="ti ti-eye"></i>Report Preview</div>
-    <div class="wa-bg">
-      <div class="wa-bubble">
-        <h3>📊 FabPrint Textile — Daily Report</h3>
-        <p>📅 <b>Date:</b> <span id="wa-date"></span> &nbsp; ⏰ <b>Shift:</b> A</p>
-        <p>👤 <b>Incharge:</b> Ramesh Kumar</p>
-        <div class="wa-div"></div>
-        <p><b>📈 Production Summary</b></p>
-        <p>✅ Total Production: <b>4,820 m</b><br>❌ Rejection: <b>312 m</b> (6.5%)<br>📦 Finished Stock: <b>9,240 m</b></p>
-        <div class="wa-div"></div>
-        <p><b>🏭 Machine-wise Output</b></p>
-        <p>🖨 DGE: 1,980 m | Rej: 42 m (2.1%)<br>🔧 Jilong: 1,640 m | Rej: 134 m (8.2%)<br>💧 Dyeing: 1,200 m | Rej: 136 m (11.3%)</p>
-        <div class="wa-div"></div>
-        <p>📋 Pending Orders: <b>7</b> | 3 due this week</p>
-        <p>⚠️ Low stock: Polyester Grey — 120 m</p>
-        <div class="wa-div"></div>
-        <p style="font-size:11px;color:#888">Shared via FabPrint Textile Production Tracker<br>Admin: Virendra Kumar · FabPrint Textile, Maharashtra</p>
-        <div class="wa-time" id="wa-time"></div>
-      </div>
-    </div>
-    <div class="sec" style="margin-top:14px"><i class="ti ti-paperclip"></i>Attach to Report</div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
-      <button class="btn outline" style="width:auto;padding:8px 13px;margin:0;font-size:12px" onclick="showToast('PDF attached ✓')"><i class="ti ti-file-type-pdf" style="font-size:15px"></i>PDF</button>
-      <button class="btn outline" style="width:auto;padding:8px 13px;margin:0;font-size:12px" onclick="showToast('Machine summary attached ✓')"><i class="ti ti-cpu" style="font-size:15px"></i>Machine</button>
-      <button class="btn outline" style="width:auto;padding:8px 13px;margin:0;font-size:12px" onclick="showToast('Stock alert attached ✓')"><i class="ti ti-alert-triangle" style="font-size:15px"></i>Stock Alert</button>
-      <button class="btn outline" style="width:auto;padding:8px 13px;margin:0;font-size:12px" onclick="showToast('Shift report attached ✓')"><i class="ti ti-clock" style="font-size:15px"></i>Shift</button>
-    </div>
-    <div class="fg"><label>Send To</label><input type="text" placeholder="Search contact or group…"/></div>
-    <button class="btn wa-btn" onclick="shareWA()"><i class="ti ti-brand-whatsapp"></i>Open in WhatsApp</button>
-    <button class="btn outline" onclick="copyReport()"><i class="ti ti-copy"></i>Copy Report Text</button>
-    <div style="height:6px"></div>
-  </div>
-  <div class="botnav">
-    <button class="nav-btn" onclick="goTo('dashboard')"><i class="ti ti-layout-dashboard"></i>Dashboard</button>
-    <button class="nav-btn" onclick="goTo('entry')"><i class="ti ti-plus-circle"></i>Entry</button>
-    <button class="nav-btn" onclick="goTo('stock')"><i class="ti ti-package"></i>Stock</button>
-    <button class="nav-btn active" onclick="goTo('reports')"><i class="ti ti-report"></i>Reports</button>
-    <button class="nav-btn" onclick="goTo('machines')"><i class="ti ti-settings"></i>Machines</button>
   </div>
 </div>
 
 </div><!-- /app -->
 <div id="toast"></div>
-<div id="modal-overlay" onclick="closeModal()">
-  <div class="modal-sheet" onclick="event.stopPropagation()">
-    <div class="modal-handle"></div>
-    <div class="modal-title" id="modal-title"></div>
-    <div id="modal-body"></div>
-  </div>
-</div>
 
 <script>
-var charts={},selShift='A';
 var entries=JSON.parse(localStorage.getItem('fp-entries')||'[]');
+var selShift='A';
+var machineTimers={dge:{running:false,startTime:null,elapsed:0},jilong:{running:false,startTime:null,elapsed:0},dyeing:{running:false,startTime:null,elapsed:0}};
+var timerInterval=null;
+
+function saveAll(){try{localStorage.setItem('fp-entries',JSON.stringify(entries));}catch(e){}}
 
 (function init(){
   var now=new Date();
-  var ds=now.toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
-  var el=document.getElementById('today-date');if(el)el.textContent=ds;
-  var wd=document.getElementById('wa-date');if(wd)wd.textContent=ds;
-  var wt=document.getElementById('wa-time');if(wt)wt.textContent=now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})+' ✓✓';
-  var h=now.getHours(),g=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
-  var ge=document.getElementById('dash-greet');if(ge)ge.textContent=g+', Virendra Kumar';
   var fd=document.getElementById('f-date');if(fd)fd.value=now.toISOString().split('T')[0];
-  setTimeout(initTrend,200);
-  updateMachineCounts();
+  var cd=document.getElementById('chem-date');if(cd)cd.value=now.toISOString().split('T')[0];
+  var fled=document.getElementById('fuel-date');if(fled)fled.value=now.toISOString().split('T')[0];
+  var h=now.getHours();
+  var g=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
+  var ge=document.getElementById('dash-greet');if(ge)ge.textContent=g+', Virendra Kumar!';
+  updateDashStats();
+  startTimerTick();
+  document.querySelectorAll('.shift-btn').forEach(function(b){b.addEventListener('click',function(){document.querySelectorAll('.shift-btn').forEach(function(x){x.classList.remove('sel');x.style.borderColor='var(--border)';x.style.background='none';x.style.color='var(--text2)';});this.classList.add('sel');this.style.borderColor='var(--blue)';this.style.background='#E3F2FD';this.style.color='var(--blue)';selShift=this.dataset.s;});});
 })();
 
-function goTo(id){
-  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active')});
-  var s=document.getElementById('screen-'+id);if(s)s.classList.add('active');
-  if(id==='dashboard')setTimeout(initTrend,100);
-  if(id==='reports'){setTimeout(initPvr,100);setTimeout(initDonut,150);}
-  if(id==='machines')setTimeout(initMbar,100);
-}
+function updateDashStats(){var dr=document.getElementById('dash-records');if(dr)dr.textContent=entries.length;var rc=document.getElementById('rec-count');if(rc)rc.textContent=entries.length;var rb=document.getElementById('rec-badge');if(rb)rb.textContent=entries.length;}
 
-function doLogin(){
-  var u=document.getElementById('l-user').value;
-  var p=document.getElementById('l-pass').value;
-  var r=document.getElementById('l-role').value;
-  if(!u||!p){showToast('Please enter username and password');return;}
-  var b=document.getElementById('role-badge');if(b)b.textContent=r;
-  showToast('Welcome back, Virendra Kumar! ✓');
-  setTimeout(function(){goTo('dashboard');},500);
-}
+function goTo(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));var s=document.getElementById('screen-'+id);if(s)s.classList.add('active');if(id==='records')renderRecords();}
 
-var _tt;
-function showToast(msg){
-  var t=document.getElementById('toast');
-  t.textContent=msg;t.classList.add('show');
-  clearTimeout(_tt);_tt=setTimeout(function(){t.classList.remove('show');},2800);
-}
+function doLogin(){var u=document.getElementById('l-user').value;var p=document.getElementById('l-pass').value;if(!u||!p){showToast('Enter username & password');return;}showToast('Welcome! ✓');setTimeout(()=>goTo('dashboard'),500);}
 
-function openModal(title,body){
-  document.getElementById('modal-title').textContent=title;
-  document.getElementById('modal-body').innerHTML=body;
-  document.getElementById('modal-overlay').classList.add('open');
-}
-function closeModal(){document.getElementById('modal-overlay').classList.remove('open');}
+function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
 
-document.querySelectorAll('.shift-btn').forEach(function(b){
-  b.addEventListener('click',function(){
-    document.querySelectorAll('.shift-btn').forEach(function(x){x.classList.remove('sel');});
-    this.classList.add('sel');selShift=this.dataset.s;
-  });
-});
+function saveEntry(){var prod=document.getElementById('f-prod').value;var machine=document.getElementById('f-machine').value;if(!prod||!machine){showToast('Fill production & machine');return;}var e={id:Date.now(),date:document.getElementById('f-date').value,shift:selShift,machine:machine,production:parseInt(prod)||0,rejection:parseInt(document.getElementById('f-rej').value)||0,stock:document.getElementById('f-stock').value,design:document.getElementById('f-design').value,party:document.getElementById('f-party').value,fabric:document.getElementById('f-fabric').value,incharge:document.getElementById('f-incharge').value,remarks:document.getElementById('f-remarks').value};entries.unshift(e);saveAll();updateDashStats();showToast('Entry saved ✓');clearForm();}
 
-function saveEntry(){
-  var prod=document.getElementById('f-prod').value;
-  var machine=document.getElementById('f-machine').value;
-  if(!prod||!machine){showToast('Please fill production qty and machine');return;}
-  var e={date:document.getElementById('f-date').value,shift:selShift,machine:machine,production:prod,rejection:document.getElementById('f-rej').value||'0',stock:document.getElementById('f-stock').value,design:document.getElementById('f-design').value,party:document.getElementById('f-party').value,fabric:document.getElementById('f-fabric').value,incharge:document.getElementById('f-incharge').value,remarks:document.getElementById('f-remarks').value,ts:Date.now()};
-  entries.unshift(e);
-  try{localStorage.setItem('fp-entries',JSON.stringify(entries));}catch(ex){}
-  showToast('Production entry saved successfully ✓');
-  clearForm();
-}
+function clearForm(){['f-prod','f-rej','f-stock','f-design','f-party','f-fabric','f-incharge','f-remarks'].forEach(id=>document.getElementById(id).value='');}
 
-function saveAndShare(){saveEntry();setTimeout(function(){goTo('whatsapp');},400);}
+function saveChemEntry(){var name=document.getElementById('chem-name').value;var qty=document.getElementById('chem-qty').value;if(!name||!qty){showToast('Fill item name & qty');return;}showToast('Chemical entry saved ✓');['chem-name','chem-qty','chem-stock','chem-batch'].forEach(id=>document.getElementById(id).value='');}
 
-function clearForm(){
-  ['f-prod','f-rej','f-stock','f-design','f-party','f-fabric','f-incharge','f-remarks'].forEach(function(id){var e=document.getElementById(id);if(e)e.value='';});
-  showToast('Form cleared');
-}
+function saveFuelEntry(){var qty=document.getElementById('fuel-qty').value;if(!qty){showToast('Enter fuel quantity');return;}showToast('Fuel entry saved ✓');['fuel-qty','fuel-supplier','fuel-remarks'].forEach(id=>document.getElementById(id).value='');}
 
-function filterLog(v){
-  v=v.toLowerCase();
-  document.querySelectorAll('#log-tbl tr[data-s]').forEach(function(r){r.style.display=r.dataset.s.toLowerCase().includes(v)?'':'none';});
-}
+function startTimerTick(){timerInterval=setInterval(()=>{['dge','jilong','dyeing'].forEach(m=>{if(machineTimers[m].running){var elapsed=machineTimers[m].elapsed+Math.floor((Date.now()-machineTimers[m].startTime)/1000);var el=document.getElementById(m+'-timer');if(el)el.textContent=formatSeconds(elapsed);}});},1000);}
 
-function setF(btn){
-  document.querySelectorAll('.fbtn').forEach(function(b){b.classList.remove('active');});
-  btn.classList.add('active');
-  showToast(btn.textContent+' report loaded');
-}
+function formatSeconds(s){var h=Math.floor(s/3600);var m=Math.floor((s%3600)/60);var sec=s%60;return(h<10?'0':'')+h+':'+(m<10?'0':'')+m+':'+(sec<10?'0':'')+sec;}
 
-function toggleM(btn){
-  btn.classList.toggle('on');
-  var chip=btn.closest('.mchip');
-  var pill=chip.querySelector('.pill');
-  if(btn.classList.contains('on')){pill.className='pill green';pill.textContent='Active';}
-  else{pill.className='pill gray';pill.textContent='Disabled';}
-  updateMachineCounts();
-  showToast('Machine status updated');
-}
+function startMachine(id){var m=machineTimers[id];if(m.running)return;m.running=true;m.startTime=Date.now();var dot=document.getElementById(id+'-dot');var txt=document.getElementById(id+'-text');var status=document.getElementById(id+'-status');var timer=document.getElementById(id+'-timer');var btn=document.getElementById(id+'-start');var stopBtn=document.getElementById(id+'-stop');if(dot)dot.className='status-dot running';if(txt)txt.textContent='Machine is RUNNING';if(status){status.textContent='Running';status.className='pill green';}if(timer)timer.className='mt-timer running';if(btn){btn.disabled=true;btn.style.opacity='.5';}if(stopBtn){stopBtn.disabled=false;stopBtn.style.opacity='1';}showToast(id.toUpperCase()+' started ✓');}
 
-function updateMachineCounts(){
-  var chips=document.querySelectorAll('#mlist .mchip');
-  var active=document.querySelectorAll('#mlist .toggle.on').length;
-  var tm=document.getElementById('total-m');var am=document.getElementById('active-m');
-  if(tm)tm.textContent=chips.length;if(am)am.textContent=active;
-}
+function stopMachine(id){var m=machineTimers[id];if(!m.running)return;var sessionSecs=Math.floor((Date.now()-m.startTime)/1000);m.elapsed+=sessionSecs;m.running=false;m.startTime=null;var dot=document.getElementById(id+'-dot');var txt=document.getElementById(id+'-text');var status=document.getElementById(id+'-status');var timer=document.getElementById(id+'-timer');var btn=document.getElementById(id+'-start');var stopBtn=document.getElementById(id+'-stop');if(dot)dot.className='status-dot stopped';if(txt)txt.textContent='Total: '+formatSeconds(m.elapsed);if(status){status.textContent='Stopped';status.className='pill red';}if(timer){timer.className='mt-timer stopped';timer.textContent=formatSeconds(m.elapsed);}if(btn){btn.disabled=false;btn.style.opacity='1';}if(stopBtn){stopBtn.disabled=true;stopBtn.style.opacity='.5';}showToast(id.toUpperCase()+' stopped. Duration: '+formatSeconds(sessionSecs)+' ✓');}
 
-function editM(name,type){
-  openModal('Edit Machine','<div class="fg"><label>Machine Name</label><input type="text" id="em-name" value="'+name+'"/></div><div class="fg"><label>Process Type</label><input type="text" id="em-type" value="'+type+'"/></div><button class="btn primary" onclick="closeModal();showToast(\'Machine updated ✓\')"><i class="ti ti-device-floppy"></i>Save Changes</button><button class="btn outline" onclick="closeModal()"><i class="ti ti-x"></i>Cancel</button>');
-}
+function renderRecords(){updateDashStats();var list=document.getElementById('records-list');if(!list)return;if(entries.length===0){list.innerHTML='<div class="empty-state"><i class="ti ti-database-off"></i><p>No records yet</p></div>';return;}var html='';entries.forEach((e,idx)=>{var rejPct=e.production>0?((e.rejection/e.production)*100).toFixed(1):0;var tag=idx===0?'<span class="pill green" style="font-size:10px">Latest</span>':'';html+='<div class="rec-card"><div class="rec-header"><span class="rec-machine">'+e.machine+'</span><span class="rec-shift">Shift '+e.shift+'</span>'+tag+'<span class="rec-date">'+formatDate(e.date)+'</span></div><div class="rec-body"><div class="rec-stat"><b>'+e.production+'</b><span>Prod</span></div><div class="rec-stat"><b style="color:var(--red)">'+e.rejection+'</b><span>Rej</span></div><div class="rec-stat"><b style="color:var(--orange)">'+rejPct+'%</b><span>%</span></div></div><div style="display:flex;justify-content:space-between"><span style="font-size:11px;color:var(--text2)">'+(e.design?e.design:'')+'</span><button class="rec-del-btn" onclick="deleteById('+e.id+')"><i class="ti ti-trash"></i>Delete</button></div></div>';});list.innerHTML=html;}
 
-function deleteM(btn,name){
-  if(!confirm('Delete machine "'+name+'"? This cannot be undone.'))return;
-  btn.closest('.mchip').remove();
-  updateMachineCounts();
-  showToast('Machine "'+name+'" deleted');
-}
+function formatDate(d){if(!d)return'—';try{var p=d.split('-');var mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return p[2]+' '+mo[parseInt(p[1])-1]+' '+p[0];}catch(e){return d;}}
 
-function addM(){
-  var mid=document.getElementById('nm-id').value;
-  var mname=document.getElementById('nm-name').value;
-  var mtype=document.getElementById('nm-type').value||'General';
-  if(!mid||!mname){showToast('Please enter Machine ID and Name');return;}
-  var colors=['#E3F2FD:#0D47A1','#FFF3E0:#E65100','#E8F5E9:#2E7D32','#F3E5F5:#7B1FA2','#FFF8E1:#F57C00'];
-  var c=colors[Math.floor(Math.random()*colors.length)].split(':');
-  var html='<div class="mchip" data-id="'+mname+'"><div class="m-icon" style="background:'+c[0]+';width:40px;height:40px;border-radius:11px"><i class="ti ti-cpu" style="color:'+c[1]+';font-size:19px"></i></div><div class="mname">'+mname+'<small>'+mtype+'</small></div><span class="pill green" style="font-size:10px">Active</span><button class="toggle on" onclick="toggleM(this)"></button><div class="mactions"><button onclick="editM(\''+mname+'\',\''+mtype+'\')" title="Edit"><i class="ti ti-edit"></i></button><button class="del" onclick="deleteM(this,\''+mname+'\')" title="Delete"><i class="ti ti-trash"></i></button></div></div>';
-  document.getElementById('mlist').insertAdjacentHTML('beforeend',html);
-  document.getElementById('nm-id').value='';document.getElementById('nm-name').value='';document.getElementById('nm-type').value='';
-  updateMachineCounts();
-  showToast('Machine "'+mname+'" added successfully ✓');
-}
+function deleteFirst(){if(entries.length===0){showToast('No records');return;}if(!confirm('Delete latest record?'))return;entries.shift();saveAll();renderRecords();showToast('Deleted ✓');}
 
-function openAddStock(){
-  openModal('Add Stock Entry','<div class="fg"><label>Fabric Name</label><input type="text" placeholder="e.g. Cotton White 60×60"/></div><div class="fg"><label>Lot Number</label><input type="text" placeholder="e.g. CW-442"/></div><div class="fgrid"><div class="fg"><label>Quantity (m)</label><input type="number" placeholder="e.g. 2000"/></div><div class="fg"><label>Reorder Level</label><input type="number" placeholder="e.g. 500"/></div></div><button class="btn primary" onclick="closeModal();showToast(\'Stock entry saved ✓\')"><i class="ti ti-device-floppy"></i>Save Entry</button><button class="btn outline" onclick="closeModal()"><i class="ti ti-x"></i>Cancel</button>');
-}
+function deleteLast(){if(entries.length===0){showToast('No records');return;}if(!confirm('Delete oldest record?'))return;entries.pop();saveAll();renderRecords();showToast('Deleted ✓');}
 
-var waText='📊 FabPrint Textile - Daily Report\n\n📅 Date: '+new Date().toLocaleDateString('en-IN')+' | Shift A\n👤 Incharge: Ramesh Kumar\n\n📈 Production Summary\n✅ Total Production: 4,820 m\n❌ Rejection: 312 m (6.5%)\n📦 Finished Stock: 9,240 m\n\n🏭 Machine-wise Output\n🖨 DGE: 1,980 m | Rej: 42 m\n🔧 Jilong: 1,640 m | Rej: 134 m\n💧 Dyeing: 1,200 m | Rej: 136 m\n\n📋 Pending Orders: 7 | 3 due this week\n⚠️ Low stock: Polyester Grey - 120 m\n\nShared via FabPrint Textile Tracker\nAdmin: Virendra Kumar';
+function deleteAll(){if(entries.length===0){showToast('No records');return;}if(!confirm('Delete ALL '+entries.length+' records?'))return;entries=[];saveAll();renderRecords();updateDashStats();showToast('All deleted ✓');}
 
-function shareWA(){window.open('https://wa.me/?text='+encodeURIComponent(waText),'_blank');}
-function copyReport(){if(navigator.clipboard){navigator.clipboard.writeText(waText).then(function(){showToast('Report copied to clipboard ✓');});}else{showToast('Copy not supported');}}
+function deleteById(id){var idx=entries.findIndex(e=>e.id===id);if(idx===-1)return;if(!confirm('Delete this record?'))return;entries.splice(idx,1);saveAll();renderRecords();showToast('Deleted ✓');}
 
-function mkChart(id,cfg){
-  if(charts[id])return;
-  var c=document.getElementById(id);if(!c)return;
-  charts[id]=new Chart(c,cfg);
-}
-
-function initTrend(){
-  mkChart('trendChart',{type:'line',data:{labels:['Mon','Tue','Wed','Thu','Fri','Sat'],datasets:[{label:'Production',data:[3200,4100,3800,4500,4820,4300],borderColor:'#0D47A1',backgroundColor:'rgba(13,71,161,0.07)',borderWidth:2.5,tension:.4,fill:true,pointBackgroundColor:'#0D47A1',pointRadius:4,pointBorderColor:'#fff',pointBorderWidth:2},{label:'Rejection',data:[190,240,210,278,312,260],borderColor:'#E65100',backgroundColor:'transparent',borderWidth:2,borderDash:[5,4],tension:.4,pointBackgroundColor:'#E65100',pointRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#607D8B',font:{size:10}},grid:{display:false}},y:{ticks:{color:'#607D8B',font:{size:10}},grid:{color:'rgba(0,0,0,0.04)'},beginAtZero:true}}}});
-}
-function initPvr(){
-  mkChart('pvrChart',{type:'bar',data:{labels:['Mon','Tue','Wed','Thu','Fri'],datasets:[{label:'Production',data:[3200,4100,3800,4500,4820],backgroundColor:'#0D47A1',borderRadius:5},{label:'Rejection',data:[190,240,210,278,312],backgroundColor:'#E65100',borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#607D8B',font:{size:10}},grid:{display:false}},y:{ticks:{color:'#607D8B',font:{size:10}},grid:{color:'rgba(0,0,0,0.04)'},beginAtZero:true}}}});
-}
-function initDonut(){
-  mkChart('donutChart',{type:'doughnut',data:{labels:['DGE','Jilong','Dyeing'],datasets:[{data:[41,34,25],backgroundColor:['#0D47A1','#F57C00','#43A047'],borderWidth:3,borderColor:'#fff',hoverOffset:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},cutout:'70%'}});
-}
-function initMbar(){
-  mkChart('mbarChart',{type:'bar',data:{labels:['DGE','Jilong','Dyeing'],datasets:[{label:'Production (m)',data:[9800,7900,6100],backgroundColor:['#0D47A1','#F57C00','#43A047'],borderRadius:7}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#607D8B',font:{size:10}},grid:{color:'rgba(0,0,0,0.04)'},beginAtZero:true},y:{ticks:{color:'#607D8B',font:{size:10}},grid:{display:false}}}}});
-}
-
-if('serviceWorker' in navigator){
-  var sw='const C="fp-v2";self.addEventListener("install",e=>e.waitUntil(caches.open(C).then(c=>c.addAll(["./"])))); self.addEventListener("fetch",e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));';
-  var b=new Blob([sw],{type:'text/javascript'});
-  navigator.serviceWorker.register(URL.createObjectURL(b)).catch(function(){});
-}
-
-var mf={name:"FabPrint Textile Production Tracker",short_name:"FabPrint",start_url:"./",display:"standalone",background_color:"#0D47A1",theme_color:"#0D47A1",orientation:"portrait",icons:[{src:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='32' fill='%230D47A1'/%3E%3Crect x='56' y='40' width='80' height='112' rx='8' fill='%23F57C00'/%3E%3Ccircle cx='96' cy='40' r='12' fill='%23F57C00'/%3E%3Ccircle cx='96' cy='40' r='6' fill='white'/%3E%3Crect x='72' y='62' width='48' height='8' rx='4' fill='white'/%3E%3Crect x='72' y='78' width='32' height='8' rx='4' fill='white'/%3E%3Crect x='72' y='100' width='12' height='28' rx='4' fill='white'/%3E%3Crect x='88' y='92' width='12' height='36' rx='4' fill='white' opacity='.7'/%3E%3Crect x='104' y='96' width='12' height='32' rx='4' fill='white' opacity='.5'/%3E%3C/svg%3E",sizes:"192x192",type:"image/svg+xml"},{src:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='80' fill='%230D47A1'/%3E%3Crect x='140' y='100' width='232' height='312' rx='20' fill='%23F57C00'/%3E%3Ccircle cx='256' cy='100' r='32' fill='%23F57C00'/%3E%3Ccircle cx='256' cy='100' r='16' fill='white'/%3E%3Crect x='184' y='160' width='144' height='22' rx='11' fill='white'/%3E%3Crect x='184' y='198' width='96' height='22' rx='11' fill='white'/%3E%3C/svg%3E",sizes:"512x512",type:"image/svg+xml"}]};
-var mfb=new Blob([JSON.stringify(mf)],{type:'application/json'});
-var mfl=document.createElement('link');mfl.rel='manifest';mfl.href=URL.createObjectURL(mfb);document.head.appendChild(mfl);
+if('serviceWorker' in navigator){var sw='const C="fp-v3";self.addEventListener("install",e=>e.waitUntil(caches.open(C)));';navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:'text/javascript'}))).catch(()=>{});}
 </script>
 </body>
 </html>
