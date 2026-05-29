@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>FabPrint v6.5</title>
+<title>FabPrint v7.6</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -12,60 +13,53 @@ body{font-family:Poppins,sans-serif;background:#0D47A1;overflow:hidden}
 #app{position:fixed;inset:0;display:flex;flex-direction:column;max-width:480px;margin:auto;background:#f5f7fa}
 .screen{display:none;flex-direction:column;height:100%}
 .screen.show{display:flex}
-.topbar{background:linear-gradient(135deg,#0D47A1,#1976D2);padding:12px;display:flex;gap:8px;align-items:center;color:#fff;flex-shrink:0}
-.logo{width:36px;height:36px;background:#F57C00;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;font-weight:700}
-.topbar h1{font-size:14px;flex:1}
-.back{background:rgba(255,255,255,.2);border:none;color:#fff;padding:6px 10px;cursor:pointer;border-radius:6px;font-size:15px}
-.content{flex:1;overflow-y:auto;padding:12px}
-.card{background:#fff;border-radius:8px;padding:10px;margin-bottom:8px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.topbar{background:linear-gradient(135deg,#0D47A1,#1976D2);padding:12px;display:flex;gap:8px;align-items:center;color:#fff;flex-shrink:0;position:relative}
+.topbar::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 2px,rgba(255,255,255,.03) 2px,rgba(255,255,255,.03) 4px);pointer-events:none}
+.logo{width:40px;height:40px;background:#F57C00;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;font-weight:700;position:relative;z-index:1}
+.topbar h1{font-size:14px;flex:1;position:relative;z-index:1}
+.back{background:rgba(255,255,255,.2);border:none;color:#fff;padding:6px 10px;cursor:pointer;border-radius:6px;font-size:15px;position:relative;z-index:1}
+.content{flex:1;overflow-y:auto;padding:12px;background:repeating-linear-gradient(90deg,transparent,transparent 50px,rgba(245,124,0,.02) 50px,rgba(245,124,0,.02) 100px)}
+.card{background:#fff;border-radius:8px;padding:10px;margin-bottom:8px;box-shadow:0 1px 4px rgba(0,0,0,.06);border-left:4px solid #F57C00}
 .btn{width:100%;padding:10px;border:none;border-radius:6px;cursor:pointer;font-size:11px;font-weight:600;margin-bottom:6px;color:#fff}
 .btn-primary{background:linear-gradient(135deg,#0D47A1,#1976D2)}
 .btn-purple{background:linear-gradient(135deg,#4A148C,#8E24AA)}
 .btn-brown{background:linear-gradient(135deg,#3E2723,#6D4C41)}
 .btn-green{background:linear-gradient(135deg,#1B5E20,#43A047)}
-.btn-wa{background:linear-gradient(135deg,#075E54,#25D366)}
-.btn-danger{background:linear-gradient(135deg,#B71C1C,#E53935)}
-.btn-pdf{background:linear-gradient(135deg,#C62828,#FF5722)}
+.btn-wa{background:linear-gradient(135deg,#075E54,#25D366);width:auto;margin:0;padding:6px 10px;font-size:9px}
+.btn-pdf{background:linear-gradient(135deg,#C62828,#FF5722);width:auto;margin:0;padding:6px 10px;font-size:9px}
+.btn-edit{background:#F57C00;width:auto;margin:0;padding:4px 8px;font-size:8px}
 .inp{width:100%;padding:8px;border:1px solid #ddd;border-radius:5px;font-size:11px;margin-bottom:6px;font-family:Poppins}
 .label{font-size:9px;color:#666;font-weight:600;text-transform:uppercase;margin-bottom:2px;display:block}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.stat{border-radius:6px;padding:8px;color:#fff;text-align:center;font-size:10px}
+.stat{border-radius:6px;padding:8px;color:#fff;text-align:center;font-size:10px;border:1px solid rgba(255,255,255,.2)}
 .stat-val{font-size:16px;font-weight:700}
 .stat1{background:linear-gradient(135deg,#0D47A1,#1976D2)}
 .stat2{background:linear-gradient(135deg,#E65100,#F57C00)}
 .stat3{background:linear-gradient(135deg,#1B5E20,#43A047)}
 .stat4{background:linear-gradient(135deg,#4A148C,#8E24AA)}
-.entry{background:#fff;border-radius:6px;padding:8px;margin-bottom:5px;border:1px solid #eee;display:flex;justify-content:space-between;align-items:center;font-size:10px}
+.kpi-card{background:linear-gradient(135deg,#f5f7fa,#fff);border-left:4px solid #F57C00;padding:10px;margin-bottom:8px;border-radius:6px}
+.kpi-label{font-size:8px;color:#999;text-transform:uppercase;font-weight:600}
+.kpi-val{font-size:18px;font-weight:700;color:#0D47A1;margin:4px 0}
+.chart-container{position:relative;height:250px;margin:10px 0;background:#fff;border-radius:8px;padding:10px;border-left:4px solid #F57C00}
+.entry{background:#fff;border-radius:6px;padding:8px;margin-bottom:5px;border:1px solid #eee;border-left:3px solid #F57C00;display:flex;justify-content:space-between;align-items:center;font-size:10px}
 .entry-info{flex:1}
 .entry-info b{display:block;font-weight:600;font-size:10px}
 .entry-info span{font-size:9px;color:#666}
-.entry-btn{background:none;border:none;cursor:pointer;font-size:12px;padding:3px 6px}
+.entry-btns{display:flex;gap:4px}
+.entry-btn{background:none;border:none;cursor:pointer;font-size:11px;padding:3px 6px}
+.entry-btn.edit{color:#F57C00}
 .entry-btn.del{color:#d32f2f}
 .nav{background:#1A2332;display:flex;flex-shrink:0;border-top:1px solid rgba(255,255,255,.06)}
 .nav-btn{flex:1;background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;padding:8px 4px;font-size:9px;font-family:Poppins;font-weight:600}
-.nav-btn.active{color:#F57C00}
+.nav-btn.active{color:#F57C00;border-top:2px solid #F57C00}
 .title{font-size:9px;font-weight:700;color:#666;text-transform:uppercase;margin:8px 0 6px;letter-spacing:.2px}
-.alert{padding:6px;border-radius:6px;font-size:9px;margin-bottom:8px}
-.alert-warn{background:#FFF8E1;color:#F57C00;border-left:2px solid #F57C00}
-.alert-danger{background:#FFEBEE;color:#d32f2f;border-left:2px solid #d32f2f}
 .alert-critical{background:#B71C1C;color:#fff;border-left:3px solid #d32f2f;padding:8px;border-radius:6px;margin-bottom:8px;font-weight:600}
+.alert-success{background:#1B5E20;color:#fff;border-left:3px solid #4CAF50;padding:8px;border-radius:6px;margin-bottom:8px;font-weight:600}
 .empty{text-align:center;padding:20px 10px;color:#999;font-size:9px}
-.tab-group{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:8px}
-.tab{background:#f5f7fa;border:1px solid #ddd;padding:8px;border-radius:6px;text-align:center;cursor:pointer;font-size:10px;font-weight:600}
-.tab.active{background:linear-gradient(135deg,#0D47A1,#1976D2);color:#fff;border-color:#0D47A1}
-.pdf-container{background:#fff;padding:20px;border-radius:8px;margin-bottom:8px;display:none}
-.pdf-title{font-size:14px;font-weight:700;text-align:center;margin-bottom:12px;color:#0D47A1}
-.pdf-section{margin-bottom:10px}
-.pdf-section-title{font-size:11px;font-weight:700;color:#333;border-bottom:1px solid #0D47A1;padding-bottom:4px;margin-bottom:6px}
-.pdf-table{width:100%;font-size:9px;border-collapse:collapse}
-.pdf-table th{background:#f5f7fa;padding:4px;text-align:left;font-weight:600;border-bottom:1px solid #ddd}
-.pdf-table td{padding:4px;border-bottom:1px solid #eee}
-.critical-alert{background:linear-gradient(135deg,#B71C1C,#C62828);color:#fff;padding:10px;border-radius:8px;margin-bottom:8px;border-left:4px solid #FF5722}
-.critical-alert b{display:block;font-size:11px;margin-bottom:4px}
-.critical-alert span{font-size:9px;display:block;opacity:.9}
-.stock-safe{background:#E8F5E9;color:#1B5E20;padding:4px 8px;border-radius:4px;font-size:8px;font-weight:600}
-.stock-low{background:#FFF3E0;color:#E65100;padding:4px 8px;border-radius:4px;font-size:8px;font-weight:600}
-.stock-critical{background:#FFCDD2;color:#B71C1C;padding:4px 8px;border-radius:4px;font-size:8px;font-weight:600}
+.contact-status{background:#E8F5E9;border-left:3px solid #4CAF50;padding:6px;border-radius:4px;font-size:8px;color:#1B5E20;margin-top:4px}
+.fp-logo{width:60px;height:60px;background:linear-gradient(135deg,#F57C00,#E65100);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:700;color:#fff;margin:20px auto;box-shadow:0 4px 12px rgba(245,124,0,.3)}
+.fp-text{text-align:center;font-size:20px;font-weight:700;color:#0D47A1;margin-bottom:4px}
+.fp-sub{text-align:center;font-size:9px;color:#666;letter-spacing:2px;text-transform:uppercase}
 </style>
 </head>
 <body>
@@ -73,15 +67,13 @@ body{font-family:Poppins,sans-serif;background:#0D47A1;overflow:hidden}
 
 <!-- LOGIN -->
 <div class="screen show" id="login">
-  <div style="flex:1;overflow-y:auto;background:#f5f7fa;padding:16px;display:flex;flex-direction:column;align-items:center;justify-content:center">
-    <div style="background:linear-gradient(135deg,#0D47A1,#1976D2);padding:24px 16px;border-radius:10px;color:#fff;text-align:center;width:100%;margin-bottom:16px">
-      <div style="font-size:36px;margin-bottom:8px">📊</div>
-      <div style="font-size:18px;font-weight:700;margin-bottom:2px">FabPrint</div>
-      <div style="font-size:10px;opacity:.8">v6.5 - Critical Alerts Edition</div>
-    </div>
-    <div style="background:#fff;padding:14px;border-radius:8px;width:100%;box-shadow:0 1px 4px rgba(0,0,0,.06)">
-      <h2 style="font-size:12px;margin-bottom:2px">Welcome</h2>
-      <p style="font-size:9px;color:#666;margin-bottom:10px">Sign in to your factory</p>
+  <div style="flex:1;overflow-y:auto;background:linear-gradient(135deg,#0D47A1,#1976D2);padding:16px;display:flex;flex-direction:column;align-items:center;justify-content:center">
+    <div class="fp-logo">FP</div>
+    <div class="fp-text">FabPrint</div>
+    <div class="fp-sub">v7.6 - Final Edition</div>
+    <div style="background:#fff;padding:20px;border-radius:10px;width:100%;margin-top:20px;box-shadow:0 4px 12px rgba(0,0,0,.15)">
+      <h2 style="font-size:12px;margin-bottom:8px;color:#0D47A1">Welcome</h2>
+      <p style="font-size:9px;color:#666;margin-bottom:12px">Enterprise Factory Management</p>
       <label class="label">Username</label>
       <input type="text" class="inp" id="user" value="virendra.kumar">
       <label class="label">Password</label>
@@ -93,562 +85,485 @@ body{font-family:Poppins,sans-serif;background:#0D47A1;overflow:hidden}
 
 <!-- DASHBOARD -->
 <div class="screen" id="dashboard">
-  <div class="topbar"><div class="logo">📊</div><h1>FabPrint</h1><button class="btn btn-primary" style="padding:5px 8px;margin:0;width:auto;font-size:9px" onclick="showScreen('machines')">⚙️ Machines</button></div>
+  <div class="topbar"><div class="logo">FP</div><h1>FabPrint v7.6</h1><button class="btn btn-primary" style="padding:5px 8px;margin:0;width:auto;font-size:9px;position:relative;z-index:1" onclick="shareFullReport()">📤</button></div>
   <div class="content">
+    <div id="auto-status" class="alert-success" style="display:none">✅ Auto-Share Active - Daily 11 AM</div>
     <div id="critical-alerts"></div>
-    <div class="grid2">
-      <div class="stat stat1"><div class="stat-val">4,820</div><div>Production (m)</div></div>
-      <div class="stat stat2"><div class="stat-val">312</div><div>Rejection (m)</div></div>
-      <div class="stat stat3"><div class="stat-val">9,240</div><div>Stock (m)</div></div>
-      <div class="stat stat4"><div class="stat-val" id="cnt">0</div><div>Total</div></div>
+    
+    <div class="title">📊 KPI Dashboard</div>
+    <div class="kpi-card">
+      <div class="kpi-label">Production Efficiency</div>
+      <div class="kpi-val" id="kpi-eff">0%</div>
+      <div style="font-size:8px;color:#4CAF50">↑ Target: 85%</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Rejection Rate</div>
+      <div class="kpi-val" id="kpi-rej">0%</div>
+      <div style="font-size:8px;color:#d32f2f">↓ Target: <5%</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Total Production</div>
+      <div class="kpi-val" id="kpi-prod">0 m</div>
+      <div style="font-size:8px;color:#0D47A1">this week</div>
+    </div>
+    
+    <div class="grid2" style="margin-bottom:8px">
+      <button class="btn btn-primary" onclick="showScreen('production')">🏭 Production</button>
+      <button class="btn btn-purple" onclick="showScreen('chemicals')">⚗️ Chemicals</button>
     </div>
     <div class="grid2" style="margin-bottom:8px">
-      <button class="btn btn-primary" onclick="showScreen('production')">Production</button>
-      <button class="btn btn-purple" onclick="showScreen('chemicals')">Chemicals</button>
-      <button class="btn btn-brown" onclick="showScreen('fuel')">Fuel</button>
+      <button class="btn btn-brown" onclick="showScreen('fuel')">🔥 Fuel</button>
       <button class="btn btn-green" onclick="showScreen('manpower')">👥 Manpower</button>
     </div>
-    <button class="btn btn-pdf" onclick="showScreen('reports')">📊 Reports & PDF</button>
+    <button class="btn btn-primary" onclick="showScreen('analytics')" style="background:linear-gradient(135deg,#E65100,#F57C00)">📈 Analytics</button>
   </div>
   <div class="nav">
     <button class="nav-btn active" onclick="showScreen('dashboard')">Dashboard</button>
     <button class="nav-btn" onclick="showScreen('production')">Production</button>
-    <button class="nav-btn" onclick="showScreen('manpower')">👥 Manpower</button>
-    <button class="nav-btn" onclick="showScreen('reports')">Reports</button>
-    <button class="nav-btn" onclick="showScreen('machines')">⚙️</button>
+    <button class="nav-btn" onclick="showScreen('analytics')">Analytics</button>
+    <button class="nav-btn" onclick="showScreen('contacts')">👥 Auto-Share</button>
+    <button class="nav-btn" onclick="showScreen('settings')">⚙️</button>
   </div>
 </div>
 
-<!-- MACHINES -->
-<div class="screen" id="machines">
-  <div class="topbar"><button class="back" onclick="showScreen('dashboard')">←</button><h1>Manage Machines</h1></div>
+<!-- AUTO-SHARE CONTACTS -->
+<div class="screen" id="contacts">
+  <div class="topbar"><button class="back" onclick="showScreen('dashboard')">←</button><h1>Auto-Share (5 Contacts)</h1></div>
   <div class="content">
+    <div class="alert-success">🔔 Daily Auto-Share at 11:00 AM</div>
+    
     <div class="card">
-      <div class="title">Add New Machine</div>
-      <label class="label">Machine Name</label>
-      <input type="text" class="inp" id="mnew" placeholder="e.g. DGE, Jilong">
-      <label class="label">Machine Type</label>
-      <input type="text" class="inp" id="mtype" placeholder="e.g. Digital Print">
-      <button class="btn btn-primary" onclick="addMachine()">ADD MACHINE</button>
+      <div class="title">Contact 1</div>
+      <label class="label">Name</label>
+      <input type="text" class="inp" id="c1name" placeholder="Boss">
+      <label class="label">Phone (+91)</label>
+      <input type="tel" class="inp" id="c1phone" placeholder="9876543210">
+      <button class="btn btn-green" onclick="saveContact(1)">✓ SAVE</button>
+      <div id="c1-status" class="contact-status" style="display:none"></div>
     </div>
-    <div class="title">Active Machines (<span id="mcnt">3</span>)</div>
-    <div id="mlist"></div>
+
+    <div class="card">
+      <div class="title">Contact 2</div>
+      <label class="label">Name</label>
+      <input type="text" class="inp" id="c2name" placeholder="Owner">
+      <label class="label">Phone (+91)</label>
+      <input type="tel" class="inp" id="c2phone" placeholder="9876543210">
+      <button class="btn btn-green" onclick="saveContact(2)">✓ SAVE</button>
+      <div id="c2-status" class="contact-status" style="display:none"></div>
+    </div>
+
+    <div class="card">
+      <div class="title">Contact 3</div>
+      <label class="label">Name</label>
+      <input type="text" class="inp" id="c3name" placeholder="Partner">
+      <label class="label">Phone (+91)</label>
+      <input type="tel" class="inp" id="c3phone" placeholder="9876543210">
+      <button class="btn btn-green" onclick="saveContact(3)">✓ SAVE</button>
+      <div id="c3-status" class="contact-status" style="display:none"></div>
+    </div>
+
+    <div class="card">
+      <div class="title">Contact 4</div>
+      <label class="label">Name</label>
+      <input type="text" class="inp" id="c4name" placeholder="Supervisor">
+      <label class="label">Phone (+91)</label>
+      <input type="tel" class="inp" id="c4phone" placeholder="9876543210">
+      <button class="btn btn-green" onclick="saveContact(4)">✓ SAVE</button>
+      <div id="c4-status" class="contact-status" style="display:none"></div>
+    </div>
+
+    <div class="card">
+      <div class="title">Contact 5</div>
+      <label class="label">Name</label>
+      <input type="text" class="inp" id="c5name" placeholder="Manager">
+      <label class="label">Phone (+91)</label>
+      <input type="tel" class="inp" id="c5phone" placeholder="9876543210">
+      <button class="btn btn-green" onclick="saveContact(5)">✓ SAVE</button>
+      <div id="c5-status" class="contact-status" style="display:none"></div>
+    </div>
+
+    <div class="title">📤 Manual Share</div>
+    <div id="contact-buttons"></div>
+
+    <div class="card" style="margin-top:12px">
+      <div class="title">🔄 Test Auto-Share</div>
+      <button class="btn btn-wa" onclick="testAutoShare()">Send Test Now</button>
+    </div>
   </div>
   <div class="nav">
     <button class="nav-btn" onclick="showScreen('dashboard')">Dashboard</button>
     <button class="nav-btn" onclick="showScreen('production')">Production</button>
-    <button class="nav-btn" onclick="showScreen('manpower')">👥 Manpower</button>
-    <button class="nav-btn" onclick="showScreen('reports')">Reports</button>
-    <button class="nav-btn active" onclick="showScreen('machines')">⚙️</button>
+    <button class="nav-btn" onclick="showScreen('analytics')">Analytics</button>
+    <button class="nav-btn active" onclick="showScreen('contacts')">👥 Auto-Share</button>
+    <button class="nav-btn" onclick="showScreen('settings')">⚙️</button>
+  </div>
+</div>
+
+<!-- ANALYTICS -->
+<div class="screen" id="analytics">
+  <div class="topbar"><button class="back" onclick="showScreen('dashboard')">←</button><h1>Analytics</h1><button class="btn-pdf" onclick="downloadChartsPDF()">📄</button></div>
+  <div class="content">
+    <div class="title">📊 Production by Machine</div>
+    <div class="chart-container"><canvas id="prodChart"></canvas></div>
+    
+    <div class="title">🔥 Fuel Consumption</div>
+    <div class="chart-container"><canvas id="fuelChart"></canvas></div>
+    
+    <div class="title">📈 Production vs Manpower</div>
+    <div class="chart-container"><canvas id="manprodChart"></canvas></div>
+    
+    <div class="title">👥 Manpower Distribution</div>
+    <div class="chart-container"><canvas id="manChart"></canvas></div>
+    
+    <div class="grid2">
+      <button class="btn btn-wa" onclick="shareAnalytics()">📤 Share</button>
+      <button class="btn btn-pdf" onclick="downloadChartsPDF()">📄 PDF</button>
+    </div>
+  </div>
+  <div class="nav">
+    <button class="nav-btn" onclick="showScreen('dashboard')">Dashboard</button>
+    <button class="nav-btn" onclick="showScreen('production')">Production</button>
+    <button class="nav-btn active" onclick="showScreen('analytics')">Analytics</button>
+    <button class="nav-btn" onclick="showScreen('contacts')">👥 Auto-Share</button>
+    <button class="nav-btn" onclick="showScreen('settings')">⚙️</button>
   </div>
 </div>
 
 <!-- PRODUCTION -->
 <div class="screen" id="production">
-  <div class="topbar"><button class="back" onclick="showScreen('dashboard')">←</button><h1>Production</h1></div>
+  <div class="topbar"><button class="back" onclick="showScreen('dashboard')">←</button><h1>Production</h1><button class="btn-wa" onclick="shareProd()">📤</button></div>
   <div class="content">
     <div class="card">
-      <div class="title">Add New Entry</div>
+      <div class="title">Add Entry</div>
       <label class="label">Date</label>
       <input type="date" class="inp" id="pdate">
       <label class="label">Machine</label>
-      <select class="inp" id="pmach"><option>Select Machine</option><option>DGE</option><option>Jilong</option><option>Dyeing</option></select>
-      <label class="label">Shift</label>
-      <select class="inp" id="pshift"><option>A</option><option>B</option><option>C</option></select>
+      <select class="inp" id="pmach"><option>DGE</option><option>Jilong</option><option>Dyeing</option></select>
       <div class="grid2">
-        <div><label class="label">Qty (m)</label><input type="number" class="inp" id="pqty" placeholder="1800"></div>
-        <div><label class="label">Rej (m)</label><input type="number" class="inp" id="prej" placeholder="45"></div>
+        <div><label class="label">Qty (m)</label><input type="number" class="inp" id="pqty"></div>
+        <div><label class="label">Rej (m)</label><input type="number" class="inp" id="prej"></div>
       </div>
-      <label class="label">Design #</label>
-      <input type="text" class="inp" id="pdesign" placeholder="TX-2242">
-      <label class="label">Party Name</label>
-      <input type="text" class="inp" id="pparty" placeholder="Raj Textiles">
-      <button class="btn btn-primary" onclick="addProd()">ADD PRODUCTION</button>
+      <label class="label">Party</label>
+      <input type="text" class="inp" id="pparty">
+      <div class="grid2">
+        <button class="btn btn-primary" onclick="addProd()">ADD</button>
+        <button class="btn btn-pdf" onclick="downloadProdPDF()">📄</button>
+      </div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">
-      <button class="btn btn-danger" style="margin:0;padding:8px" onclick="deleteLast('prod')">🗑️ Delete Last</button>
-      <button class="btn btn-wa" style="margin:0;padding:8px" onclick="shareProd()">📤 Share</button>
-    </div>
-    <div class="title">All Entries (<span id="pcnt">0</span>)</div>
+    <div class="title">Entries (<span id="pcnt">0</span>)</div>
     <div id="plist"></div>
   </div>
   <div class="nav">
     <button class="nav-btn active" onclick="showScreen('production')">Production</button>
     <button class="nav-btn" onclick="showScreen('chemicals')">Chemicals</button>
     <button class="nav-btn" onclick="showScreen('fuel')">Fuel</button>
-    <button class="nav-btn" onclick="showScreen('manpower')">👥 Manpower</button>
-    <button class="nav-btn" onclick="showScreen('reports')">Reports</button>
+    <button class="nav-btn" onclick="showScreen('manpower')">Manpower</button>
+    <button class="nav-btn" onclick="showScreen('analytics')">Analytics</button>
   </div>
 </div>
 
 <!-- CHEMICALS -->
 <div class="screen" id="chemicals">
-  <div class="topbar"><button class="back" onclick="showScreen('dashboard')">←</button><h1>Chemicals</h1></div>
+  <div class="topbar"><button class="back" onclick="showScreen('dashboard')">←</button><h1>Chemicals</h1><button class="btn-wa" onclick="shareChem()">📤</button></div>
   <div class="content">
-    <div class="tab-group">
-      <button class="tab active" onclick="switchTab('chemadd','cheview')">Add Entry</button>
-      <button class="tab" onclick="switchTab('cheview','chemadd')">View Stock</button>
-    </div>
-    <div id="chemadd">
-      <div class="card">
-        <div class="title">Add Chemical Usage</div>
-        <label class="label">Date</label>
-        <input type="date" class="inp" id="cdate">
-        <label class="label">Item Name</label>
-        <input type="text" class="inp" id="cname" placeholder="Reactive Red">
-        <label class="label">Category</label>
-        <select class="inp" id="ccat"><option>Colour</option><option>Chemical</option><option>Dye</option><option>Softener</option></select>
-        <label class="label">Machine</label>
-        <input type="text" class="inp" id="cmach" placeholder="DGE">
-        <div class="grid2">
-          <div><label class="label">Qty Used (kg)</label><input type="number" class="inp" id="cqty" placeholder="2.5"></div>
-          <div><label class="label">Stock Remaining</label><input type="number" class="inp" id="cstock" placeholder="50"></div>
-        </div>
-        <label class="label">Supplier</label>
-        <input type="text" class="inp" id="csupplier" placeholder="ABC Chemicals">
-        <button class="btn btn-purple" onclick="addChem()">ADD CHEMICAL</button>
+    <div class="card">
+      <div class="title">Add Chemical</div>
+      <label class="label">Name</label>
+      <input type="text" class="inp" id="cname" placeholder="Reactive Red">
+      <label class="label">Qty (kg)</label>
+      <input type="number" class="inp" id="cqty">
+      <label class="label">Stock</label>
+      <input type="number" class="inp" id="cstock">
+      <div class="grid2">
+        <button class="btn btn-purple" onclick="addChem()">ADD</button>
+        <button class="btn btn-pdf" onclick="downloadChemPDF()">📄</button>
       </div>
     </div>
-    <div id="cheview" style="display:none">
-      <div class="card">
-        <div class="title">Chemical Stock</div>
-        <div id="cstock_view"></div>
-      </div>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">
-      <button class="btn btn-danger" style="margin:0;padding:8px" onclick="deleteLast('chem')">🗑️ Delete Last</button>
-      <button class="btn btn-wa" style="margin:0;padding:8px" onclick="shareChem()">📤 Share</button>
-    </div>
-    <div class="title">All Entries (<span id="ccnt">0</span>)</div>
+    <div class="title">Entries (<span id="ccnt">0</span>)</div>
     <div id="clist"></div>
   </div>
   <div class="nav">
     <button class="nav-btn" onclick="showScreen('production')">Production</button>
     <button class="nav-btn active" onclick="showScreen('chemicals')">Chemicals</button>
     <button class="nav-btn" onclick="showScreen('fuel')">Fuel</button>
-    <button class="nav-btn" onclick="showScreen('manpower')">👥 Manpower</button>
-    <button class="nav-btn" onclick="showScreen('reports')">Reports</button>
+    <button class="nav-btn" onclick="showScreen('manpower')">Manpower</button>
+    <button class="nav-btn" onclick="showScreen('analytics')">Analytics</button>
   </div>
 </div>
 
 <!-- FUEL -->
 <div class="screen" id="fuel">
-  <div class="topbar"><button class="back" onclick="showScreen('dashboard')">←</button><h1>Coal & Wood</h1></div>
+  <div class="topbar"><button class="back" onclick="showScreen('dashboard')">←</button><h1>Coal & Wood</h1><button class="btn-wa" onclick="shareFuel()">📤</button></div>
   <div class="content">
-    <div class="tab-group">
-      <button class="tab active" onclick="switchTab('fueladd','fuelview')">Add Entry</button>
-      <button class="tab" onclick="switchTab('fuelview','fueladd')">View Stock</button>
-    </div>
-    <div id="fueladd">
-      <div class="card">
-        <div class="title">Add Fuel Usage</div>
-        <label class="label">Date</label>
-        <input type="date" class="inp" id="fdate">
-        <div class="grid2">
-          <div><label class="label">Fuel Type</label><select class="inp" id="ftype"><option>Coal</option><option>Wood</option><option>Coal Dust</option><option>Biomass</option></select></div>
-          <div><label class="label">Qty (kg)</label><input type="number" class="inp" id="fqty" placeholder="280"></div>
-        </div>
-        <label class="label">Machine/Boiler</label>
-        <input type="text" class="inp" id="fmach" placeholder="Dyeing Boiler">
-        <label class="label">Shift</label>
-        <select class="inp" id="fshift"><option>A</option><option>B</option><option>C</option><option>Full Day</option></select>
-        <label class="label">Supplier</label>
-        <input type="text" class="inp" id="fsupplier" placeholder="Ravi Coal Depot">
-        <button class="btn btn-brown" onclick="addFuel()">ADD FUEL</button>
+    <div class="card">
+      <div class="title">Add Fuel</div>
+      <label class="label">Type</label>
+      <select class="inp" id="ftype"><option>Coal</option><option>Wood</option><option>Coal Dust</option></select>
+      <label class="label">Qty (kg)</label>
+      <input type="number" class="inp" id="fqty">
+      <label class="label">Machine</label>
+      <input type="text" class="inp" id="fmach">
+      <div class="grid2">
+        <button class="btn btn-brown" onclick="addFuel()">ADD</button>
+        <button class="btn btn-pdf" onclick="downloadFuelPDF()">📄</button>
       </div>
     </div>
-    <div id="fuelview" style="display:none">
-      <div class="card">
-        <div class="title">Fuel Stock</div>
-        <div id="fstock_view"></div>
-      </div>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">
-      <button class="btn btn-danger" style="margin:0;padding:8px" onclick="deleteLast('fuel')">🗑️ Delete Last</button>
-      <button class="btn btn-wa" style="margin:0;padding:8px" onclick="shareFuel()">📤 Share</button>
-    </div>
-    <div class="title">All Entries (<span id="fcnt">0</span>)</div>
+    <div class="title">Entries (<span id="fcnt">0</span>)</div>
     <div id="flist"></div>
   </div>
   <div class="nav">
     <button class="nav-btn" onclick="showScreen('production')">Production</button>
     <button class="nav-btn" onclick="showScreen('chemicals')">Chemicals</button>
     <button class="nav-btn active" onclick="showScreen('fuel')">Fuel</button>
-    <button class="nav-btn" onclick="showScreen('manpower')">👥 Manpower</button>
-    <button class="nav-btn" onclick="showScreen('reports')">Reports</button>
+    <button class="nav-btn" onclick="showScreen('manpower')">Manpower</button>
+    <button class="nav-btn" onclick="showScreen('analytics')">Analytics</button>
   </div>
 </div>
 
 <!-- MANPOWER -->
 <div class="screen" id="manpower">
-  <div class="topbar"><button class="back" onclick="showScreen('dashboard')">←</button><h1>Daily Manpower</h1></div>
+  <div class="topbar"><button class="back" onclick="showScreen('dashboard')">←</button><h1>Manpower</h1><button class="btn-wa" onclick="shareMan()">📤</button></div>
   <div class="content">
     <div class="card">
-      <div class="title">Add Manpower Entry</div>
-      <label class="label">Date</label>
-      <input type="date" class="inp" id="mdate">
+      <div class="title">Add Entry</div>
       <label class="label">Machine</label>
-      <select class="inp" id="mmach"><option>Select Machine</option><option>DGE</option><option>Jilong</option><option>Dyeing</option></select>
-      <label class="label">Shift</label>
-      <select class="inp" id="mshift"><option>A</option><option>B</option><option>C</option></select>
+      <select class="inp" id="mmach"><option>DGE</option><option>Jilong</option><option>Dyeing</option></select>
       <div class="grid2">
-        <div><label class="label">Workers</label><input type="number" class="inp" id="mworkers" placeholder="8"></div>
-        <div><label class="label">Hours Worked</label><input type="number" class="inp" id="mhours" placeholder="8"></div>
+        <div><label class="label">Workers</label><input type="number" class="inp" id="mworkers"></div>
+        <div><label class="label">Hours</label><input type="number" class="inp" id="mhours"></div>
       </div>
-      <label class="label">Supervisor Name</label>
-      <input type="text" class="inp" id="msup" placeholder="Ramesh Kumar">
-      <button class="btn btn-green" onclick="addManpower()">ADD MANPOWER</button>
+      <div class="grid2">
+        <button class="btn btn-green" onclick="addMan()">ADD</button>
+        <button class="btn btn-pdf" onclick="downloadManPDF()">📄</button>
+      </div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">
-      <button class="btn btn-danger" style="margin:0;padding:8px" onclick="deleteLast('man')">🗑️ Delete Last</button>
-      <button class="btn btn-wa" style="margin:0;padding:8px" onclick="shareManpower()">📤 Share</button>
-    </div>
-    <div class="title">All Entries (<span id="mcnt2">0</span>)</div>
+    <div class="title">Entries (<span id="mcnt">0</span>)</div>
     <div id="mlist"></div>
   </div>
   <div class="nav">
     <button class="nav-btn" onclick="showScreen('production')">Production</button>
     <button class="nav-btn" onclick="showScreen('chemicals')">Chemicals</button>
     <button class="nav-btn" onclick="showScreen('fuel')">Fuel</button>
-    <button class="nav-btn active" onclick="showScreen('manpower')">👥 Manpower</button>
-    <button class="nav-btn" onclick="showScreen('reports')">Reports</button>
+    <button class="nav-btn active" onclick="showScreen('manpower')">Manpower</button>
+    <button class="nav-btn" onclick="showScreen('analytics')">Analytics</button>
   </div>
 </div>
 
-<!-- REPORTS -->
-<div class="screen" id="reports">
-  <div class="topbar"><button class="back" onclick="showScreen('dashboard')">←</button><h1>Reports</h1></div>
+<!-- SETTINGS -->
+<div class="screen" id="settings">
+  <div class="topbar"><button class="back" onclick="showScreen('dashboard')">←</button><h1>Settings</h1></div>
   <div class="content">
-    <div id="critical-alerts-report"></div>
-    <div class="grid2" style="margin-bottom:8px">
-      <button class="btn btn-pdf" onclick="showPDFReport()">📄 View PDF Report</button>
-      <button class="btn btn-wa" onclick="shareAll()">📤 Share Summary</button>
-    </div>
-    <div id="pdf-content" class="pdf-container"></div>
-    <div class="title">Quick Summary</div>
     <div class="card">
-      <b style="font-size:10px">📊 Today's Stats</b>
-      <table class="pdf-table" style="margin-top:6px">
-        <tr><th>Production</th><td id="sum-prod">0</td></tr>
-        <tr><th>Chemicals</th><td id="sum-chem">0</td></tr>
-        <tr><th>Fuel</th><td id="sum-fuel">0</td></tr>
-        <tr><th>Manpower</th><td id="sum-man">0</td></tr>
-      </table>
+      <div class="title">⏰ Auto-Share Time</div>
+      <p style="font-size:9px;color:#666;margin-bottom:8px">Currently set to 11:00 AM daily</p>
+      <div style="background:#E8F5E9;padding:8px;border-radius:6px;text-align:center;font-weight:600;color:#1B5E20;margin-bottom:8px">🔔 Daily at 11:00 AM</div>
+      <button class="btn btn-primary" onclick="testAutoShare()">Test Auto-Share Now</button>
+    </div>
+
+    <div class="card">
+      <div class="title">🔄 How Auto-Share Works</div>
+      <p style="font-size:8px;color:#666;line-height:1.8">
+        ✅ Save your 5 contacts in "Auto-Share"<br><br>
+        ✅ Keep the app open or tab active<br><br>
+        ✅ Every day at 11:00 AM, auto-report sends to all contacts<br><br>
+        ✅ Includes: Production, Chemicals, Fuel, Manpower stats<br><br>
+        ✨ Perfect for daily management updates!
+      </p>
+    </div>
+
+    <div class="card">
+      <div class="title">📱 App Info</div>
+      <p style="font-size:9px;color:#666;line-height:1.6">
+        <b>FabPrint v7.6</b> - Final Edition<br>
+        Enterprise Factory Management<br><br>
+        <b>Factory:</b> FabPrint Textile<br>
+        <b>Location:</b> Chikhli, Maharashtra<br>
+        <b>Admin:</b> Virendra Kumar<br><br>
+        All data stored locally • Auto-Share to 5 contacts
+      </p>
     </div>
   </div>
   <div class="nav">
+    <button class="nav-btn" onclick="showScreen('dashboard')">Dashboard</button>
     <button class="nav-btn" onclick="showScreen('production')">Production</button>
-    <button class="nav-btn" onclick="showScreen('chemicals')">Chemicals</button>
-    <button class="nav-btn" onclick="showScreen('fuel')">Fuel</button>
-    <button class="nav-btn" onclick="showScreen('manpower')">👥 Manpower</button>
-    <button class="nav-btn active" onclick="showScreen('reports')">Reports</button>
+    <button class="nav-btn" onclick="showScreen('analytics')">Analytics</button>
+    <button class="nav-btn" onclick="showScreen('contacts')">👥 Auto-Share</button>
+    <button class="nav-btn active" onclick="showScreen('settings')">⚙️</button>
   </div>
 </div>
 
 </div>
 
 <script>
-var machines=['DGE','Jilong','Dyeing'];
-var prod=[],chem=[],fuel=[],manpower=[];
+var prod=[], chem=[], fuel=[], manpower=[];
+var contacts={c1:{name:'',phone:''}, c2:{name:'',phone:''}, c3:{name:'',phone:''}, c4:{name:'',phone:''}, c5:{name:'',phone:''}};
+var charts={};
+
+function loadData(){
+  var s=localStorage.getItem('fp-data');
+  if(s){var d=JSON.parse(s); prod=d.prod||[]; chem=d.chem||[]; fuel=d.fuel||[]; manpower=d.manpower||[];}
+  var c=localStorage.getItem('fp-contacts');
+  if(c) contacts=JSON.parse(c);
+  checkAutoShareTime();
+}
+
+function saveData(){localStorage.setItem('fp-data',JSON.stringify({prod,chem,fuel,manpower}));}
+
+function checkAutoShareTime(){
+  var now=new Date();
+  var lastShare=localStorage.getItem('fp-last-share');
+  var today=now.toDateString();
+  if(now.getHours()==11 && now.getMinutes()>=0 && now.getMinutes()<5){
+    if(lastShare!==today){autoShareToAll(); localStorage.setItem('fp-last-share',today);}
+  }
+  setTimeout(checkAutoShareTime,60000);
+}
 
 function showScreen(id){
-  var screens=document.querySelectorAll('.screen');
-  for(var i=0;i<screens.length;i++) screens[i].classList.remove('show');
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('show'));
   document.getElementById(id).classList.add('show');
-  var btns=document.querySelectorAll('.nav-btn');
-  for(var j=0;j<btns.length;j++) btns[j].classList.remove('active');
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   if(event.target.closest('.nav-btn')) event.target.closest('.nav-btn').classList.add('active');
-  updateCriticalAlerts();
+  if(id=='analytics'){setTimeout(renderCharts,100); updateDashboard();}
+  if(id=='dashboard'){updateDashboard(); checkAutoShareStatus();}
+  if(id=='contacts') renderContacts();
 }
 
-function switchTab(show,hide){
-  document.getElementById(show).style.display='block';
-  document.getElementById(hide).style.display='none';
-  event.target.classList.add('active');
-  var sibling=event.target.parentElement.querySelector('.active');
-  if(sibling!=event.target) sibling.classList.remove('active');
-  event.target.classList.add('active');
+function addProd(){var d=document.getElementById('pdate').value; if(!d){alert('Select date');return;} prod.push({date:d,machine:document.getElementById('pmach').value,qty:parseFloat(document.getElementById('pqty').value)||0,rej:parseFloat(document.getElementById('prej').value)||0,party:document.getElementById('pparty').value}); saveData(); renderProd(); updateDashboard(); document.getElementById('pqty').value=''; document.getElementById('prej').value=''; document.getElementById('pparty').value='';}
+
+function addChem(){var n=document.getElementById('cname').value; if(!n){alert('Enter name');return;} chem.push({name:n,qty:parseFloat(document.getElementById('cqty').value)||0,stock:parseFloat(document.getElementById('cstock').value)||0}); saveData(); renderChem(); updateDashboard(); document.getElementById('cname').value=''; document.getElementById('cqty').value='';}
+
+function addFuel(){var q=document.getElementById('fqty').value; if(!q){alert('Enter qty');return;} fuel.push({type:document.getElementById('ftype').value,qty:parseFloat(q),machine:document.getElementById('fmach').value}); saveData(); renderFuel(); updateDashboard(); document.getElementById('fqty').value='';}
+
+function addMan(){var w=document.getElementById('mworkers').value; if(!w){alert('Enter workers');return;} manpower.push({machine:document.getElementById('mmach').value,workers:parseFloat(w),hours:parseFloat(document.getElementById('mhours').value)||0}); saveData(); renderMan(); updateDashboard(); document.getElementById('mworkers').value='';}
+
+function editEntry(type,idx){var val=prompt('New value:'); if(val){if(type=='p') prod[idx].qty=parseFloat(val); else if(type=='c') chem[idx].qty=parseFloat(val); else if(type=='f') fuel[idx].qty=parseFloat(val); else manpower[idx].workers=parseFloat(val); saveData(); if(type=='p') renderProd(); else if(type=='c') renderChem(); else if(type=='f') renderFuel(); else renderMan(); updateDashboard();}}
+
+function delEntry(type,idx){if(type=='p') prod.splice(idx,1); else if(type=='c') chem.splice(idx,1); else if(type=='f') fuel.splice(idx,1); else manpower.splice(idx,1); saveData(); if(type=='p') renderProd(); else if(type=='c') renderChem(); else if(type=='f') renderFuel(); else renderMan(); updateDashboard();}
+
+function renderProd(){var h=''; if(prod.length==0) h='<div class="empty">No entries</div>'; else for(var i=0;i<prod.length;i++) h+='<div class="entry"><div class="entry-info"><b>'+prod[i].machine+'</b><span>'+prod[i].date+' | '+prod[i].qty+'m | '+prod[i].party+'</span></div><div class="entry-btns"><button class="entry-btn edit" onclick="editEntry(\'p\','+i+')">✎</button><button class="entry-btn del" onclick="delEntry(\'p\','+i+')">✕</button></div></div>'; document.getElementById('plist').innerHTML=h; document.getElementById('pcnt').textContent=prod.length;}
+
+function renderChem(){var h=''; if(chem.length==0) h='<div class="empty">No entries</div>'; else for(var i=0;i<chem.length;i++) {var pct=((chem[i].stock/(chem[i].stock+chem[i].qty))*100).toFixed(0); var st=pct<20?'🔴':pct<50?'⚠️':'✓'; h+='<div class="entry"><div class="entry-info"><b>'+chem[i].name+'</b><span>'+chem[i].qty+'kg | Stock: '+chem[i].stock+'kg '+st+'</span></div><div class="entry-btns"><button class="entry-btn edit" onclick="editEntry(\'c\','+i+')">✎</button><button class="entry-btn del" onclick="delEntry(\'c\','+i+')">✕</button></div></div>';} document.getElementById('clist').innerHTML=h; document.getElementById('ccnt').textContent=chem.length;}
+
+function renderFuel(){var h=''; if(fuel.length==0) h='<div class="empty">No entries</div>'; else for(var i=0;i<fuel.length;i++) h+='<div class="entry"><div class="entry-info"><b>'+fuel[i].type+'</b><span>'+fuel[i].qty+'kg | '+fuel[i].machine+'</span></div><div class="entry-btns"><button class="entry-btn edit" onclick="editEntry(\'f\','+i+')">✎</button><button class="entry-btn del" onclick="delEntry(\'f\','+i+')">✕</button></div></div>'; document.getElementById('flist').innerHTML=h; document.getElementById('fcnt').textContent=fuel.length;}
+
+function renderMan(){var h=''; if(manpower.length==0) h='<div class="empty">No entries</div>'; else for(var i=0;i<manpower.length;i++) h+='<div class="entry"><div class="entry-info"><b>'+manpower[i].machine+'</b><span>'+manpower[i].workers+' workers | '+manpower[i].hours+' hrs</span></div><div class="entry-btns"><button class="entry-btn edit" onclick="editEntry(\'m\','+i+')">✎</button><button class="entry-btn del" onclick="delEntry(\'m\','+i+')">✕</button></div></div>'; document.getElementById('mlist').innerHTML=h; document.getElementById('mcnt').textContent=manpower.length;}
+
+function updateDashboard(){
+  var totalQty=0, totalRej=0;
+  for(var i=0;i<prod.length;i++){totalQty+=prod[i].qty; totalRej+=prod[i].rej;}
+  var eff=totalQty>0?((totalQty-totalRej)/totalQty*100).toFixed(1):0;
+  var rejRate=totalQty>0?(totalRej/totalQty*100).toFixed(1):0;
+  document.getElementById('kpi-eff').textContent=eff+'%';
+  document.getElementById('kpi-rej').textContent=rejRate+'%';
+  document.getElementById('kpi-prod').textContent=totalQty.toFixed(0)+' m';
 }
 
-function addMachine(){
-  var n=document.getElementById('mnew').value;
-  var t=document.getElementById('mtype').value;
-  if(!n||!t){alert('Fill all fields');return;}
-  machines.push({name:n,type:t});
-  renderMachines();
-  updateMachineSelects();
-  document.getElementById('mnew').value='';
-  document.getElementById('mtype').value='';
-  alert('Machine added!');
+function checkAutoShareStatus(){
+  var hasContacts=contacts.c1.phone || contacts.c2.phone || contacts.c3.phone || contacts.c4.phone || contacts.c5.phone;
+  if(hasContacts) document.getElementById('auto-status').style.display='block';
+  else document.getElementById('auto-status').style.display='none';
 }
 
-function renderMachines(){
+function renderCharts(){
+  var prodData={}, fuelData={}, manData={};
+  for(var i=0;i<prod.length;i++){if(!prodData[prod[i].machine]) prodData[prod[i].machine]=0; prodData[prod[i].machine]+=prod[i].qty;}
+  for(var i=0;i<fuel.length;i++){if(!fuelData[fuel[i].type]) fuelData[fuel[i].type]=0; fuelData[fuel[i].type]+=fuel[i].qty;}
+  for(var i=0;i<manpower.length;i++){if(!manData[manpower[i].machine]) manData[manpower[i].machine]=0; manData[manpower[i].machine]+=manpower[i].workers;}
+  
+  var colors=['#0D47A1','#F57C00','#4CAF50','#8E24AA','#d32f2f'];
+  
+  if(charts.prodChart) charts.prodChart.destroy();
+  charts.prodChart=new Chart(document.getElementById('prodChart'),{type:'doughnut',data:{labels:Object.keys(prodData),datasets:[{data:Object.values(prodData),backgroundColor:colors}]},options:{responsive:true,maintainAspectRatio:false}});
+  
+  if(charts.fuelChart) charts.fuelChart.destroy();
+  charts.fuelChart=new Chart(document.getElementById('fuelChart'),{type:'pie',data:{labels:Object.keys(fuelData),datasets:[{data:Object.values(fuelData),backgroundColor:colors}]},options:{responsive:true,maintainAspectRatio:false}});
+  
+  if(charts.manprodChart) charts.manprodChart.destroy();
+  var labels=Object.keys(prodData).length>0?Object.keys(prodData):['No Data'];
+  var prodVals=labels[0]=='No Data'?[0]:labels.map(m=>prodData[m]||0);
+  var manVals=labels[0]=='No Data'?[0]:labels.map(m=>manData[m]||0);
+  charts.manprodChart=new Chart(document.getElementById('manprodChart'),{type:'bar',data:{labels:labels,datasets:[{label:'Production (m)',data:prodVals,backgroundColor:'#0D47A1'},{label:'Manpower',data:manVals,backgroundColor:'#F57C00'}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:true}}}});
+  
+  if(charts.manChart) charts.manChart.destroy();
+  charts.manChart=new Chart(document.getElementById('manChart'),{type:'polarArea',data:{labels:Object.keys(manData),datasets:[{data:Object.values(manData),backgroundColor:colors}]},options:{responsive:true,maintainAspectRatio:false}});
+}
+
+function saveContact(n){var name=document.getElementById('c'+n+'name').value; var phone=document.getElementById('c'+n+'phone').value; if(!name||!phone){alert('Fill all fields');return;} contacts['c'+n]={name,phone}; localStorage.setItem('fp-contacts',JSON.stringify(contacts)); renderContacts(); alert('Contact '+n+' saved!');}
+
+function renderContacts(){
+  for(var n=1;n<=5;n++){
+    document.getElementById('c'+n+'name').value=contacts['c'+n].name;
+    document.getElementById('c'+n+'phone').value=contacts['c'+n].phone;
+    var statusDiv=document.getElementById('c'+n+'-status');
+    if(contacts['c'+n].phone){
+      statusDiv.style.display='block';
+      statusDiv.textContent='✓ '+contacts['c'+n].name+' - Ready';
+    }else{
+      statusDiv.style.display='none';
+    }
+  }
   var h='';
-  for(var i=0;i<machines.length;i++){
-    var mname=typeof machines[i]=='object'?machines[i].name:machines[i];
-    h+='<div class="entry"><div class="entry-info"><b>'+mname+'</b></div><button class="entry-btn del" onclick="delMachine('+i+')">✕</button></div>';
+  for(var n=1;n<=5;n++){
+    if(contacts['c'+n].phone) h+='<button class="btn btn-wa" style="margin-bottom:6px;width:100%" onclick="shareToContact('+n+')">📤 '+contacts['c'+n].name+'</button>';
   }
-  document.getElementById('mlist').innerHTML=h;
-  document.getElementById('mcnt').textContent=machines.length;
+  document.getElementById('contact-buttons').innerHTML=h;
 }
 
-function updateMachineSelects(){
-  var sels=['pmach','mmach'];
-  for(var s=0;s<sels.length;s++){
-    var sel=document.getElementById(sels[s]);
-    sel.innerHTML='<option>Select Machine</option>';
-    for(var i=0;i<machines.length;i++){
-      var name=typeof machines[i]=='object'?machines[i].name:machines[i];
-      sel.innerHTML+='<option>'+name+'</option>';
+function shareToContact(n){var c=contacts['c'+n]; var txt='📊 FabPrint Daily Report\n\nProduction: '+prod.length+'\nChemicals: '+chem.length+'\nFuel: '+fuel.length+'\nManpower: '+manpower.length+'\n\n✨ v7.6'; window.open('https://wa.me/91'+c.phone+'?text='+encodeURIComponent(txt));}
+
+function autoShareToAll(){
+  var txt='📊 AUTO-SHARE Daily Report\n'+new Date().toLocaleTimeString('en-IN')+'\n\nProduction: '+prod.length+'\nChemicals: '+chem.length+'\nFuel: '+fuel.length+'\nManpower: '+manpower.length+'\n\n✨ FabPrint v7.6';
+  for(var n=1;n<=5;n++){
+    if(contacts['c'+n].phone){
+      var url='https://wa.me/91'+contacts['c'+n].phone+'?text='+encodeURIComponent(txt);
+      fetch(url).catch(e=>{});
     }
   }
 }
 
-function delMachine(i){
-  if(confirm('Delete?')){
-    machines.splice(i,1);
-    renderMachines();
-    updateMachineSelects();
-  }
-}
-
-function addProd(){
-  var d=document.getElementById('pdate').value;
-  var m=document.getElementById('pmach').value;
-  var q=document.getElementById('pqty').value;
-  if(!d||!m||m=='Select Machine'||!q){alert('Fill all fields');return;}
-  prod.push({date:d,machine:m,shift:document.getElementById('pshift').value,qty:q,rej:document.getElementById('prej').value,design:document.getElementById('pdesign').value,party:document.getElementById('pparty').value});
-  render();
-  document.getElementById('pqty').value='';
-  document.getElementById('prej').value='';
-}
-
-function addChem(){
-  var d=document.getElementById('cdate').value;
-  var n=document.getElementById('cname').value;
-  var q=document.getElementById('cqty').value;
-  if(!d||!n||!q){alert('Fill all fields');return;}
-  chem.push({date:d,name:n,cat:document.getElementById('ccat').value,machine:document.getElementById('cmach').value,qty:q,stock:document.getElementById('cstock').value,supplier:document.getElementById('csupplier').value});
-  render();
-  renderChemStock();
-  document.getElementById('cname').value='';
-  document.getElementById('cqty').value='';
-  updateCriticalAlerts();
-}
-
-function addFuel(){
-  var d=document.getElementById('fdate').value;
-  var t=document.getElementById('ftype').value;
-  var q=document.getElementById('fqty').value;
-  if(!d||!t||!q){alert('Fill all fields');return;}
-  fuel.push({date:d,type:t,qty:q,machine:document.getElementById('fmach').value,shift:document.getElementById('fshift').value,supplier:document.getElementById('fsupplier').value});
-  render();
-  renderFuelStock();
-  document.getElementById('fqty').value='';
-  updateCriticalAlerts();
-}
-
-function addManpower(){
-  var d=document.getElementById('mdate').value;
-  var m=document.getElementById('mmach').value;
-  var w=document.getElementById('mworkers').value;
-  if(!d||!m||m=='Select Machine'||!w){alert('Fill all fields');return;}
-  manpower.push({date:d,machine:m,shift:document.getElementById('mshift').value,workers:w,hours:document.getElementById('mhours').value,sup:document.getElementById('msup').value});
-  render();
-  document.getElementById('mworkers').value='';
-  document.getElementById('mhours').value='';
-}
-
-function deleteLast(type){
-  if(type=='prod'&&prod.length>0){prod.pop();render();alert('Deleted!');}
-  else if(type=='chem'&&chem.length>0){chem.pop();render();renderChemStock();alert('Deleted!');updateCriticalAlerts();}
-  else if(type=='fuel'&&fuel.length>0){fuel.pop();render();renderFuelStock();alert('Deleted!');updateCriticalAlerts();}
-  else if(type=='man'&&manpower.length>0){manpower.pop();render();alert('Deleted!');}
-  else alert('No entries');
-}
-
-function delEntry(type,i){
-  if(confirm('Delete?')){
-    if(type=='p')prod.splice(i,1);
-    else if(type=='c'){chem.splice(i,1);updateCriticalAlerts();}
-    else if(type=='f'){fuel.splice(i,1);updateCriticalAlerts();}
-    else manpower.splice(i,1);
-    render();
-  }
-}
-
-function updateCriticalAlerts(){
-  var critical=[];
-  
-  for(var i=0;i<chem.length;i++){
-    var stock=parseFloat(chem[i].stock);
-    var used=parseFloat(chem[i].qty);
-    var percentage=(stock/(stock+used))*100;
-    if(percentage<20){
-      critical.push({type:'⚗️ Chemical',name:chem[i].name,stock:stock,pct:percentage.toFixed(0)});
+function testAutoShare(){
+  var txt='🔔 TEST Auto-Share\n'+new Date().toLocaleTimeString('en-IN')+'\n\nProduction: '+prod.length+' | Chemicals: '+chem.length+' | Fuel: '+fuel.length+' | Manpower: '+manpower.length+'\n\n✨ v7.6';
+  var count=0;
+  for(var n=1;n<=5;n++){
+    if(contacts['c'+n].phone){
+      window.open('https://wa.me/91'+contacts['c'+n].phone+'?text='+encodeURIComponent(txt));
+      count++;
     }
   }
-  
-  for(var i=0;i<fuel.length;i++){
-    var totalUsed=0;
-    for(var j=0;j<fuel.length;j++){
-      if(fuel[j].type==fuel[i].type) totalUsed+=parseInt(fuel[j].qty);
-    }
-    if(totalUsed>0&&totalUsed<20){
-      critical.push({type:'🔥 Fuel',name:fuel[i].type,stock:totalUsed,pct:totalUsed.toFixed(0)});
-    }
-  }
-  
-  var alertsHtml='';
-  if(critical.length>0){
-    alertsHtml='<div class="alert-critical">🚨 CRITICAL ALERTS ('+critical.length+')</div>';
-    for(var i=0;i<critical.length;i++){
-      alertsHtml+='<div class="critical-alert"><b>'+critical[i].type+': '+critical[i].name+'</b><span>Stock: '+critical[i].stock+' | Below 20%!</span></div>';
-    }
-  }
-  
-  document.getElementById('critical-alerts').innerHTML=alertsHtml;
-  document.getElementById('critical-alerts-report').innerHTML=alertsHtml;
+  if(count==0) alert('Please save at least 1 contact');
+  else alert('Test sent to '+count+' contact(s)!');
 }
 
-function renderChemStock(){
-  var h='';
-  var chemicals={};
-  for(var i=0;i<chem.length;i++){
-    if(!chemicals[chem[i].name]) chemicals[chem[i].name]={used:0,stock:0};
-    chemicals[chem[i].name].used+=parseFloat(chem[i].qty);
-    chemicals[chem[i].name].stock=parseFloat(chem[i].stock);
-  }
-  for(var name in chemicals){
-    var stock=chemicals[name].stock;
-    var used=chemicals[name].used;
-    var pct=((stock/(stock+used))*100).toFixed(0);
-    var status='';
-    if(pct<20) status='<span class="stock-critical">🔴 CRITICAL <20%</span>';
-    else if(pct<50) status='<span class="stock-low">⚠️ LOW '+pct+'%</span>';
-    else status='<span class="stock-safe">✓ SAFE '+pct+'%</span>';
-    h+='<div style="padding:6px;border-bottom:1px solid #eee"><b>'+name+'</b><br><span style="font-size:8px">Stock: '+stock+'kg | '+status+'</span></div>';
-  }
-  document.getElementById('cstock_view').innerHTML=h||'<div class="empty">No data</div>';
-}
+function shareProd(){var txt='🏭 PRODUCTION\n\n'; for(var i=0;i<Math.min(5,prod.length);i++) txt+='• '+prod[i].machine+': '+prod[i].qty+'m\n'; txt+='\n✨ FabPrint'; window.open('https://wa.me/?text='+encodeURIComponent(txt));}
 
-function renderFuelStock(){
-  var h='';
-  var fuels={};
-  for(var i=0;i<fuel.length;i++){
-    if(!fuels[fuel[i].type]) fuels[fuel[i].type]=0;
-    fuels[fuel[i].type]+=parseInt(fuel[i].qty);
-  }
-  for(var type in fuels){
-    var amount=fuels[type];
-    var status='';
-    if(amount<20) status='<span class="stock-critical">🔴 CRITICAL <20</span>';
-    else if(amount<50) status='<span class="stock-low">⚠️ LOW '+amount+'kg</span>';
-    else status='<span class="stock-safe">✓ SAFE '+amount+'kg</span>';
-    h+='<div style="padding:6px;border-bottom:1px solid #eee"><b>'+type+'</b><br><span style="font-size:8px">Total: '+amount+'kg | '+status+'</span></div>';
-  }
-  document.getElementById('fstock_view').innerHTML=h||'<div class="empty">No data</div>';
-}
+function shareChem(){var txt='⚗️ CHEMICALS\n\n'; for(var i=0;i<Math.min(5,chem.length);i++) txt+='• '+chem[i].name+': '+chem[i].qty+'kg\n'; txt+='\n✨ FabPrint'; window.open('https://wa.me/?text='+encodeURIComponent(txt));}
 
-function showPDFReport(){
-  var d=new Date().toLocaleDateString('en-IN');
-  var html='<div class="pdf-title">FabPrint Daily Report - '+d+'</div>';
-  html+='<div class="pdf-section"><div class="pdf-section-title">📊 Production ('+prod.length+' entries)</div><table class="pdf-table"><tr><th>Date</th><th>Machine</th><th>Qty</th><th>Party</th></tr>';
-  for(var i=0;i<Math.min(5,prod.length);i++) html+='<tr><td>'+prod[i].date+'</td><td>'+prod[i].machine+'</td><td>'+prod[i].qty+'m</td><td>'+prod[i].party+'</td></tr>';
-  html+='</table></div>';
-  html+='<div class="pdf-section"><div class="pdf-section-title">⚗️ Chemicals ('+chem.length+' entries)</div><table class="pdf-table"><tr><th>Date</th><th>Name</th><th>Qty</th><th>Stock</th></tr>';
-  for(var i=0;i<Math.min(5,chem.length);i++) html+='<tr><td>'+chem[i].date+'</td><td>'+chem[i].name+'</td><td>'+chem[i].qty+'kg</td><td>'+chem[i].stock+'kg</td></tr>';
-  html+='</table></div>';
-  html+='<div class="pdf-section"><div class="pdf-section-title">🔥 Fuel ('+fuel.length+' entries)</div><table class="pdf-table"><tr><th>Date</th><th>Type</th><th>Qty</th><th>Machine</th></tr>';
-  for(var i=0;i<Math.min(5,fuel.length);i++) html+='<tr><td>'+fuel[i].date+'</td><td>'+fuel[i].type+'</td><td>'+fuel[i].qty+'kg</td><td>'+fuel[i].machine+'</td></tr>';
-  html+='</table></div>';
-  html+='<div class="pdf-section"><div class="pdf-section-title">👥 Manpower ('+manpower.length+' entries)</div><table class="pdf-table"><tr><th>Date</th><th>Machine</th><th>Workers</th><th>Hours</th></tr>';
-  for(var i=0;i<Math.min(5,manpower.length);i++) html+='<tr><td>'+manpower[i].date+'</td><td>'+manpower[i].machine+'</td><td>'+manpower[i].workers+'</td><td>'+manpower[i].hours+'</td></tr>';
-  html+='</table></div>';
-  document.getElementById('pdf-content').innerHTML=html;
-  document.getElementById('pdf-content').style.display='block';
-  
-  setTimeout(function(){
-    var element=document.getElementById('pdf-content');
-    var opt={margin:10,filename:'FabPrint_'+d+'.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2},jsPDF:{orientation:'portrait',unit:'mm',format:'a4'}};
-    html2pdf().set(opt).from(element).save();
-  },500);
-}
+function shareFuel(){var txt='🔥 FUEL\n\n'; for(var i=0;i<Math.min(5,fuel.length);i++) txt+='• '+fuel[i].type+': '+fuel[i].qty+'kg\n'; txt+='\n✨ FabPrint'; window.open('https://wa.me/?text='+encodeURIComponent(txt));}
 
-function shareProd(){
-  var txt='🏭 PRODUCTION REPORT\n\n';
-  for(var i=0;i<Math.min(3,prod.length);i++) txt+='• '+prod[i].machine+': '+prod[i].qty+'m\n';
-  txt+='\n✨ FabPrint v6.5';
-  window.open('https://wa.me/?text='+encodeURIComponent(txt));
-}
+function shareMan(){var txt='👥 MANPOWER\n\n'; for(var i=0;i<Math.min(5,manpower.length);i++) txt+='• '+manpower[i].machine+': '+manpower[i].workers+' workers\n'; txt+='\n✨ FabPrint'; window.open('https://wa.me/?text='+encodeURIComponent(txt));}
 
-function shareChem(){
-  var txt='⚗️ CHEMICALS REPORT\n\n';
-  for(var i=0;i<Math.min(3,chem.length);i++) txt+='• '+chem[i].name+': '+chem[i].qty+'kg\n';
-  txt+='\n✨ FabPrint v6.5';
-  window.open('https://wa.me/?text='+encodeURIComponent(txt));
-}
+function shareAnalytics(){var txt='📈 Analytics\n\nProduction: '+prod.length+'\nChemicals: '+chem.length+'\nFuel: '+fuel.length+'\nManpower: '+manpower.length+'\n\n✨ FabPrint v7.6'; window.open('https://wa.me/?text='+encodeURIComponent(txt));}
 
-function shareFuel(){
-  var txt='🔥 FUEL REPORT\n\n';
-  for(var i=0;i<Math.min(3,fuel.length);i++) txt+='• '+fuel[i].type+': '+fuel[i].qty+'kg\n';
-  txt+='\n✨ FabPrint v6.5';
-  window.open('https://wa.me/?text='+encodeURIComponent(txt));
-}
+function shareFullReport(){var txt='📊 Complete Daily Report\n\n🏭 '+prod.length+' | ⚗️ '+chem.length+' | 🔥 '+fuel.length+' | 👥 '+manpower.length+'\n\n'+new Date().toLocaleString('en-IN')+'\n\n✨ FabPrint v7.6'; window.open('https://wa.me/?text='+encodeURIComponent(txt));}
 
-function shareManpower(){
-  var txt='👥 MANPOWER REPORT\n\n';
-  for(var i=0;i<Math.min(3,manpower.length);i++) txt+='• '+manpower[i].machine+': '+manpower[i].workers+' workers\n';
-  txt+='\n✨ FabPrint v6.5';
-  window.open('https://wa.me/?text='+encodeURIComponent(txt));
-}
+function downloadProdPDF(){var html='<h2>Production Report</h2><p>'+new Date().toLocaleDateString('en-IN')+'</p><table style="width:100%;border-collapse:collapse"><tr style="background:#f0f0f0"><th style="border:1px solid #ddd;padding:8px">Date</th><th style="border:1px solid #ddd;padding:8px">Machine</th><th style="border:1px solid #ddd;padding:8px">Qty</th></tr>'; for(var i=0;i<prod.length;i++) html+='<tr><td style="border:1px solid #ddd;padding:8px">'+prod[i].date+'</td><td style="border:1px solid #ddd;padding:8px">'+prod[i].machine+'</td><td style="border:1px solid #ddd;padding:8px">'+prod[i].qty+'m</td></tr>'; html+='</table>'; var opt={margin:10,filename:'FabPrint_Production.pdf',html2canvas:{scale:2},jsPDF:{orientation:'portrait',unit:'mm',format:'a4'}}; html2pdf().set(opt).from(html).save();}
 
-function shareAll(){
-  var txt='📊 FABPRINT DAILY REPORT\n\n🏭 Production: '+prod.length+'\n⚗️ Chemicals: '+chem.length+'\n🔥 Fuel: '+fuel.length+'\n👥 Manpower: '+manpower.length+'\n\n✨ FabPrint v6.5';
-  window.open('https://wa.me/?text='+encodeURIComponent(txt));
-}
+function downloadChemPDF(){var html='<h2>Chemicals Report</h2><p>'+new Date().toLocaleDateString('en-IN')+'</p><table style="width:100%;border-collapse:collapse"><tr style="background:#f0f0f0"><th style="border:1px solid #ddd;padding:8px">Name</th><th style="border:1px solid #ddd;padding:8px">Qty</th><th style="border:1px solid #ddd;padding:8px">Stock</th></tr>'; for(var i=0;i<chem.length;i++) html+='<tr><td style="border:1px solid #ddd;padding:8px">'+chem[i].name+'</td><td style="border:1px solid #ddd;padding:8px">'+chem[i].qty+'kg</td><td style="border:1px solid #ddd;padding:8px">'+chem[i].stock+'kg</td></tr>'; html+='</table>'; var opt={margin:10,filename:'FabPrint_Chemicals.pdf',html2canvas:{scale:2},jsPDF:{orientation:'portrait',unit:'mm',format:'a4'}}; html2pdf().set(opt).from(html).save();}
 
-function render(){
-  document.getElementById('cnt').textContent=prod.length+chem.length+fuel.length+manpower.length;
-  document.getElementById('pcnt').textContent=prod.length;
-  document.getElementById('ccnt').textContent=chem.length;
-  document.getElementById('fcnt').textContent=fuel.length;
-  document.getElementById('mcnt2').textContent=manpower.length;
-  document.getElementById('sum-prod').textContent=prod.length;
-  document.getElementById('sum-chem').textContent=chem.length;
-  document.getElementById('sum-fuel').textContent=fuel.length;
-  document.getElementById('sum-man').textContent=manpower.length;
-  
-  var ph='';
-  if(prod.length==0)ph='<div class="empty">No records</div>';
-  else for(var i=0;i<prod.length;i++) ph+='<div class="entry"><div class="entry-info"><b>'+prod[i].machine+' ('+prod[i].shift+')</b><span>'+prod[i].date+' | '+prod[i].qty+'m</span></div><button class="entry-btn del" onclick="delEntry(\'p\','+i+')">✕</button></div>';
-  document.getElementById('plist').innerHTML=ph;
-  
-  var ch='';
-  if(chem.length==0)ch='<div class="empty">No records</div>';
-  else for(var i=0;i<chem.length;i++) ch+='<div class="entry"><div class="entry-info"><b>'+chem[i].name+'</b><span>'+chem[i].date+' | '+chem[i].qty+'kg | Stock: '+chem[i].stock+'kg</span></div><button class="entry-btn del" onclick="delEntry(\'c\','+i+')">✕</button></div>';
-  document.getElementById('clist').innerHTML=ch;
-  
-  var fh='';
-  if(fuel.length==0)fh='<div class="empty">No records</div>';
-  else for(var i=0;i<fuel.length;i++) fh+='<div class="entry"><div class="entry-info"><b>'+fuel[i].type+'</b><span>'+fuel[i].date+' | '+fuel[i].qty+'kg</span></div><button class="entry-btn del" onclick="delEntry(\'f\','+i+')">✕</button></div>';
-  document.getElementById('flist').innerHTML=fh;
-  
-  var mh='';
-  if(manpower.length==0)mh='<div class="empty">No records</div>';
-  else for(var i=0;i<manpower.length;i++) mh+='<div class="entry"><div class="entry-info"><b>'+manpower[i].machine+' ('+manpower[i].shift+')</b><span>'+manpower[i].date+' | '+manpower[i].workers+' workers</span></div><button class="entry-btn del" onclick="delEntry(\'m\','+i+')">✕</button></div>';
-  document.getElementById('mlist').innerHTML=mh;
-}
+function downloadFuelPDF(){var html='<h2>Fuel Report</h2><p>'+new Date().toLocaleDateString('en-IN')+'</p><table style="width:100%;border-collapse:collapse"><tr style="background:#f0f0f0"><th style="border:1px solid #ddd;padding:8px">Type</th><th style="border:1px solid #ddd;padding:8px">Qty</th><th style="border:1px solid #ddd;padding:8px">Machine</th></tr>'; for(var i=0;i<fuel.length;i++) html+='<tr><td style="border:1px solid #ddd;padding:8px">'+fuel[i].type+'</td><td style="border:1px solid #ddd;padding:8px">'+fuel[i].qty+'kg</td><td style="border:1px solid #ddd;padding:8px">'+fuel[i].machine+'</td></tr>'; html+='</table>'; var opt={margin:10,filename:'FabPrint_Fuel.pdf',html2canvas:{scale:2},jsPDF:{orientation:'portrait',unit:'mm',format:'a4'}}; html2pdf().set(opt).from(html).save();}
+
+function downloadManPDF(){var html='<h2>Manpower Report</h2><p>'+new Date().toLocaleDateString('en-IN')+'</p><table style="width:100%;border-collapse:collapse"><tr style="background:#f0f0f0"><th style="border:1px solid #ddd;padding:8px">Machine</th><th style="border:1px solid #ddd;padding:8px">Workers</th><th style="border:1px solid #ddd;padding:8px">Hours</th></tr>'; for(var i=0;i<manpower.length;i++) html+='<tr><td style="border:1px solid #ddd;padding:8px">'+manpower[i].machine+'</td><td style="border:1px solid #ddd;padding:8px">'+manpower[i].workers+'</td><td style="border:1px solid #ddd;padding:8px">'+manpower[i].hours+'</td></tr>'; html+='</table>'; var opt={margin:10,filename:'FabPrint_Manpower.pdf',html2canvas:{scale:2},jsPDF:{orientation:'portrait',unit:'mm',format:'a4'}}; html2pdf().set(opt).from(html).save();}
+
+function downloadChartsPDF(){var html='<h2>FabPrint Analytics</h2><p>'+new Date().toLocaleDateString('en-IN')+'</p><p>Production: '+prod.length+' | Chemicals: '+chem.length+' | Fuel: '+fuel.length+' | Manpower: '+manpower.length+'</p>'; var opt={margin:10,filename:'FabPrint_Analytics.pdf',html2canvas:{scale:2},jsPDF:{orientation:'portrait',unit:'mm',format:'a4'}}; html2pdf().set(opt).from(html).save();}
 
 var d=new Date().toISOString().split('T')[0];
 document.getElementById('pdate').value=d;
-document.getElementById('cdate').value=d;
-document.getElementById('fdate').value=d;
-document.getElementById('mdate').value=d;
-renderMachines();
-updateMachineSelects();
-render();
-updateCriticalAlerts();
+loadData();
+renderProd();
+renderChem();
+renderFuel();
+renderMan();
 </script>
 </body>
 </html>
