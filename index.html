@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>FabPrint v8.4</title>
+<title>FabPrint v8.5</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -14,59 +14,52 @@ body{font-family:Poppins,sans-serif;background:linear-gradient(135deg,#667eea 0%
 #app{position:fixed;inset:0;display:flex;flex-direction:column;max-width:480px;margin:auto;background:#f8f9ff}
 .screen{display:none;flex-direction:column;height:100%}
 .screen.show{display:flex}
-.topbar{background:linear-gradient(135deg,#667eea 0%,#764ba2 50%,#f093fb 100%);padding:12px;display:flex;gap:8px;align-items:center;color:#fff;flex-shrink:0;position:relative;flex-direction:column;align-items:flex-start;box-shadow:0 4px 15px rgba(102,126,234,0.4)}
+.topbar{padding:12px;display:flex;gap:8px;align-items:center;color:#fff;flex-shrink:0;position:relative;flex-direction:column;align-items:flex-start;box-shadow:0 4px 15px rgba(0,0,0,0.2)}
 .topbar::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 2px,rgba(255,255,255,.05) 2px,rgba(255,255,255,.05) 4px);pointer-events:none}
-.topbar-header{display:flex;gap:8px;align-items:center;width:100%;position:relative;z-index:1}
-.logo{width:40px;height:40px;background:linear-gradient(135deg,#FF6B6B,#FFD93D);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;font-weight:700;color:#fff;box-shadow:0 4px 10px rgba(255,107,107,0.3)}
+.topbar-header{display:flex;gap:10px;align-items:center;width:100%;position:relative;z-index:1}
+.logo-group{display:flex;gap:8px;align-items:center}
+.fp-logo{width:40px;height:40px;background:linear-gradient(135deg,#FF6B6B,#FFD93D);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;font-weight:700;color:#fff;box-shadow:0 4px 10px rgba(255,107,107,0.3)}
+.ganesh{width:40px;height:40px;background:linear-gradient(135deg,#FFD700,#FFA500);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;box-shadow:0 4px 10px rgba(255,165,0,0.3)}
 .topbar h1{font-size:14px;flex:1;font-weight:700}
 .topbar-tagline{font-size:8px;color:rgba(255,255,255,.95);margin-top:6px;font-style:italic;letter-spacing:.5px;position:relative;z-index:1;width:100%;padding:0 8px}
 .content{flex:1;overflow-y:auto;padding:12px;background:linear-gradient(180deg,#f8f9ff 0%,#e0e7ff 100%)}
-.card{background:linear-gradient(135deg,#ffffff 0%,#f0f4ff 100%);border-radius:12px;padding:12px;margin-bottom:10px;box-shadow:0 4px 12px rgba(102,126,234,0.15);border-left:5px solid;border-image:linear-gradient(180deg,#667eea,#764ba2) 1;transition:all 0.3s ease}
-.card:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(102,126,234,0.25)}
+.card{background:linear-gradient(135deg,#ffffff 0%,#f0f4ff 100%);border-radius:12px;padding:12px;margin-bottom:10px;box-shadow:0 4px 12px rgba(0,0,0,0.1);border-left:5px solid;transition:all 0.3s ease}
+.card:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,0.15)}
 .btn{width:100%;padding:11px;border:none;border-radius:8px;cursor:pointer;font-size:11px;font-weight:600;margin-bottom:6px;color:#fff;transition:all 0.3s ease;box-shadow:0 4px 12px rgba(0,0,0,0.1)}
 .btn:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,0.15)}
 .btn-primary{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%)}
 .btn-wa{background:linear-gradient(135deg,#00D084 0%,#00C853 100%)}
 .btn-pdf{background:linear-gradient(135deg,#FF6B6B 0%,#EE5A6F 100%)}
 .btn-excel{background:linear-gradient(135deg,#1DB954 0%,#1ed760 100%)}
-.btn-small{width:auto;padding:6px 10px;font-size:9px;margin:2px}
 .btn-danger{background:linear-gradient(135deg,#FF6B6B,#FF4757)}
+.btn-small{width:auto;padding:6px 10px;font-size:9px;margin:2px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
 .stat{border-radius:10px;padding:12px;color:#fff;text-align:center;font-size:10px;font-weight:600;box-shadow:0 4px 12px rgba(0,0,0,0.1)}
 .stat-val{font-size:18px;font-weight:700;margin:6px 0}
-.stat1{background:linear-gradient(135deg,#667eea,#764ba2)}
-.stat2{background:linear-gradient(135deg,#FF6B6B,#FF8E72)}
-.stat3{background:linear-gradient(135deg,#00D084,#1DB954)}
-.stat4{background:linear-gradient(135deg,#FFD93D,#FFA502)}
 .nav{background:linear-gradient(90deg,#1a1a2e,#16213e);display:flex;flex-shrink:0;border-top:2px solid #667eea}
 .nav-btn{flex:1;background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;padding:10px 4px;font-size:8px;font-family:Poppins;font-weight:600;white-space:nowrap;transition:all 0.3s ease}
 .nav-btn.active{color:#00D084;border-top:3px solid #00D084;font-weight:700}
-.nav-btn:hover{color:#667eea}
 .title{font-size:9px;font-weight:700;color:#667eea;text-transform:uppercase;margin:10px 0 8px;letter-spacing:.5px}
 .alert-success{background:linear-gradient(135deg,#E8F5E9,#C8E6C9);color:#1B5E20;border-left:4px solid #4CAF50;padding:10px;border-radius:8px;margin-bottom:8px;font-weight:600;font-size:9px;box-shadow:0 2px 8px rgba(76,175,80,0.2)}
-.alert-danger{background:linear-gradient(135deg,#FFEBEE,#FFCDD2);color:#B71C1C;border-left:4px solid #E53935;padding:10px;border-radius:8px;margin-bottom:8px;font-weight:600;font-size:9px;box-shadow:0 2px 8px rgba(229,57,53,0.2)}
 .entry-item{background:linear-gradient(135deg,#f5f7ff,#e8ebff);border:1px solid rgba(102,126,234,0.2);border-radius:10px;padding:11px;margin-bottom:8px;border-left:4px solid #667eea;transition:all 0.3s ease}
 .entry-item:hover{transform:translateX(4px);box-shadow:0 4px 12px rgba(102,126,234,0.2)}
 .entry-header{font-weight:700;color:#667eea;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
 .entry-data{font-size:9px;color:#333;line-height:1.7}
-.entry-data b{display:block;color:#764ba2;margin-top:4px}
 .inp{width:100%;padding:10px;border:2px solid rgba(102,126,234,0.2);border-radius:8px;font-size:11px;margin-bottom:6px;font-family:Poppins;transition:all 0.3s ease;background:#fff}
 .inp:focus{outline:none;border-color:#667eea;box-shadow:0 0 8px rgba(102,126,234,0.3)}
 .label{font-size:8px;color:#667eea;font-weight:700;text-transform:uppercase;margin-bottom:4px;display:block;letter-spacing:.5px}
-.empty{text-align:center;padding:20px 10px;color:#999;font-size:9px}
 .chart-container{position:relative;height:280px;margin:12px 0;background:linear-gradient(135deg,#ffffff,#f0f4ff);border-radius:12px;padding:12px;border-left:4px solid #667eea;box-shadow:0 4px 12px rgba(102,126,234,0.15)}
-.kpi-box{background:linear-gradient(135deg,#ffffff,#f0f4ff);border-left:4px solid;padding:12px;margin-bottom:8px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.05)}
-.kpi-box-1{border-color:#667eea}
-.kpi-box-2{border-color:#FF6B6B}
-.kpi-box-3{border-color:#00D084}
-.kpi-box-4{border-color:#FFD93D}
-.kpi-label{font-size:8px;color:#999;text-transform:uppercase;font-weight:600;letter-spacing:.5px}
-.kpi-val{font-size:18px;font-weight:700;margin:6px 0}
-.red-alert{background:linear-gradient(135deg,#FFEBEE,#FFCDD2);color:#B71C1C;border:2px solid #E53935;padding:12px;border-radius:10px;margin-bottom:8px;font-weight:700;text-align:center;box-shadow:0 4px 12px rgba(229,57,53,0.3)}
-.shift-selector{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.empty{text-align:center;padding:20px 10px;color:#999;font-size:9px}
 .shift-btn{padding:11px;border:2px solid rgba(102,126,234,0.3);background:#fff;border-radius:8px;cursor:pointer;font-size:11px;font-weight:700;transition:all 0.3s ease;color:#667eea}
 .shift-btn.active{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border-color:#667eea;box-shadow:0 4px 12px rgba(102,126,234,0.3)}
+.daily-card{background:linear-gradient(135deg,#FFF9E6,#FFECB3);border-left:5px solid #FFD93D;padding:12px;border-radius:10px;margin-bottom:8px;box-shadow:0 4px 12px rgba(255,217,61,0.2)}
+.daily-data{font-size:10px;color:#333;line-height:1.8;font-weight:600}
+.page-color-1{background:linear-gradient(135deg,#667eea,#764ba2)}
+.page-color-2{background:linear-gradient(135deg,#FF6B6B,#FF8E72)}
+.page-color-3{background:linear-gradient(135deg,#00D084,#1DB954)}
+.page-color-4{background:linear-gradient(135deg,#FFD93D,#FFA502)}
+.page-color-5{background:linear-gradient(135deg,#667eea,#f093fb)}
 </style>
 </head>
 <body>
@@ -75,14 +68,16 @@ body{font-family:Poppins,sans-serif;background:linear-gradient(135deg,#667eea 0%
 <!-- LOGIN -->
 <div class="screen show" id="login">
   <div style="flex:1;overflow-y:auto;background:linear-gradient(135deg,#667eea,#764ba2);padding:16px;display:flex;flex-direction:column;align-items:center;justify-content:center">
-    <div style="width:70px;height:70px;background:linear-gradient(135deg,#FF6B6B,#FFD93D);border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:40px;font-weight:700;color:#fff;margin:20px auto;box-shadow:0 6px 20px rgba(255,107,107,0.4);transform:rotate(-5deg)">FP</div>
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:20px">
+      <div style="width:70px;height:70px;background:linear-gradient(135deg,#FF6B6B,#FFD93D);border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:40px;font-weight:700;color:#fff;box-shadow:0 6px 20px rgba(255,107,107,0.4);transform:rotate(-5deg)">FP</div>
+      <div style="width:70px;height:70px;background:linear-gradient(135deg,#FFD700,#FFA500);border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:40px;box-shadow:0 6px 20px rgba(255,165,0,0.4)">🙏</div>
+    </div>
     <div style="text-align:center;color:#fff;margin-bottom:20px">
       <div style="font-size:24px;font-weight:700">FabPrint</div>
-      <div style="font-size:10px;opacity:.95;margin-top:4px;letter-spacing:1px">v8.4 - Colorful Edition</div>
+      <div style="font-size:10px;opacity:.95;margin-top:4px;letter-spacing:1px">v8.5 - Ultimate Final</div>
     </div>
     <div style="background:linear-gradient(135deg,#fff,#f5f9ff);padding:20px;border-radius:15px;width:100%;box-shadow:0 6px 20px rgba(0,0,0,0.2)">
       <h2 style="font-size:12px;margin-bottom:8px;color:#667eea;font-weight:700">Welcome</h2>
-      <p style="font-size:9px;color:#666;margin-bottom:12px">Textile Production Tracker</p>
       <label class="label">Username</label>
       <input type="text" class="inp" id="user" value="virendra.kumar">
       <label class="label">Password</label>
@@ -92,47 +87,49 @@ body{font-family:Poppins,sans-serif;background:linear-gradient(135deg,#667eea 0%
   </div>
 </div>
 
-<!-- MASTER DATA PAGE -->
+<!-- MASTER DATA PAGE - PURPLE -->
 <div class="screen" id="master">
-  <div class="topbar">
+  <div class="topbar page-color-1">
     <div class="topbar-header">
-      <div class="logo">FP</div>
+      <div class="logo-group">
+        <div class="fp-logo">FP</div>
+        <div class="ganesh">🙏</div>
+      </div>
       <h1>Master Data</h1>
-      <button class="btn btn-primary" style="padding:5px 8px;margin:0;width:auto;font-size:9px" onclick="showScreen('dispatch')">📦</button>
+      <button class="btn btn-primary" style="padding:5px 8px;margin:0;width:auto;font-size:9px" onclick="showScreen('daily')">📅</button>
     </div>
     <div class="topbar-tagline">✨ "Weaving Quality, Threading Success" ✨</div>
   </div>
   <div class="content">
-    <div class="alert-success">📊 Daily Production Entry - Shift Selection Fixed!</div>
+    <div class="alert-success">📊 Daily Production Entry</div>
     
-    <div class="card">
+    <div class="card" style="border-color:#667eea">
       <div class="title">📅 Date & Shift</div>
       <label class="label">Date</label>
       <input type="date" class="inp" id="mdate">
-      
-      <label class="label">Shift Selection</label>
-      <div class="shift-selector">
-        <button type="button" class="shift-btn active" id="shiftABtn" onclick="setShift('A')">⚙️ Shift A</button>
-        <button type="button" class="shift-btn" id="shiftBBtn" onclick="setShift('B')">⚙️ Shift B</button>
+      <label class="label">Shift</label>
+      <div class="grid2">
+        <button type="button" class="shift-btn active" id="shiftABtn" onclick="setShift('A')">⚙️ A</button>
+        <button type="button" class="shift-btn" id="shiftBBtn" onclick="setShift('B')">⚙️ B</button>
       </div>
       <input type="hidden" id="mshift" value="A">
     </div>
 
-    <div class="card">
+    <div class="card" style="border-color:#667eea">
       <div class="title">🏭 Production</div>
       <label class="label">Design Number</label>
       <input type="text" class="inp" id="mdesign" placeholder="D-2024-001">
       <label class="label">Party Name</label>
       <input type="text" class="inp" id="mparty" placeholder="ABC Textiles">
       <label class="label">Machine</label>
-      <select class="inp" id="mmachine"><option>Select Machine</option></select>
+      <select class="inp" id="mmachine"><option>Select</option></select>
       <div class="grid2">
         <div><label class="label">Prod (m)</label><input type="number" class="inp" id="mprod"></div>
         <div><label class="label">Rej (m)</label><input type="number" class="inp" id="mrej"></div>
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" style="border-color:#667eea">
       <div class="title">⚗️ Chemicals</div>
       <label class="label">Name</label>
       <input type="text" class="inp" id="mchem">
@@ -142,7 +139,7 @@ body{font-family:Poppins,sans-serif;background:linear-gradient(135deg,#667eea 0%
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" style="border-color:#667eea">
       <div class="title">🔥 Fuel</div>
       <label class="label">Type</label>
       <select class="inp" id="mfuel"><option>Coal</option><option>Wood</option><option>Coal Dust</option></select>
@@ -150,7 +147,7 @@ body{font-family:Poppins,sans-serif;background:linear-gradient(135deg,#667eea 0%
       <input type="number" class="inp" id="mfuelqty">
     </div>
 
-    <div class="card">
+    <div class="card" style="border-color:#667eea">
       <div class="title">👥 Manpower</div>
       <div class="grid2">
         <div><label class="label">Workers</label><input type="number" class="inp" id="mworkers"></div>
@@ -160,224 +157,198 @@ body{font-family:Poppins,sans-serif;background:linear-gradient(135deg,#667eea 0%
       <input type="text" class="inp" id="msup">
     </div>
 
-    <div class="grid3" style="margin-bottom:8px">
+    <div class="grid3">
       <button class="btn btn-primary" onclick="saveMasterData()">💾 SAVE</button>
       <button class="btn btn-wa" onclick="sendMasterWA()">📤 WA</button>
       <button class="btn btn-pdf" onclick="showScreen('machines')">⚙️ M</button>
     </div>
 
-    <div class="title">📋 Entries (<span id="mcnt" style="color:#FF6B6B;font-weight:700">0</span>)</div>
+    <div class="title">📋 Entries (<span id="mcnt" style="color:#FF6B6B">0</span>)</div>
     <div id="mlist"></div>
   </div>
   <div class="nav">
     <button class="nav-btn active" onclick="showScreen('master')">Master</button>
-    <button class="nav-btn" onclick="showScreen('dispatch')">📦 Dispatch</button>
-    <button class="nav-btn" onclick="showScreen('charts')">📊 Charts</button>
+    <button class="nav-btn" onclick="showScreen('daily')">📅 Daily</button>
+    <button class="nav-btn" onclick="showScreen('dispatch')">📦 Disp</button>
+    <button class="nav-btn" onclick="showScreen('charts')">📊 Chart</button>
     <button class="nav-btn" onclick="showScreen('kpi')">KPI</button>
-    <button class="nav-btn" onclick="showScreen('contacts')">👥</button>
   </div>
 </div>
 
-<!-- DISPATCH PAGE -->
-<div class="screen" id="dispatch">
-  <div class="topbar">
+<!-- DAILY AUTO-SAVE PAGE - YELLOW/GOLD -->
+<div class="screen" id="daily">
+  <div class="topbar page-color-4">
     <div class="topbar-header">
-      <div class="logo">FP</div>
+      <div class="logo-group">
+        <div class="fp-logo" style="background:linear-gradient(135deg,#FFD93D,#FFA502)">FP</div>
+        <div class="ganesh">🙏</div>
+      </div>
+      <h1>Daily Auto-Save</h1>
+      <button class="btn btn-primary" style="padding:5px 8px;margin:0;width:auto;font-size:9px" onclick="showScreen('master')">Back</button>
+    </div>
+    <div class="topbar-tagline">✨ "Auto-Save All Departments Daily" ✨</div>
+  </div>
+  <div class="content">
+    <div class="alert-success">📅 Daily Auto-Save Report - All Departments</div>
+    
+    <div class="card" style="border-color:#FFD93D">
+      <div class="title">💾 Save Current Day</div>
+      <label class="label">Save Date</label>
+      <input type="date" class="inp" id="save-date" value="">
+      <button class="btn" style="background:linear-gradient(135deg,#1DB954,#1ed760)" onclick="saveDailyData()">💾 SAVE TODAY'S DATA</button>
+      <button class="btn btn-danger" onclick="deleteDailyData()">🗑️ DELETE SAVED DATA</button>
+    </div>
+
+    <div class="title">📊 Last Entry Summary</div>
+    <div id="last-entry-summary"></div>
+
+    <div class="title">📦 Saved Daily Records</div>
+    <div id="daily-list"></div>
+
+    <div class="grid2" style="margin-bottom:8px">
+      <button class="btn btn-pdf" onclick="downloadDailyPDF()">📄 PDF</button>
+      <button class="btn btn-excel" onclick="exportDailyExcel()">📊 Excel</button>
+    </div>
+  </div>
+  <div class="nav">
+    <button class="nav-btn" onclick="showScreen('master')">Master</button>
+    <button class="nav-btn active" onclick="showScreen('daily')">📅 Daily</button>
+    <button class="nav-btn" onclick="showScreen('dispatch')">📦 Disp</button>
+    <button class="nav-btn" onclick="showScreen('charts')">📊 Chart</button>
+    <button class="nav-btn" onclick="showScreen('kpi')">KPI</button>
+  </div>
+</div>
+
+<!-- DISPATCH PAGE - RED -->
+<div class="screen" id="dispatch">
+  <div class="topbar page-color-2">
+    <div class="topbar-header">
+      <div class="logo-group">
+        <div class="fp-logo" style="background:linear-gradient(135deg,#FF6B6B,#FF8E72)">FP</div>
+        <div class="ganesh">🙏</div>
+      </div>
       <h1>Dispatch</h1>
       <button class="btn btn-primary" style="padding:5px 8px;margin:0;width:auto;font-size:9px" onclick="showScreen('master')">Back</button>
     </div>
-    <div class="topbar-tagline">✨ "Weaving Quality, Threading Success" ✨</div>
+    <div class="topbar-tagline">✨ "Track Every Dispatch" ✨</div>
   </div>
   <div class="content">
     <div id="dispatch-alert"></div>
-    <div class="alert-success">📦 Dispatch - Automatic Date Recorded</div>
+    <div class="alert-success">📦 Dispatch Tracking</div>
     
-    <div class="card">
-      <div class="title">➕ Add Dispatch</div>
-      <label class="label">Party Name</label>
+    <div class="card" style="border-color:#FF6B6B">
+      <div class="title">📤 Add Dispatch</div>
+      <label class="label">Party</label>
       <input type="text" class="inp" id="dparty" placeholder="ABC Textiles">
       <label class="label">Dispatch (m)</label>
       <input type="number" class="inp" id="ddispatch" placeholder="1500">
-      <label class="label">Left Stock (m)</label>
+      <label class="label">Left (m)</label>
       <input type="number" class="inp" id="dleft" placeholder="300">
       <label class="label">Rejected (m)</label>
       <input type="number" class="inp" id="drej" placeholder="50">
       <button class="btn btn-wa" onclick="saveDispatch()">📤 DISPATCH</button>
     </div>
 
-    <div class="title">📦 History</div>
+    <div class="title">📦 Records</div>
     <div id="dispatch-list"></div>
-
-    <div class="title">📊 Party Analysis</div>
-    <div class="chart-container"><canvas id="dispatchChart"></canvas></div>
-    <div class="chart-container"><canvas id="stockChart"></canvas></div>
-    <div class="chart-container"><canvas id="rejectionChart"></canvas></div>
-
-    <div class="grid2" style="margin-bottom:8px">
-      <button class="btn btn-pdf" onclick="downloadDispatchPDF()">📄 PDF</button>
-      <button class="btn btn-excel" onclick="exportDispatchExcel()">📊 Excel</button>
-    </div>
   </div>
   <div class="nav">
     <button class="nav-btn" onclick="showScreen('master')">Master</button>
-    <button class="nav-btn active" onclick="showScreen('dispatch')">📦 Dispatch</button>
-    <button class="nav-btn" onclick="showScreen('charts')">📊 Charts</button>
+    <button class="nav-btn" onclick="showScreen('daily')">📅 Daily</button>
+    <button class="nav-btn active" onclick="showScreen('dispatch')">📦 Disp</button>
+    <button class="nav-btn" onclick="showScreen('charts')">📊 Chart</button>
     <button class="nav-btn" onclick="showScreen('kpi')">KPI</button>
-    <button class="nav-btn" onclick="showScreen('contacts')">👥</button>
   </div>
 </div>
 
-<!-- CHARTS PAGE -->
+<!-- CHARTS PAGE - GREEN -->
 <div class="screen" id="charts">
-  <div class="topbar">
+  <div class="topbar page-color-3">
     <div class="topbar-header">
-      <div class="logo">FP</div>
-      <h1>Analytics Charts</h1>
+      <div class="logo-group">
+        <div class="fp-logo" style="background:linear-gradient(135deg,#00D084,#1DB954)">FP</div>
+        <div class="ganesh">🙏</div>
+      </div>
+      <h1>Charts</h1>
       <button class="btn btn-primary" style="padding:5px 8px;margin:0;width:auto;font-size:9px" onclick="showScreen('master')">Back</button>
     </div>
-    <div class="topbar-tagline">✨ "Weaving Quality, Threading Success" ✨</div>
+    <div class="topbar-tagline">✨ "Visual Analytics" ✨</div>
   </div>
   <div class="content">
     <div class="alert-success">📊 Production Analytics</div>
-
-    <div class="title">🎯 Production Pie Chart</div>
+    <div class="title">🎯 Production Pie</div>
     <div class="chart-container"><canvas id="pieChart"></canvas></div>
-
-    <div class="title">📈 Compare Chart (Machine)</div>
+    <div class="title">📈 Compare Chart</div>
     <div class="chart-container"><canvas id="compareChart"></canvas></div>
-
-    <div class="title">📉 Trend Graph (Daily)</div>
+    <div class="title">📉 Trend</div>
     <div class="chart-container"><canvas id="graphChart"></canvas></div>
-
-    <div class="grid2" style="margin-bottom:8px">
-      <button class="btn btn-pdf" onclick="downloadChartsPDF()">📄 PDF</button>
-      <button class="btn btn-excel" onclick="exportChartsExcel()">📊 Excel</button>
-    </div>
   </div>
   <div class="nav">
     <button class="nav-btn" onclick="showScreen('master')">Master</button>
-    <button class="nav-btn" onclick="showScreen('dispatch')">📦 Dispatch</button>
-    <button class="nav-btn active" onclick="showScreen('charts')">📊 Charts</button>
+    <button class="nav-btn" onclick="showScreen('daily')">📅 Daily</button>
+    <button class="nav-btn" onclick="showScreen('dispatch')">📦 Disp</button>
+    <button class="nav-btn active" onclick="showScreen('charts')">📊 Chart</button>
     <button class="nav-btn" onclick="showScreen('kpi')">KPI</button>
-    <button class="nav-btn" onclick="showScreen('contacts')">👥</button>
   </div>
 </div>
 
-<!-- KPI PAGE -->
+<!-- KPI PAGE - PINK/CYAN -->
 <div class="screen" id="kpi">
-  <div class="topbar">
+  <div class="topbar page-color-5">
     <div class="topbar-header">
-      <div class="logo">FP</div>
-      <h1>KPI Metrics</h1>
+      <div class="logo-group">
+        <div class="fp-logo" style="background:linear-gradient(135deg,#667eea,#f093fb)">FP</div>
+        <div class="ganesh">🙏</div>
+      </div>
+      <h1>KPI</h1>
     </div>
-    <div class="topbar-tagline">✨ "Weaving Quality, Threading Success" ✨</div>
+    <div class="topbar-tagline">✨ "Performance Metrics" ✨</div>
   </div>
   <div class="content">
-    <div class="alert-success">📊 Key Performance Indicators</div>
-    
-    <div class="title">📈 Metrics</div>
-    <div class="grid2">
-      <div class="kpi-box kpi-box-1"><div class="kpi-label">Production</div><div class="kpi-val" id="kpi-prod" style="color:#667eea">0 m</div></div>
-      <div class="kpi-box kpi-box-2"><div class="kpi-label">Rejection</div><div class="kpi-val" id="kpi-rej" style="color:#FF6B6B">0 m</div></div>
+    <div class="alert-success">📊 Key Metrics</div>
+    <div class="title">📈 Summary</div>
+    <div class="card" style="border-color:#667eea">
+      <div id="kpi-content"></div>
     </div>
-    <div class="grid2">
-      <div class="kpi-box kpi-box-3"><div class="kpi-label">Efficiency</div><div class="kpi-val" id="kpi-eff" style="color:#00D084">0%</div></div>
-      <div class="kpi-box kpi-box-4"><div class="kpi-label">Fuel</div><div class="kpi-val" id="kpi-fuel" style="color:#FFD93D">0 kg</div></div>
-    </div>
-
-    <div class="title">📊 Summary</div>
-    <div class="card" id="summary-card"></div>
   </div>
   <div class="nav">
     <button class="nav-btn" onclick="showScreen('master')">Master</button>
-    <button class="nav-btn" onclick="showScreen('dispatch')">📦 Dispatch</button>
-    <button class="nav-btn" onclick="showScreen('charts')">📊 Charts</button>
+    <button class="nav-btn" onclick="showScreen('daily')">📅 Daily</button>
+    <button class="nav-btn" onclick="showScreen('dispatch')">📦 Disp</button>
+    <button class="nav-btn" onclick="showScreen('charts')">📊 Chart</button>
     <button class="nav-btn active" onclick="showScreen('kpi')">KPI</button>
-    <button class="nav-btn" onclick="showScreen('contacts')">👥</button>
   </div>
 </div>
 
-<!-- CONTACTS PAGE -->
-<div class="screen" id="contacts">
-  <div class="topbar">
-    <div class="topbar-header">
-      <div class="logo">FP</div>
-      <h1>Share</h1>
-    </div>
-    <div class="topbar-tagline">✨ "Weaving Quality, Threading Success" ✨</div>
-  </div>
-  <div class="content">
-    <div class="alert-success">👥 5 Contacts for WhatsApp Sharing</div>
-    
-    <div class="card">
-      <label class="label">Contact 1</label>
-      <input type="text" class="inp" id="c1name" placeholder="Name">
-      <input type="tel" class="inp" id="c1phone" placeholder="+919...">
-      <button class="btn btn-primary" onclick="saveContact(1)">SAVE</button>
-    </div>
-    <div class="card">
-      <label class="label">Contact 2</label>
-      <input type="text" class="inp" id="c2name" placeholder="Name">
-      <input type="tel" class="inp" id="c2phone" placeholder="+919...">
-      <button class="btn btn-primary" onclick="saveContact(2)">SAVE</button>
-    </div>
-    <div class="card">
-      <label class="label">Contact 3</label>
-      <input type="text" class="inp" id="c3name" placeholder="Name">
-      <input type="tel" class="inp" id="c3phone" placeholder="+919...">
-      <button class="btn btn-primary" onclick="saveContact(3)">SAVE</button>
-    </div>
-    <div class="card">
-      <label class="label">Contact 4</label>
-      <input type="text" class="inp" id="c4name" placeholder="Name">
-      <input type="tel" class="inp" id="c4phone" placeholder="+919...">
-      <button class="btn btn-primary" onclick="saveContact(4)">SAVE</button>
-    </div>
-    <div class="card">
-      <label class="label">Contact 5</label>
-      <input type="text" class="inp" id="c5name" placeholder="Name">
-      <input type="tel" class="inp" id="c5phone" placeholder="+919...">
-      <button class="btn btn-primary" onclick="saveContact(5)">SAVE</button>
-    </div>
-
-    <div class="title">📤 Share Options</div>
-    <div id="contact-buttons"></div>
-  </div>
-  <div class="nav">
-    <button class="nav-btn" onclick="showScreen('master')">Master</button>
-    <button class="nav-btn" onclick="showScreen('dispatch')">📦 Dispatch</button>
-    <button class="nav-btn" onclick="showScreen('charts')">📊 Charts</button>
-    <button class="nav-btn" onclick="showScreen('kpi')">KPI</button>
-    <button class="nav-btn active" onclick="showScreen('contacts')">👥</button>
-  </div>
-</div>
-
-<!-- MACHINES -->
+<!-- MACHINES PAGE -->
 <div class="screen" id="machines">
-  <div class="topbar">
+  <div class="topbar page-color-1">
     <div class="topbar-header">
-      <div class="logo">FP</div>
+      <div class="logo-group">
+        <div class="fp-logo">FP</div>
+        <div class="ganesh">🙏</div>
+      </div>
       <h1>Machines</h1>
       <button class="btn btn-primary" style="padding:5px 8px;margin:0;width:auto;font-size:9px" onclick="showScreen('master')">Back</button>
     </div>
-    <div class="topbar-tagline">✨ "Weaving Quality, Threading Success" ✨</div>
+    <div class="topbar-tagline">✨ "Machine Management" ✨</div>
   </div>
   <div class="content">
-    <div class="alert-success">⚙️ Machine Management</div>
-    <div class="card">
-      <label class="label">Add New Machine</label>
+    <div class="alert-success">⚙️ Manage Machines</div>
+    <div class="card" style="border-color:#667eea">
+      <label class="label">Add Machine</label>
       <input type="text" class="inp" id="newmachine" placeholder="DGE-2">
       <button class="btn btn-primary" onclick="addMachine()">➕ ADD</button>
     </div>
-    <div class="title">🏭 Current Machines</div>
+    <div class="title">🏭 Machines</div>
     <div id="mlist-machines"></div>
   </div>
   <div class="nav">
     <button class="nav-btn" onclick="showScreen('master')">Master</button>
-    <button class="nav-btn" onclick="showScreen('dispatch')">📦 Dispatch</button>
-    <button class="nav-btn" onclick="showScreen('charts')">📊 Charts</button>
+    <button class="nav-btn" onclick="showScreen('daily')">📅 Daily</button>
+    <button class="nav-btn" onclick="showScreen('dispatch')">📦 Disp</button>
+    <button class="nav-btn" onclick="showScreen('charts')">📊 Chart</button>
     <button class="nav-btn" onclick="showScreen('kpi')">KPI</button>
-    <button class="nav-btn" onclick="showScreen('contacts')">👥</button>
   </div>
 </div>
 
@@ -386,8 +357,8 @@ body{font-family:Poppins,sans-serif;background:linear-gradient(135deg,#667eea 0%
 <script>
 var masterData=[];
 var dispatchData=[];
+var dailyData={};
 var machines=['DGE','Jilong','Dyeing'];
-var contacts={};
 var charts={};
 
 function loadData(){
@@ -395,16 +366,28 @@ function loadData(){
   if(m) masterData=JSON.parse(m);
   var d=localStorage.getItem('fp-dispatch');
   if(d) dispatchData=JSON.parse(d);
+  var daily=localStorage.getItem('fp-daily');
+  if(daily) dailyData=JSON.parse(daily);
   var mach=localStorage.getItem('fp-machines');
   if(mach) machines=JSON.parse(mach);
-  var c=localStorage.getItem('fp-contacts');
-  if(c) contacts=JSON.parse(c);
 }
 
 function saveData(){
   localStorage.setItem('fp-master',JSON.stringify(masterData));
   localStorage.setItem('fp-dispatch',JSON.stringify(dispatchData));
+  localStorage.setItem('fp-daily',JSON.stringify(dailyData));
   localStorage.setItem('fp-machines',JSON.stringify(machines));
+}
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('show'));
+  document.getElementById(id).classList.add('show');
+  if(id=='machines') renderMachines();
+  if(id=='charts') setTimeout(renderCharts,100);
+  if(id=='dispatch') renderDispatchList();
+  if(id=='daily'){renderDailyList(); renderLastEntry();}
+  if(id=='kpi') updateKPI();
+  updateKPI();
 }
 
 function setShift(shift){
@@ -415,19 +398,127 @@ function setShift(shift){
   else document.getElementById('shiftBBtn').classList.add('active');
 }
 
-function showScreen(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('show'));
-  document.getElementById(id).classList.add('show');
-  if(id=='machines') renderMachines();
-  if(id=='charts') setTimeout(renderCharts,100);
-  if(id=='dispatch'){renderDispatchList(); renderDispatchCharts(); checkDispatchAlert();}
-  if(id=='contacts') renderContacts();
-  if(id=='kpi') updateKPI();
+function saveMasterData(){
+  var d=document.getElementById('mdate').value;
+  var design=document.getElementById('mdesign').value.trim();
+  var party=document.getElementById('mparty').value.trim();
+  var prod=parseFloat(document.getElementById('mprod').value)||0;
+  if(!d||!design||!party||!prod){alert('Fill required');return;}
+  masterData.push({date:d,shift:document.getElementById('mshift').value,design:design,party:party,machine:document.getElementById('mmachine').value,prod:prod,rej:parseFloat(document.getElementById('mrej').value)||0,chem:document.getElementById('mchem').value,chemqty:parseFloat(document.getElementById('mchemqty').value)||0,chemstock:parseFloat(document.getElementById('mchemstock').value)||0,fuel:document.getElementById('mfuel').value,fuelqty:parseFloat(document.getElementById('mfuelqty').value)||0,workers:parseFloat(document.getElementById('mworkers').value)||0,hours:parseFloat(document.getElementById('mhours').value)||0,sup:document.getElementById('msup').value});
+  saveData();
+  renderMasterList();
   updateKPI();
+  clearMasterForm();
+  alert('✅ Saved!');
 }
 
+function clearMasterForm(){
+  document.getElementById('mdesign').value='';
+  document.getElementById('mparty').value='';
+  document.getElementById('mprod').value='';
+  document.getElementById('mrej').value='';
+  document.getElementById('mchem').value='';
+  document.getElementById('mchemqty').value='';
+  document.getElementById('mchemstock').value='';
+  document.getElementById('mfuelqty').value='';
+  document.getElementById('mworkers').value='';
+  document.getElementById('mhours').value='';
+  document.getElementById('msup').value='';
+}
+
+function renderMasterList(){
+  var h='';
+  if(masterData.length==0) h='<div class="empty">No entries</div>';
+  else for(var i=masterData.length-1;i>=Math.max(0,masterData.length-5);i--){var e=masterData[i]; h+='<div class="entry-item"><div class="entry-header">'+e.date+' | '+e.design+'</div><div class="entry-data">👔 '+e.party+' | '+e.machine+' | '+e.prod+'m</div></div>';}
+  document.getElementById('mlist').innerHTML=h;
+  document.getElementById('mcnt').textContent=masterData.length;
+}
+
+function saveDailyData(){
+  var dateKey=document.getElementById('save-date').value;
+  if(!dateKey){alert('Select date');return;}
+  var totalProd=0, totalRej=0, totalChemQty=0, totalFuel=0, totalWorkers=0;
+  for(var i=0;i<masterData.length;i++){totalProd+=masterData[i].prod; totalRej+=masterData[i].rej; totalChemQty+=masterData[i].chemqty; totalFuel+=masterData[i].fuelqty; totalWorkers+=masterData[i].workers;}
+  dailyData[dateKey]={date:dateKey,entries:masterData.length,production:totalProd,rejection:totalRej,chemicals:totalChemQty,fuel:totalFuel,manpower:totalWorkers,timestamp:new Date().toLocaleTimeString()};
+  saveData();
+  renderDailyList();
+  alert('✅ Daily data saved for '+dateKey);
+}
+
+function deleteDailyData(){
+  var dateKey=document.getElementById('save-date').value;
+  if(!dateKey){alert('Select date');return;}
+  if(confirm('Delete saved data for '+dateKey+'?')){delete dailyData[dateKey]; saveData(); renderDailyList(); alert('Deleted!');}
+}
+
+function renderLastEntry(){
+  if(masterData.length==0){document.getElementById('last-entry-summary').innerHTML='<div class="empty">No entries yet</div>'; return;}
+  var e=masterData[masterData.length-1];
+  var h='<div class="daily-card"><div class="daily-data"><b>📅 Date:</b> '+e.date+'<br><b>👔 Party:</b> '+e.party+'<br><b>🏭 Machine:</b> '+e.machine+'<br><b>📊 Production:</b> '+e.prod+'m<br><b>❌ Rejection:</b> '+e.rej+'m<br><b>⚗️ Chemical:</b> '+e.chem+' ('+e.chemqty+'kg)<br><b>🔥 Fuel:</b> '+e.fuel+' ('+e.fuelqty+'kg)<br><b>👥 Workers:</b> '+e.workers+' for '+e.hours+'hrs</div></div>';
+  document.getElementById('last-entry-summary').innerHTML=h;
+}
+
+function renderDailyList(){
+  var h='';
+  for(var date in dailyData){var d=dailyData[date]; h+='<div class="daily-card"><div class="daily-data"><b>📅</b> '+date+' | <b>Entries:</b> '+d.entries+'<br><b>📊 Prod:</b> '+d.production+'m | <b>Rej:</b> '+d.rejection+'m<br><b>⚗️ Chem:</b> '+d.chemicals+'kg | <b>🔥 Fuel:</b> '+d.fuel+'kg<br><b>👥 Workers:</b> '+d.manpower+' | <b>⏰</b> '+d.timestamp+'<button class="btn btn-danger btn-small" onclick="deleteDailyRecord(\''+date+'\')">🗑️</button></div></div>';}
+  if(h=='') h='<div class="empty">No saved daily records</div>';
+  document.getElementById('daily-list').innerHTML=h;
+}
+
+function deleteDailyRecord(date){if(confirm('Delete?')){delete dailyData[date]; saveData(); renderDailyList();}}
+
+function renderDispatchList(){
+  var h='';
+  if(dispatchData.length==0) h='<div class="empty">No dispatch</div>';
+  else for(var i=dispatchData.length-1;i>=Math.max(0,dispatchData.length-5);i--){var e=dispatchData[i]; h+='<div class="entry-item"><div class="entry-header">📦 '+e.party+' - '+e.date+'</div><div class="entry-data">Dispatch: '+e.dispatch+'m | Left: '+e.left+'m | Rej: '+e.rej+'m</div></div>';}
+  document.getElementById('dispatch-list').innerHTML=h;
+}
+
+function saveDispatch(){
+  var party=document.getElementById('dparty').value.trim();
+  var dispatch=parseFloat(document.getElementById('ddispatch').value)||0;
+  var left=parseFloat(document.getElementById('dleft').value)||0;
+  var rej=parseFloat(document.getElementById('drej').value)||0;
+  if(!party||!dispatch){alert('Fill');return;}
+  var today=new Date().toISOString().split('T')[0];
+  dispatchData.push({date:today,party:party,dispatch:dispatch,left:left,rej:rej});
+  saveData();
+  renderDispatchList();
+  document.getElementById('dparty').value='';
+  document.getElementById('ddispatch').value='';
+  document.getElementById('dleft').value='';
+  document.getElementById('drej').value='';
+  alert('✅ Dispatched!');
+}
+
+function renderCharts(){
+  var prodByMachine={}, colors=['#667eea','#FF6B6B','#00D084','#FFD93D','#764ba2'];
+  for(var i=0;i<masterData.length;i++){if(!prodByMachine[masterData[i].machine]) prodByMachine[masterData[i].machine]=0; prodByMachine[masterData[i].machine]+=masterData[i].prod;}
+  if(charts.pie) charts.pie.destroy();
+  charts.pie=new Chart(document.getElementById('pieChart'),{type:'doughnut',data:{labels:Object.keys(prodByMachine),datasets:[{data:Object.values(prodByMachine),backgroundColor:colors}]},options:{responsive:true,maintainAspectRatio:false}});
+  if(charts.compare) charts.compare.destroy();
+  charts.compare=new Chart(document.getElementById('compareChart'),{type:'bar',data:{labels:Object.keys(prodByMachine),datasets:[{label:'Prod',data:Object.values(prodByMachine),backgroundColor:'#667eea'}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:true}}}});
+  var dates=[];
+  for(var i=0;i<masterData.length;i++){if(dates.indexOf(masterData[i].date)==-1) dates.push(masterData[i].date);}
+  var values=dates.map(d=>{var sum=0; for(var i=0;i<masterData.length;i++){if(masterData[i].date==d) sum+=masterData[i].prod;} return sum;});
+  if(charts.graph) charts.graph.destroy();
+  charts.graph=new Chart(document.getElementById('graphChart'),{type:'line',data:{labels:dates,datasets:[{label:'Trend',data:values,borderColor:'#667eea',backgroundColor:'rgba(102,126,234,0.1)',borderWidth:3,fill:true,tension:0.4}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:true}}}});
+}
+
+function updateKPI(){
+  var totalProd=0, totalRej=0, totalFuel=0;
+  for(var i=0;i<masterData.length;i++){totalProd+=masterData[i].prod; totalRej+=masterData[i].rej; totalFuel+=masterData[i].fuelqty;}
+  var eff=totalProd>0?((totalProd-totalRej)/totalProd*100).toFixed(1):0;
+  var h='<b style="color:#667eea">📊 Total Production:</b> '+totalProd.toFixed(0)+'m<br><b style="color:#FF6B6B">❌ Rejection:</b> '+totalRej.toFixed(0)+'m<br><b style="color:#00D084">✅ Efficiency:</b> '+eff+'%<br><b style="color:#FFD93D">🔥 Fuel:</b> '+totalFuel.toFixed(0)+'kg<br><b style="color:#667eea">📋 Entries:</b> '+masterData.length;
+  if(document.getElementById('kpi-content')) document.getElementById('kpi-content').innerHTML=h;
+}
+
+function downloadDailyPDF(){var html='<h2>Daily Report</h2><table style="width:100%;border-collapse:collapse"><tr style="background:#f0f0f0"><th style="border:1px solid #ddd;padding:6px">Date</th><th style="border:1px solid #ddd;padding:6px">Entries</th><th style="border:1px solid #ddd;padding:6px">Production</th></tr>'; for(var date in dailyData){var d=dailyData[date]; html+='<tr><td style="border:1px solid #ddd;padding:6px">'+d.date+'</td><td style="border:1px solid #ddd;padding:6px">'+d.entries+'</td><td style="border:1px solid #ddd;padding:6px">'+d.production+'</td></tr>';} html+='</table>'; var opt={margin:10,filename:'Daily_Report.pdf',html2canvas:{scale:2},jsPDF:{orientation:'landscape'}}; html2pdf().set(opt).from(html).save();}
+
+function exportDailyExcel(){var ws_data=[]; ws_data.push(['Date','Entries','Production','Rejection','Chemicals','Fuel','Manpower']); for(var date in dailyData){var d=dailyData[date]; ws_data.push([d.date,d.entries,d.production,d.rejection,d.chemicals,d.fuel,d.manpower]);} var ws=XLSX.utils.aoa_to_sheet(ws_data); var wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'Daily'); XLSX.writeFile(wb,'Daily_Report.xlsx');}
+
 function renderMachines(){
-  var h='<select class="inp" id="mmachine"><option>Select Machine</option>';
+  var h='<select class="inp" id="mmachine"><option>Select</option>';
   for(var i=0;i<machines.length;i++) h+='<option>'+machines[i]+'</option>';
   h+='</select>';
   if(document.getElementById('mmachine')) document.getElementById('mmachine').outerHTML=h;
@@ -438,134 +529,22 @@ function renderMachines(){
 
 function addMachine(){
   var nm=document.getElementById('newmachine').value.trim();
-  if(!nm){alert('Enter machine name');return;}
-  if(machines.indexOf(nm)!=-1){alert('Machine already exists');return;}
+  if(!nm){alert('Enter');return;}
+  if(machines.indexOf(nm)!=-1){alert('Exists');return;}
   machines.push(nm);
   saveData();
   renderMachines();
   document.getElementById('newmachine').value='';
-  alert('✅ Machine added!');
+  alert('✅ Added!');
 }
 
-function delMachine(i){if(confirm('Delete machine?')){machines.splice(i,1); saveData(); renderMachines();}}
+function delMachine(i){if(confirm('Delete?')){machines.splice(i,1); saveData(); renderMachines();}}
 
-function checkDispatchAlert(){
-  var alert='';
-  var parties={};
-  for(var i=0;i<dispatchData.length;i++) parties[dispatchData[i].party]=dispatchData[i].date;
-  var today=new Date();
-  for(var p in parties){
-    var daysAgo=Math.floor((today-new Date(parties[p]))/(1000*60*60*24));
-    if(daysAgo>=10) alert+='🔴 '+p+': '+daysAgo+' days!<br>';
-  }
-  if(alert) document.getElementById('dispatch-alert').innerHTML='<div class="red-alert">⚠️ RED ALERT - NO DISPATCH<br>'+alert+'</div>';
-  else document.getElementById('dispatch-alert').innerHTML='<div class="alert-success">✅ All parties dispatching regularly</div>';
-}
-
-function saveDispatch(){
-  var party=document.getElementById('dparty').value.trim();
-  var dispatch=parseFloat(document.getElementById('ddispatch').value)||0;
-  var left=parseFloat(document.getElementById('dleft').value)||0;
-  var rej=parseFloat(document.getElementById('drej').value)||0;
-  if(!party||!dispatch){alert('Fill required fields');return;}
-  var today=new Date().toISOString().split('T')[0];
-  dispatchData.push({date:today,party:party,dispatch:dispatch,left:left,rej:rej});
-  saveData();
-  renderDispatchList();
-  renderDispatchCharts();
-  checkDispatchAlert();
-  document.getElementById('dparty').value=''; document.getElementById('ddispatch').value=''; document.getElementById('dleft').value=''; document.getElementById('drej').value='';
-  alert('✅ Dispatched! Date: '+today);
-}
-
-function renderDispatchList(){
-  var h='';
-  if(dispatchData.length==0) h='<div class="empty">No dispatch records yet</div>';
-  else for(var i=dispatchData.length-1;i>=Math.max(0,dispatchData.length-5);i--){var e=dispatchData[i]; h+='<div class="entry-item"><div class="entry-header">📦 '+e.party+' <span style="color:#999;font-size:8px">'+e.date+'</span></div><div class="entry-data"><b>Dispatch:</b> '+e.dispatch+'m | <b>Left:</b> '+e.left+'m | <b>Rej:</b> '+e.rej+'m</div></div>';}
-  document.getElementById('dispatch-list').innerHTML=h;
-}
-
-function renderDispatchCharts(){
-  var dispatchByParty={}, leftByParty={}, rejByParty={};
-  for(var i=0;i<dispatchData.length;i++){var e=dispatchData[i]; if(!dispatchByParty[e.party]) dispatchByParty[e.party]=0; if(!leftByParty[e.party]) leftByParty[e.party]=0; if(!rejByParty[e.party]) rejByParty[e.party]=0; dispatchByParty[e.party]+=e.dispatch; leftByParty[e.party]+=e.left; rejByParty[e.party]+=e.rej;}
-  var colors=['#667eea','#FF6B6B','#00D084','#FFD93D','#764ba2'];
-  if(charts.dispatch) charts.dispatch.destroy();
-  charts.dispatch=new Chart(document.getElementById('dispatchChart'),{type:'pie',data:{labels:Object.keys(dispatchByParty),datasets:[{data:Object.values(dispatchByParty),backgroundColor:colors}]},options:{responsive:true,maintainAspectRatio:false}});
-  if(charts.stock) charts.stock.destroy();
-  charts.stock=new Chart(document.getElementById('stockChart'),{type:'doughnut',data:{labels:Object.keys(leftByParty),datasets:[{data:Object.values(leftByParty),backgroundColor:colors}]},options:{responsive:true,maintainAspectRatio:false}});
-  if(charts.rejection) charts.rejection.destroy();
-  charts.rejection=new Chart(document.getElementById('rejectionChart'),{type:'bar',data:{labels:Object.keys(rejByParty),datasets:[{label:'Rejected',data:Object.values(rejByParty),backgroundColor:'#FF6B6B'}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:true}}}});
-}
-
-function renderCharts(){
-  var prodByMachine={}, colors=['#667eea','#FF6B6B','#00D084','#FFD93D','#764ba2'];
-  for(var i=0;i<masterData.length;i++){if(!prodByMachine[masterData[i].machine]) prodByMachine[masterData[i].machine]=0; prodByMachine[masterData[i].machine]+=masterData[i].prod;}
-  if(charts.pie) charts.pie.destroy();
-  charts.pie=new Chart(document.getElementById('pieChart'),{type:'doughnut',data:{labels:Object.keys(prodByMachine),datasets:[{data:Object.values(prodByMachine),backgroundColor:colors}]},options:{responsive:true,maintainAspectRatio:false}});
-  if(charts.compare) charts.compare.destroy();
-  charts.compare=new Chart(document.getElementById('compareChart'),{type:'bar',data:{labels:Object.keys(prodByMachine),datasets:[{label:'Production (m)',data:Object.values(prodByMachine),backgroundColor:'#667eea'}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:true}}}});
-  var dates=[];
-  for(var i=0;i<masterData.length;i++){if(dates.indexOf(masterData[i].date)==-1) dates.push(masterData[i].date);}
-  var values=dates.map(d=>{var sum=0; for(var i=0;i<masterData.length;i++){if(masterData[i].date==d) sum+=masterData[i].prod;} return sum;});
-  if(charts.graph) charts.graph.destroy();
-  charts.graph=new Chart(document.getElementById('graphChart'),{type:'line',data:{labels:dates,datasets:[{label:'Production Trend',data:values,borderColor:'#667eea',backgroundColor:'rgba(102,126,234,0.1)',borderWidth:3,fill:true,tension:0.4}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:true}}}});
-}
-
-function downloadChartsPDF(){var html='<h2>FabPrint Charts</h2><p>'+new Date().toLocaleDateString('en-IN')+'</p>'; var opt={margin:10,filename:'FabPrint_Charts.pdf',html2canvas:{scale:2},jsPDF:{orientation:'landscape'}}; html2pdf().set(opt).from(html).save();}
-
-function exportChartsExcel(){var ws_data=[]; ws_data.push(['Date','Machine','Production']); for(var i=0;i<masterData.length;i++){var e=masterData[i]; ws_data.push([e.date,e.machine,e.prod]);} var ws=XLSX.utils.aoa_to_sheet(ws_data); var wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'Charts'); XLSX.writeFile(wb,'FabPrint_Charts.xlsx');}
-
-function downloadDispatchPDF(){var html='<h2>Dispatch Report</h2><table style="width:100%;border-collapse:collapse"><tr style="background:#f0f0f0"><th style="border:1px solid #ddd;padding:6px">Date</th><th style="border:1px solid #ddd;padding:6px">Party</th><th style="border:1px solid #ddd;padding:6px">Dispatch</th></tr>'; for(var i=0;i<dispatchData.length;i++){var e=dispatchData[i]; html+='<tr><td style="border:1px solid #ddd;padding:6px">'+e.date+'</td><td style="border:1px solid #ddd;padding:6px">'+e.party+'</td><td style="border:1px solid #ddd;padding:6px">'+e.dispatch+'</td></tr>';} html+='</table>'; var opt={margin:10,filename:'Dispatch_Report.pdf',html2canvas:{scale:2},jsPDF:{orientation:'landscape'}}; html2pdf().set(opt).from(html).save();}
-
-function exportDispatchExcel(){var ws_data=[]; ws_data.push(['Date','Party','Dispatch','Left','Rej']); for(var i=0;i<dispatchData.length;i++){var e=dispatchData[i]; ws_data.push([e.date,e.party,e.dispatch,e.left,e.rej]);} var ws=XLSX.utils.aoa_to_sheet(ws_data); var wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'Dispatch'); XLSX.writeFile(wb,'Dispatch_Report.xlsx');}
-
-function saveMasterData(){
-  var d=document.getElementById('mdate').value;
-  var design=document.getElementById('mdesign').value.trim();
-  var party=document.getElementById('mparty').value.trim();
-  var prod=parseFloat(document.getElementById('mprod').value)||0;
-  if(!d||!design||!party||!prod){alert('Fill required fields');return;}
-  masterData.push({date:d,shift:document.getElementById('mshift').value,design:design,party:party,machine:document.getElementById('mmachine').value,prod:prod,rej:parseFloat(document.getElementById('mrej').value)||0,chem:document.getElementById('mchem').value,chemqty:parseFloat(document.getElementById('mchemqty').value)||0,chemstock:parseFloat(document.getElementById('mchemstock').value)||0,fuel:document.getElementById('mfuel').value,fuelqty:parseFloat(document.getElementById('mfuelqty').value)||0,workers:parseFloat(document.getElementById('mworkers').value)||0,hours:parseFloat(document.getElementById('mhours').value)||0,sup:document.getElementById('msup').value});
-  saveData();
-  renderMasterList();
-  updateKPI();
-  document.getElementById('mdesign').value=''; document.getElementById('mparty').value=''; document.getElementById('mprod').value=''; document.getElementById('mrej').value=''; document.getElementById('mchem').value=''; document.getElementById('mchemqty').value=''; document.getElementById('mchemstock').value=''; document.getElementById('mfuelqty').value=''; document.getElementById('mworkers').value=''; document.getElementById('mhours').value=''; document.getElementById('msup').value='';
-  alert('✅ Data saved successfully!');
-}
-
-function renderMasterList(){
-  var h='';
-  if(masterData.length==0) h='<div class="empty">No entries yet - Start adding production data</div>';
-  else for(var i=masterData.length-1;i>=Math.max(0,masterData.length-5);i--){var e=masterData[i]; h+='<div class="entry-item"><div class="entry-header">🏭 '+e.date+' | '+e.design+'</div><div class="entry-data"><b style="color:#667eea">👔 Party:</b> '+e.party+' | <b>Machine:</b> '+e.machine+' | <b>Prod:</b> '+e.prod+'m</div></div>';}
-  document.getElementById('mlist').innerHTML=h;
-  document.getElementById('mcnt').textContent=masterData.length;
-}
-
-function updateKPI(){
-  var totalProd=0, totalRej=0, totalFuel=0;
-  for(var i=0;i<masterData.length;i++){totalProd+=masterData[i].prod; totalRej+=masterData[i].rej; totalFuel+=masterData[i].fuelqty;}
-  var eff=totalProd>0?((totalProd-totalRej)/totalProd*100).toFixed(1):0;
-  document.getElementById('kpi-prod').textContent=totalProd.toFixed(0)+' m';
-  document.getElementById('kpi-rej').textContent=totalRej.toFixed(0)+' m';
-  document.getElementById('kpi-eff').textContent=eff+'%';
-  document.getElementById('kpi-fuel').textContent=totalFuel.toFixed(0)+' kg';
-  var summary='<p style="font-size:10px;color:#333;line-height:1.8"><b style="color:#667eea">📊 Summary:</b><br>Total Entries: '+masterData.length+'<br>Avg Production: '+(totalProd/Math.max(1,masterData.length)).toFixed(0)+'m<br>Efficiency Rate: '+eff+'%<br>Total Fuel: '+totalFuel.toFixed(0)+'kg</p>';
-  if(document.getElementById('summary-card')) document.getElementById('summary-card').innerHTML=summary;
-}
-
-function saveContact(n){var name=document.getElementById('c'+n+'name').value; var phone=document.getElementById('c'+n+'phone').value; if(!name||!phone){alert('Fill all fields');return;} contacts['c'+n]={name,phone}; localStorage.setItem('fp-contacts',JSON.stringify(contacts)); renderContacts(); alert('✅ Contact saved!');}
-
-function renderContacts(){
-  for(var n=1;n<=5;n++){document.getElementById('c'+n+'name').value=contacts['c'+n]?.name||''; document.getElementById('c'+n+'phone').value=contacts['c'+n]?.phone||'';}
-  var h=''; for(var n=1;n<=5;n++){if(contacts['c'+n]?.phone) h+='<button class="btn btn-wa" style="margin-bottom:6px" onclick="shareToContact('+n+')">📤 '+contacts['c'+n].name+'</button>';} document.getElementById('contact-buttons').innerHTML=h;
-}
-
-function shareToContact(n){var c=contacts['c'+n]; var txt='📊 FabPrint Production Report\n\n✨ v8.4'; window.open('https://wa.me/91'+c.phone.replace(/[^0-9]/g,'')+'?text='+encodeURIComponent(txt));}
-
-function sendMasterWA(){var txt='📊 Production Data\n\n'; for(var i=0;i<Math.min(3,masterData.length);i++){var e=masterData[i]; txt+='• '+e.design+': '+e.prod+'m ('+e.party+')\n';} txt+='\n✨ FabPrint v8.4'; window.open('https://wa.me/?text='+encodeURIComponent(txt));}
+function sendMasterWA(){var txt='📊 Production\n'; for(var i=0;i<Math.min(3,masterData.length);i++){var e=masterData[i]; txt+='• '+e.design+': '+e.prod+'m\n';} window.open('https://wa.me/?text='+encodeURIComponent(txt));}
 
 var d=new Date().toISOString().split('T')[0];
 document.getElementById('mdate').value=d;
+document.getElementById('save-date').value=d;
 setShift('A');
 loadData();
 renderMachines();
