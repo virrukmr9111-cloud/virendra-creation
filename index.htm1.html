@@ -1,0 +1,1851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#07080f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="HR Suite">
+<link rel="manifest" id="manifest-link">
+<title id="app-title">HR Suite</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+:root{
+--bg:#07080f;--s1:#0e1018;--s2:#13151f;--s3:#181b27;--s4:#1e2130;
+--border:#252840;--border2:#2f3450;--border3:#3a3f60;
+--gold:#f0b429;--gold2:#ffd060;--gold3:#fff3cc;
+--text:#dde1f5;--t2:#8892c4;--t3:#4a5280;--t4:#2d3260;
+--green:#34d399;--red:#f87171;--blue:#60a5fa;--purple:#a78bfa;--orange:#fb923c;--cyan:#22d3ee;
+--r:10px;--r2:14px;--r3:20px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;font-size:13px}
+
+/* LOGIN SCREEN */
+.login-screen{position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;align-items:center;justify-content:center;flex-direction:column}
+.login-box{background:var(--s2);border:1px solid var(--border2);border-radius:20px;padding:36px 40px;width:380px;max-width:95vw;text-align:center}
+.login-logo{width:60px;height:60px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:14px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:24px;color:#0e0a00;margin:0 auto 16px}
+.login-company{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;color:var(--gold);margin-bottom:4px}
+.login-sub{font-size:11px;color:var(--t3);margin-bottom:28px}
+.login-field{margin-bottom:14px;text-align:left}
+.login-field label{font-size:10px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:4px}
+.login-field input{background:var(--s3);border:1px solid var(--border2);border-radius:8px;padding:10px 13px;color:var(--text);font-family:'IBM Plex Sans',sans-serif;font-size:13px;width:100%;outline:none}
+.login-field input:focus{border-color:var(--gold)}
+.btn-login{background:var(--gold);color:#0e0a00;border:none;border-radius:10px;padding:12px;width:100%;font-size:13px;font-weight:700;font-family:'Syne',sans-serif;cursor:pointer;margin-bottom:10px;transition:background .13s}
+.btn-login:hover{background:var(--gold2)}
+.btn-bio{background:var(--s3);color:var(--text);border:1px solid var(--border2);border-radius:10px;padding:11px;width:100%;font-size:13px;font-weight:600;font-family:'IBM Plex Sans',sans-serif;cursor:pointer;margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .13s}
+.btn-bio:hover{background:var(--s4);border-color:var(--gold)}
+.login-err{font-size:11px;color:var(--red);min-height:16px;margin-bottom:8px}
+.login-first{font-size:11px;color:var(--t3);margin-top:10px}
+.setup-hint{font-size:10px;color:var(--t4);margin-top:8px}
+
+/* APP */
+.app{display:flex;height:100vh}
+.sb{width:230px;background:var(--s1);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow:hidden}
+.sb-logo{padding:18px 16px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;cursor:pointer}
+.sb-logo:hover .sb-logo-edit{opacity:1}
+.sb-logo-edit{opacity:0;font-size:10px;color:var(--t3);transition:opacity .2s}
+.sb-logo .mark{width:34px;height:34px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:#0e0a00;flex-shrink:0}
+.sb-logo .name{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--gold);line-height:1.2}
+.sb-logo .sub{font-size:10px;color:var(--t3);font-family:'IBM Plex Mono',monospace}
+.sb-nav{flex:1;overflow-y:auto;padding:10px 8px}
+.sb-nav::-webkit-scrollbar{width:3px}.sb-nav::-webkit-scrollbar-thumb{background:var(--border2)}
+.sg{font-size:9px;font-weight:600;letter-spacing:.12em;color:var(--t4);text-transform:uppercase;padding:10px 8px 4px}
+.ni{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--r);cursor:pointer;color:var(--t2);font-size:12.5px;font-weight:500;transition:all .12s;margin-bottom:1px;position:relative}
+.ni:hover{background:var(--s3);color:var(--text)}
+.ni.on{background:linear-gradient(135deg,rgba(240,180,41,.13),rgba(240,180,41,.04));color:var(--gold);border:1px solid rgba(240,180,41,.18)}
+.ni-ic{width:18px;text-align:center;font-size:14px;flex-shrink:0}
+.nb{background:var(--red);color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:20px;margin-left:auto;font-family:'IBM Plex Mono',monospace}
+.sb-foot{padding:10px;border-top:1px solid var(--border)}
+.sb-foot .card{background:var(--s2);border-radius:var(--r);padding:10px 12px}
+.sb-foot .cn{font-family:'Syne',sans-serif;font-weight:700;font-size:12px;color:var(--gold)}
+.sb-foot .cd{font-size:10px;color:var(--t3);margin-top:2px}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{background:var(--s1);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;gap:12px;flex-shrink:0;height:52px}
+.tb-title{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:var(--text)}
+.tb-sub{font-size:11px;color:var(--t3)}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.clock{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--t2);background:var(--s2);padding:5px 10px;border-radius:var(--r);border:1px solid var(--border)}
+.content{flex:1;overflow-y:auto;padding:18px 20px}
+.content::-webkit-scrollbar{width:4px}.content::-webkit-scrollbar-thumb{background:var(--border2)}
+.pg{display:none}.pg.on{display:block}
+.btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:none;font-family:'IBM Plex Sans',sans-serif;transition:all .13s;letter-spacing:.02em;display:inline-flex;align-items:center;gap:6px}
+.btn-g{background:var(--gold);color:#0e0a00}.btn-g:hover{background:var(--gold2)}
+.btn-o{background:transparent;color:var(--t2);border:1px solid var(--border2)}.btn-o:hover{background:var(--s3);color:var(--text)}
+.btn-r{background:rgba(248,113,113,.12);color:var(--red);border:1px solid rgba(248,113,113,.25)}
+.btn-gr{background:rgba(52,211,153,.12);color:var(--green);border:1px solid rgba(52,211,153,.25)}
+.btn-b{background:rgba(96,165,250,.12);color:var(--blue);border:1px solid rgba(96,165,250,.25)}
+.btn-p{background:rgba(167,139,250,.12);color:var(--purple);border:1px solid rgba(167,139,250,.25)}
+.btn-wa{background:#25d366;color:#fff}.btn-wa:hover{background:#1ebe5d}
+.btn-sm{padding:4px 10px;font-size:11px}.btn-xs{padding:2px 7px;font-size:10px}
+.sg4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.sg3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
+.sc{background:var(--s2);border:1px solid var(--border);border-radius:var(--r2);padding:16px;position:relative;overflow:hidden}
+.sc::after{content:'';position:absolute;top:-20px;right:-20px;width:70px;height:70px;border-radius:50%;opacity:.07}
+.sc.gold::after{background:var(--gold)}.sc.grn::after{background:var(--green)}
+.sc.blu::after{background:var(--blue)}.sc.red::after{background:var(--red)}
+.sc.pur::after{background:var(--purple)}.sc.ora::after{background:var(--orange)}
+.sc-l{font-size:10px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.08em}
+.sc-v{font-size:26px;font-weight:700;font-family:'IBM Plex Mono',monospace;margin:6px 0 2px}
+.sc.gold .sc-v{color:var(--gold)}.sc.grn .sc-v{color:var(--green)}
+.sc.blu .sc-v{color:var(--blue)}.sc.red .sc-v{color:var(--red)}
+.sc.pur .sc-v{color:var(--purple)}.sc.ora .sc-v{color:var(--orange)}
+.sc-s{font-size:11px;color:var(--t3)}
+.panel{background:var(--s2);border:1px solid var(--border);border-radius:var(--r2);margin-bottom:16px;overflow:hidden}
+.ph{padding:13px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px}
+.ph-ic{font-size:16px}.ph-t{font-size:13px;font-weight:600;color:var(--text);font-family:'Syne',sans-serif}
+.ph-acts{margin-left:auto;display:flex;gap:7px;flex-wrap:wrap}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{padding:9px 13px;text-align:left;font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.09em;border-bottom:1px solid var(--border);white-space:nowrap;background:var(--s3)}
+td{padding:10px 13px;font-size:12.5px;color:var(--t2);border-bottom:1px solid var(--border);vertical-align:middle}
+tr:hover td{background:rgba(255,255,255,.018)}
+tr:last-child td{border-bottom:none}
+.bd{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;font-family:'IBM Plex Mono',monospace;letter-spacing:.02em}
+.bd-g{background:rgba(52,211,153,.12);color:var(--green);border:1px solid rgba(52,211,153,.2)}
+.bd-r{background:rgba(248,113,113,.12);color:var(--red);border:1px solid rgba(248,113,113,.2)}
+.bd-gold{background:rgba(240,180,41,.12);color:var(--gold);border:1px solid rgba(240,180,41,.2)}
+.bd-b{background:rgba(96,165,250,.12);color:var(--blue);border:1px solid rgba(96,165,250,.2)}
+.bd-p{background:rgba(167,139,250,.12);color:var(--purple);border:1px solid rgba(167,139,250,.2)}
+.bd-c{background:rgba(34,211,238,.12);color:var(--cyan);border:1px solid rgba(34,211,238,.2)}
+.bd-gr{background:rgba(90,97,144,.15);color:var(--t2);border:1px solid var(--border)}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:11px;padding:16px}
+.fgf{grid-column:1/-1}
+.fl{font-size:10px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;display:block}
+input,select,textarea{background:var(--s3);border:1px solid var(--border2);border-radius:8px;padding:8px 11px;color:var(--text);font-family:'IBM Plex Sans',sans-serif;font-size:12.5px;width:100%;outline:none;transition:border-color .13s}
+input:focus,select:focus,textarea:focus{border-color:var(--gold)}
+select option{background:var(--s3)}
+textarea{resize:vertical;min-height:55px}
+.form-group{display:flex;flex-direction:column}
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(3px)}
+.ov.on{display:flex}
+.modal{background:var(--s2);border:1px solid var(--border2);border-radius:var(--r2);width:540px;max-width:96vw;max-height:92vh;overflow-y:auto;animation:mIn .18s ease}
+@keyframes mIn{from{opacity:0;transform:scale(.96) translateY(8px)}to{opacity:1;transform:none}}
+.mh{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.mt{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--text)}
+.mc{background:none;border:none;color:var(--t3);font-size:22px;cursor:pointer;line-height:1;padding:0 2px}.mc:hover{color:var(--text)}
+.mf{padding:13px 18px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
+.sb-bar{display:flex;align-items:center;gap:9px;padding:11px 14px;border-bottom:1px solid var(--border);background:var(--s3)}
+.si{flex:1;background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:7px 12px;color:var(--text);font-family:'IBM Plex Sans',sans-serif;font-size:12.5px;outline:none}
+.si:focus{border-color:var(--gold)}
+.av{width:30px;height:30px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;font-family:'Syne',sans-serif}
+.prog{background:var(--s4);border-radius:20px;height:5px;overflow:hidden;margin-top:3px}
+.pf{height:100%;border-radius:20px;transition:width .4s}
+.payslip{background:var(--s3);border-radius:var(--r);margin:14px}
+.ps-head{background:linear-gradient(135deg,rgba(240,180,41,.15),rgba(240,180,41,.04));border-bottom:1px solid rgba(240,180,41,.15);padding:14px 16px;text-align:center}
+.ps-row{display:flex;justify-content:space-between;padding:7px 16px;border-bottom:1px solid var(--border);font-size:12px}
+.ps-row:last-child{border-bottom:none;font-weight:700;font-size:14px;color:var(--gold)}
+.ps-row span:first-child{color:var(--t2)}
+.ps-row span:last-child{font-family:'IBM Plex Mono',monospace}
+.ticket-card{background:var(--s3);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start}
+.tk-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.toast{position:fixed;bottom:18px;right:18px;background:var(--s3);border:1px solid var(--border2);border-radius:var(--r2);padding:11px 16px;font-size:12.5px;color:var(--text);z-index:999;transform:translateY(50px);opacity:0;transition:all .22s;max-width:300px;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.toast.on{transform:translateY(0);opacity:1}
+.toast.ok{border-color:rgba(52,211,153,.4);background:rgba(52,211,153,.08)}
+.toast.wa{border-color:rgba(248,113,113,.4)}
+.cc{padding:14px;position:relative;height:220px}
+.cc-sm{height:160px}
+canvas{max-height:100%}
+.tabs{display:flex;border-bottom:1px solid var(--border);padding:0 16px}
+.tab{padding:9px 14px;font-size:12px;font-weight:500;color:var(--t3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .12s}
+.tab.on{color:var(--gold);border-bottom-color:var(--gold)}
+.tbc{display:none;padding:14px 16px}.tbc.on{display:block}
+.nc{background:var(--s3);border:1px solid var(--border);border-radius:var(--r);padding:13px 15px;margin-bottom:9px;position:relative}
+.nc.urg{border-left:3px solid var(--red)}.nc.imp{border-left:3px solid var(--gold)}.nc.nor{border-left:3px solid var(--t4)}
+.att-cal{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;padding:14px}
+.ac-h{text-align:center;font-size:9px;font-weight:700;color:var(--t3);letter-spacing:.06em;padding:4px}
+.ac-d{text-align:center;padding:7px 2px;border-radius:6px;font-size:11px;font-family:'IBM Plex Mono',monospace;color:var(--t2);cursor:pointer;transition:all .1s;border:1px solid transparent}
+.ac-d:hover{background:var(--s4)}.ac-d.p{background:rgba(52,211,153,.1);color:var(--green);border-color:rgba(52,211,153,.15)}
+.ac-d.a{background:rgba(248,113,113,.1);color:var(--red);border-color:rgba(248,113,113,.15)}
+.ac-d.h{background:rgba(167,139,250,.1);color:var(--purple)}.ac-d.td{outline:2px solid var(--gold);outline-offset:1px}
+.ac-d.hf{background:rgba(240,180,41,.1);color:var(--gold)}
+.leg{display:flex;flex-wrap:wrap;gap:12px;padding:0 14px 12px}
+.li{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--t2)}
+.ld{width:10px;height:10px;border-radius:50%}
+.mini-bars{display:flex;align-items:flex-end;gap:5px;height:80px;padding:8px 14px}
+.mb-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
+.mb{width:100%;border-radius:3px 3px 0 0;min-height:3px}
+.mb-l{font-size:9px;color:var(--t3);font-family:'IBM Plex Mono',monospace}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.g21{display:grid;grid-template-columns:2fr 1fr;gap:14px}
+.kanban{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:14px}
+.kc{background:var(--s3);border-radius:var(--r);padding:10px}
+.kc-h{font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+.kcard{background:var(--s4);border:1px solid var(--border);border-radius:8px;padding:9px 10px;margin-bottom:7px;cursor:pointer;transition:border-color .12s}
+.kcard:hover{border-color:var(--border3)}
+.kc-name{font-size:12px;font-weight:600;color:var(--text);margin-bottom:3px}
+.kc-role{font-size:11px;color:var(--t3)}
+.wfh-row{display:flex;align-items:center;gap:8px;padding:9px 13px;border-bottom:1px solid var(--border);font-size:12px}
+.wfh-row:last-child{border-bottom:none}
+td[contenteditable='true']{outline:none;cursor:text}
+td[contenteditable='true']:focus{background:rgba(240,180,41,.06);border-bottom:1px solid var(--gold)!important}
+
+/* MASTER DATA PAGE */
+.master-section{background:var(--s2);border:1px solid var(--border);border-radius:var(--r2);margin-bottom:16px;overflow:hidden}
+.master-section .ph{cursor:default}
+.tag-item{display:inline-flex;align-items:center;gap:5px;background:var(--s3);border:1px solid var(--border2);border-radius:20px;padding:4px 10px;font-size:12px;color:var(--t2);margin:3px}
+.tag-item button{background:none;border:none;color:var(--t3);cursor:pointer;font-size:14px;line-height:1;padding:0 0 0 2px}
+.tag-item button:hover{color:var(--red)}
+.tag-add{display:inline-flex;align-items:center;gap:6px;margin:3px}
+.tag-add input{background:var(--s4);border:1px solid var(--border2);border-radius:20px;padding:4px 10px;font-size:12px;color:var(--text);width:130px;outline:none}
+.tag-add input:focus{border-color:var(--gold)}
+.company-field{margin-bottom:16px}
+.company-field label{font-size:10px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:5px}
+.company-field input{background:var(--s3);border:1px solid var(--border2);border-radius:8px;padding:9px 12px;color:var(--text);font-family:'IBM Plex Sans',sans-serif;font-size:13px;width:100%;outline:none}
+.company-field input:focus{border-color:var(--gold)}
+
+/* INSTALL BANNER */
+.install-banner{background:linear-gradient(135deg,rgba(240,180,41,.12),rgba(240,180,41,.04));border:1px solid rgba(240,180,41,.2);border-radius:var(--r2);padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;gap:12px}
+.install-banner-hide{display:none}
+
+/* SECURITY PAGE */
+.sec-card{background:var(--s3);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px}
+.sec-card h3{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:var(--text);margin-bottom:8px}
+.sec-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px}
+.sec-row:last-child{border-bottom:none}
+</style>
+</head>
+<body>
+
+<!-- ══════════ LOGIN SCREEN ══════════ -->
+<div class="login-screen" id="login-screen">
+  <div class="login-box">
+    <div class="login-logo" id="login-logo-mark">HR</div>
+    <div class="login-company" id="login-company-name">HR Suite</div>
+    <div class="login-sub" id="login-sub">Enterprise HR Management</div>
+    <div class="login-err" id="login-err"></div>
+    <div class="login-field">
+      <label>Password</label>
+      <input type="password" id="login-pass" placeholder="Enter password" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="btn-login" onclick="doLogin()">🔓 Login</button>
+    <button class="btn-bio" id="bio-btn" onclick="doBiometric()" style="display:none">
+      <span style="font-size:20px">🔐</span> Fingerprint / Face ID Login
+    </button>
+    <div class="login-first" id="login-first-msg" style="display:none">
+      <strong style="color:var(--gold)">First time setup</strong> — Default password: <code style="background:var(--s3);padding:2px 6px;border-radius:4px;color:var(--gold)">admin123</code><br>
+      <span class="setup-hint">Change it in Settings → Security after login</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ INSTALL BANNER ══════════ -->
+<div class="install-banner install-banner-hide" id="install-banner">
+  <span style="font-size:24px">📱</span>
+  <div style="flex:1">
+    <div style="font-weight:600;color:var(--gold);font-size:13px">Install as App</div>
+    <div style="font-size:11px;color:var(--t2)">Phone ya desktop pe install karo — offline bhi chalega!</div>
+  </div>
+  <button class="btn btn-g btn-sm" onclick="installApp()">Install</button>
+  <button class="btn btn-o btn-sm" onclick="document.getElementById('install-banner').classList.add('install-banner-hide')">✕</button>
+</div>
+
+<!-- ══════════ MAIN APP ══════════ -->
+<div class="app" id="main-app" style="display:none">
+
+<!-- SIDEBAR -->
+<div class="sb">
+  <div class="sb-logo" onclick="pg('master',null)" title="Click to edit company settings">
+    <div class="mark" id="sb-mark">HR</div>
+    <div>
+      <div class="name" id="sb-company">HR Suite</div>
+      <div class="sub">Enterprise Suite v4.0</div>
+    </div>
+    <span class="sb-logo-edit">⚙</span>
+  </div>
+  <div class="sb-nav">
+    <div class="sg">Overview</div>
+    <div class="ni on" onclick="pg('dashboard',this)"><span class="ni-ic">◉</span>Dashboard</div>
+    <div class="sg">Employee</div>
+    <div class="ni" onclick="pg('workers',this)"><span class="ni-ic">👤</span>Workers</div>
+    <div class="ni" onclick="pg('onboarding',this)"><span class="ni-ic">🎯</span>Hiring &amp; Onboard</div>
+    <div class="sg">Time &amp; Leave</div>
+    <div class="ni" onclick="pg('attendance',this)"><span class="ni-ic">🕐</span>Time &amp; Attendance</div>
+    <div class="ni" onclick="pg('leave',this)"><span class="ni-ic">📅</span>Apply Leave<span class="nb" id="lv-nb">0</span></div>
+    <div class="ni" onclick="pg('wfh',this)"><span class="ni-ic">🏠</span>Apply WFH<span class="nb" id="wfh-nb">0</span></div>
+    <div class="sg">Payroll</div>
+    <div class="ni" onclick="pg('payroll',this)"><span class="ni-ic">₹</span>Payroll</div>
+    <div class="ni" onclick="pg('payslip',this)"><span class="ni-ic">🧾</span>View Payslip</div>
+    <div class="ni" onclick="pg('esipf',this)"><span class="ni-ic">🛡</span>ESI / PF</div>
+    <div class="sg">HR Tools</div>
+    <div class="ni" onclick="pg('expense',this)"><span class="ni-ic">💳</span>Raise Expense</div>
+    <div class="ni" onclick="pg('tickets',this)"><span class="ni-ic">🎫</span>Raise Ticket<span class="nb" id="tk-nb">0</span></div>
+    <div class="ni" onclick="pg('notices',this)"><span class="ni-ic">📢</span>Notices</div>
+    <div class="sg">Settings</div>
+    <div class="ni" onclick="pg('master',this)"><span class="ni-ic">⚙️</span>Master Data</div>
+    <div class="ni" onclick="pg('security',this)"><span class="ni-ic">🔒</span>Security</div>
+  </div>
+  <div class="sb-foot">
+    <div class="card">
+      <div class="cn" id="sf-company">HR Suite</div>
+      <div class="cd" id="sf-location">Enterprise</div>
+      <div class="cd" id="sb-date"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div><span class="tb-title" id="tb-t">Dashboard</span> <span class="tb-sub" id="tb-s">— Overview</span></div>
+    <div class="tb-right">
+      <div class="clock" id="clk"></div>
+      <button class="btn btn-o btn-sm" onclick="shareApp()">📤 Share</button>
+      <button class="btn btn-wa btn-sm" onclick="waShare()">📱 WhatsApp</button>
+      <button class="btn btn-g btn-sm" id="tb-act" onclick="tbAct()">+ Action</button>
+      <button class="btn btn-o btn-sm" onclick="doLogout()" title="Logout">🔒</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ═══ DASHBOARD ═══ -->
+    <div class="pg on" id="pg-dashboard">
+      <div class="sg4">
+        <div class="sc gold"><div class="sc-l">Total Workers</div><div class="sc-v" id="d-total">0</div><div class="sc-s">All departments</div></div>
+        <div class="sc grn"><div class="sc-l">Present Today</div><div class="sc-v" id="d-pres">0</div><div class="sc-s" id="d-pct">0% attendance</div></div>
+        <div class="sc blu"><div class="sc-l">Monthly Payroll</div><div class="sc-v" id="d-payroll">₹0</div><div class="sc-s" id="d-month">Loading...</div></div>
+        <div class="sc red"><div class="sc-l">Pending Actions</div><div class="sc-v" id="d-pending">0</div><div class="sc-s">Leaves + tickets</div></div>
+      </div>
+      <div class="g2" style="margin-bottom:14px">
+        <div class="sc pur"><div class="sc-l">ESI This Month</div><div class="sc-v" id="d-esi">₹0</div><div class="sc-s">Employee + Employer</div></div>
+        <div class="sc ora"><div class="sc-l">PF This Month</div><div class="sc-v" id="d-pf">₹0</div><div class="sc-s">12% + 12% contribution</div></div>
+      </div>
+      <div class="g21">
+        <div class="panel">
+          <div class="ph"><span class="ph-ic">📈</span><span class="ph-t">Attendance Trend</span></div>
+          <div class="cc"><canvas id="chart-att"></canvas></div>
+        </div>
+        <div class="panel">
+          <div class="ph"><span class="ph-ic">🏭</span><span class="ph-t">Dept. Strength</span></div>
+          <div class="cc"><canvas id="chart-dept"></canvas></div>
+        </div>
+      </div>
+      <div class="g3">
+        <div class="panel"><div class="ph"><span class="ph-ic">💰</span><span class="ph-t">Payroll Split</span></div><div class="cc cc-sm"><canvas id="chart-pay"></canvas></div></div>
+        <div class="panel"><div class="ph"><span class="ph-ic">📅</span><span class="ph-t">Leave Summary</span></div><div class="cc cc-sm"><canvas id="chart-leave"></canvas></div></div>
+        <div class="panel"><div class="ph"><span class="ph-ic">🕐</span><span class="ph-t">Shift Distribution</span></div><div class="cc cc-sm"><canvas id="chart-shift"></canvas></div></div>
+      </div>
+    </div>
+
+    <!-- ═══ WORKERS ═══ -->
+    <div class="pg" id="pg-workers">
+      <div class="panel">
+        <div class="sb-bar">
+          <input class="si" placeholder="🔍 Search by name, ID, department..." oninput="srchW(this.value)">
+          <select id="dept-filter" style="width:150px" onchange="filtD(this.value)"><option value="">All Departments</option></select>
+          <button class="btn btn-g btn-sm" onclick="openM('add-worker')">+ Add Worker</button>
+          <button class="btn btn-o btn-sm" onclick="exportCSV()">⬇ CSV</button>
+        </div>
+        <div class="tw"><table>
+          <thead><tr><th>ID</th><th>Name / Contact</th><th>Department</th><th>Shift</th><th>Salary ₹</th><th>PF No.</th><th>ESI No.</th><th>Join Date</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="w-tb"></tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- ═══ ONBOARDING ═══ -->
+    <div class="pg" id="pg-onboarding">
+      <div class="panel">
+        <div class="ph"><span class="ph-ic">🎯</span><span class="ph-t">Hiring Pipeline</span>
+          <div class="ph-acts"><button class="btn btn-g btn-sm" onclick="openM('add-candidate')">+ Add Candidate</button></div>
+        </div>
+        <div class="kanban" id="kanban"></div>
+      </div>
+      <div class="panel">
+        <div class="ph"><span class="ph-ic">✅</span><span class="ph-t">Onboarding Checklist</span></div>
+        <div style="padding:14px" id="onboard-list"></div>
+      </div>
+    </div>
+
+    <!-- ═══ ATTENDANCE ═══ -->
+    <div class="pg" id="pg-attendance">
+      <div class="sg4">
+        <div class="sc gold"><div class="sc-l">Total</div><div class="sc-v" id="att-t">0</div><div class="sc-s">Registered</div></div>
+        <div class="sc grn"><div class="sc-l">Present</div><div class="sc-v" id="att-p">0</div><div class="sc-s">Today</div></div>
+        <div class="sc red"><div class="sc-l">Absent</div><div class="sc-v" id="att-a">0</div><div class="sc-s">Today</div></div>
+        <div class="sc pur"><div class="sc-l">On Leave</div><div class="sc-v" id="att-l">0</div><div class="sc-s">Approved</div></div>
+      </div>
+      <div class="g21">
+        <div class="panel">
+          <div class="ph"><span class="ph-ic">🕐</span><span class="ph-t">Today's Attendance</span>
+            <div class="ph-acts">
+              <button class="btn btn-gr btn-sm" onclick="markAll('Present')">All Present</button>
+              <button class="btn btn-r btn-sm" onclick="markAll('Absent')">All Absent</button>
+              <button class="btn btn-o btn-sm" onclick="exportAtt()">⬇ Export</button>
+              <button class="btn btn-g btn-sm" onclick="saveAtt()">💾 Save</button>
+            </div>
+          </div>
+          <div class="tw"><table>
+            <thead><tr><th>Worker</th><th>Dept</th><th>In Time</th><th>Out Time</th><th>Hours</th><th>Status</th></tr></thead>
+            <tbody id="att-tb"></tbody>
+          </table></div>
+        </div>
+        <div class="panel">
+          <div class="ph"><span class="ph-ic">📅</span><span class="ph-t" id="att-cal-title">Calendar</span></div>
+          <div class="att-cal" id="att-cal"></div>
+          <div class="leg">
+            <div class="li"><div class="ld" style="background:var(--green)"></div>Present</div>
+            <div class="li"><div class="ld" style="background:var(--red)"></div>Absent</div>
+            <div class="li"><div class="ld" style="background:var(--gold)"></div>Half Day</div>
+            <div class="li"><div class="ld" style="background:var(--purple)"></div>Holiday</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ LEAVE ═══ -->
+    <div class="pg" id="pg-leave">
+      <div class="sg4">
+        <div class="sc gold"><div class="sc-l">CL Balance</div><div class="sc-v">8</div><div class="sc-s">Casual Leave</div></div>
+        <div class="sc grn"><div class="sc-l">EL Balance</div><div class="sc-v">12</div><div class="sc-s">Earned Leave</div></div>
+        <div class="sc red"><div class="sc-l">SL Balance</div><div class="sc-v">5</div><div class="sc-s">Sick Leave</div></div>
+        <div class="sc blu"><div class="sc-l">Approved</div><div class="sc-v" id="lv-approved">0</div><div class="sc-s">This month</div></div>
+      </div>
+      <div class="panel">
+        <div class="ph"><span class="ph-ic">📅</span><span class="ph-t">Leave Requests</span>
+          <div class="ph-acts"><button class="btn btn-g btn-sm" onclick="openM('apply-leave')">+ Apply Leave</button></div>
+        </div>
+        <div class="tw"><table><thead><tr><th>Worker</th><th>Type</th><th>From</th><th>To</th><th>Days</th><th>Reason</th><th>Status</th><th>Action</th></tr></thead><tbody id="lv-tb"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- ═══ WFH ═══ -->
+    <div class="pg" id="pg-wfh">
+      <div class="sg3">
+        <div class="sc gold"><div class="sc-l">WFH Requests</div><div class="sc-v" id="wfh-pending">0</div><div class="sc-s">Pending approval</div></div>
+        <div class="sc grn"><div class="sc-l">Approved WFH</div><div class="sc-v" id="wfh-approved">0</div><div class="sc-s">This month</div></div>
+        <div class="sc blu"><div class="sc-l">WFH Days Used</div><div class="sc-v" id="wfh-total">0</div><div class="sc-s">This month</div></div>
+      </div>
+      <div class="panel">
+        <div class="ph"><span class="ph-ic">🏠</span><span class="ph-t">WFH Requests</span>
+          <div class="ph-acts"><button class="btn btn-g btn-sm" onclick="openM('apply-wfh')">+ Apply WFH</button></div>
+        </div>
+        <div id="wfh-list" style="padding:8px 0"></div>
+      </div>
+    </div>
+
+    <!-- ═══ PAYROLL ═══ -->
+    <div class="pg" id="pg-payroll">
+      <div class="sg4">
+        <div class="sc gold"><div class="sc-l">Total Payroll</div><div class="sc-v" id="pay-total">₹0</div><div class="sc-s" id="pay-workers">0 workers</div></div>
+        <div class="sc grn"><div class="sc-l">Net Payable</div><div class="sc-v" id="pay-net">₹0</div><div class="sc-s">After deductions</div></div>
+        <div class="sc red"><div class="sc-l">ESI Deduction</div><div class="sc-v" id="pay-esi">₹0</div><div class="sc-s">Total this month</div></div>
+        <div class="sc blu"><div class="sc-l">PF Deduction</div><div class="sc-v" id="pay-pf">₹0</div><div class="sc-s">Employee share</div></div>
+      </div>
+      <div class="panel">
+        <div class="ph"><span class="ph-ic">₹</span><span class="ph-t" id="pay-title">Salary Sheet</span>
+          <div class="ph-acts">
+            <button class="btn btn-o btn-sm" onclick="exportCSV()">⬇ CSV</button>
+            <button class="btn btn-b btn-sm" onclick="genPDF()">📄 PDF</button>
+            <button class="btn btn-g btn-sm" onclick="processAll()">⚡ Process All</button>
+          </div>
+        </div>
+        <div class="tw"><table>
+          <thead><tr><th>Worker</th><th>Dept</th><th>Basic ₹</th><th>Days</th><th>HRA</th><th>DA</th><th>Gross</th><th>ESI(0.75%)</th><th>PF(12%)</th><th>Advance</th><th>Net Pay</th><th>Status</th><th>Slip</th></tr></thead>
+          <tbody id="pay-tb"></tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- ═══ PAYSLIP ═══ -->
+    <div class="pg" id="pg-payslip">
+      <div class="panel">
+        <div class="ph"><span class="ph-ic">🧾</span><span class="ph-t">Search Worker</span></div>
+        <div style="padding:14px">
+          <input class="si" style="max-width:400px" placeholder="🔍 Name ya ID se search karo..." oninput="srchPS(this.value)">
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-top:12px" id="ps-results"></div>
+        </div>
+      </div>
+      <div id="ps-view" style="display:none"></div>
+    </div>
+
+    <!-- ═══ ESI / PF ═══ -->
+    <div class="pg" id="pg-esipf">
+      <div class="panel">
+        <div class="ph"><span class="ph-ic">🛡</span><span class="ph-t">ESI Register</span>
+          <div class="ph-acts"><button class="btn btn-g btn-sm" onclick="exportCSV()">⬇ Export</button></div>
+        </div>
+        <div class="tw"><table>
+          <thead><tr><th>Worker</th><th>Gross Salary</th><th>ESI Eligible</th><th>Employee (0.75%)</th><th>Employer (3.25%)</th><th>Total ESI</th></tr></thead>
+          <tbody id="esi-tb"></tbody>
+        </table></div>
+      </div>
+      <div class="panel">
+        <div class="ph"><span class="ph-ic">🏦</span><span class="ph-t">PF Register</span>
+          <div class="ph-acts"><button class="btn btn-g btn-sm" onclick="exportCSV()">⬇ Export</button></div>
+        </div>
+        <div class="tw"><table>
+          <thead><tr><th>Worker</th><th>Basic Salary</th><th>Employee PF (12%)</th><th>Employer PF (12%)</th><th>EPS (8.33%)</th><th>Total PF</th></tr></thead>
+          <tbody id="pf-tb"></tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- ═══ EXPENSE ═══ -->
+    <div class="pg" id="pg-expense">
+      <div class="panel">
+        <div class="ph"><span class="ph-ic">💳</span><span class="ph-t">Expense Claims</span>
+          <div class="ph-acts"><button class="btn btn-g btn-sm" onclick="openM('raise-exp')">+ Raise Expense</button></div>
+        </div>
+        <div class="tw"><table>
+          <thead><tr><th>Date</th><th>Worker</th><th>Category</th><th>Amount</th><th>Description</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="exp-tb"></tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- ═══ TICKETS ═══ -->
+    <div class="pg" id="pg-tickets">
+      <div class="panel">
+        <div class="ph"><span class="ph-ic">🎫</span><span class="ph-t">Support Tickets</span>
+          <div class="ph-acts"><button class="btn btn-g btn-sm" onclick="openM('raise-ticket')">+ Raise Ticket</button></div>
+        </div>
+        <div style="padding:14px" id="ticket-list"></div>
+      </div>
+    </div>
+
+    <!-- ═══ NOTICES ═══ -->
+    <div class="pg" id="pg-notices">
+      <div class="panel">
+        <div class="ph"><span class="ph-ic">📢</span><span class="ph-t">Notice Board</span>
+          <div class="ph-acts">
+            <button class="btn btn-wa btn-sm" onclick="waNotice()">📱 WhatsApp</button>
+            <button class="btn btn-g btn-sm" onclick="openM('add-notice')">+ New Notice</button>
+          </div>
+        </div>
+        <div id="notice-board" style="padding:14px"></div>
+      </div>
+    </div>
+
+    <!-- ═══ MASTER DATA ═══ -->
+    <div class="pg" id="pg-master">
+      <div class="master-section">
+        <div class="ph"><span class="ph-ic">🏭</span><span class="ph-t">Company Information</span>
+          <div class="ph-acts"><button class="btn btn-g btn-sm" onclick="saveMaster()">💾 Save All</button></div>
+        </div>
+        <div style="padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div class="company-field"><label>Company Name</label><input id="m-company" placeholder="Company ka naam"></div>
+          <div class="company-field"><label>Short Code (2-3 letters)</label><input id="m-code" placeholder="FP, ABC..." maxlength="3"></div>
+          <div class="company-field"><label>Location / City</label><input id="m-location" placeholder="City, State"></div>
+          <div class="company-field"><label>GSTIN</label><input id="m-gst" placeholder="GSTIN number"></div>
+          <div class="company-field" style="grid-column:1/-1"><label>Full Address</label><input id="m-address" placeholder="Factory full address"></div>
+          <div class="company-field"><label>Employee ID Prefix</label><input id="m-prefix" placeholder="FP, HR, ABC..." maxlength="4"></div>
+          <div class="company-field"><label>Phone / WhatsApp</label><input id="m-phone" placeholder="Company phone"></div>
+        </div>
+      </div>
+
+      <div class="master-section">
+        <div class="ph"><span class="ph-ic">🏢</span><span class="ph-t">Departments</span>
+          <div class="ph-acts"><span style="font-size:11px;color:var(--t3)">Add/Remove departments</span></div>
+        </div>
+        <div style="padding:14px">
+          <div id="dept-tags"></div>
+          <div class="tag-add" style="margin-top:8px">
+            <input id="new-dept" placeholder="New department..." onkeydown="if(event.key==='Enter')addTag('dept')">
+            <button class="btn btn-g btn-sm" onclick="addTag('dept')">+ Add</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="master-section">
+        <div class="ph"><span class="ph-ic">🕐</span><span class="ph-t">Shifts</span></div>
+        <div style="padding:14px">
+          <div id="shift-tags"></div>
+          <div class="tag-add" style="margin-top:8px">
+            <input id="new-shift" placeholder="New shift..." onkeydown="if(event.key==='Enter')addTag('shift')">
+            <button class="btn btn-g btn-sm" onclick="addTag('shift')">+ Add</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="master-section">
+        <div class="ph"><span class="ph-ic">📋</span><span class="ph-t">Leave Types</span></div>
+        <div style="padding:14px">
+          <div id="lvtype-tags"></div>
+          <div class="tag-add" style="margin-top:8px">
+            <input id="new-lvtype" placeholder="New leave type..." onkeydown="if(event.key==='Enter')addTag('lvtype')">
+            <button class="btn btn-g btn-sm" onclick="addTag('lvtype')">+ Add</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="master-section">
+        <div class="ph"><span class="ph-ic">💰</span><span class="ph-t">Payroll Settings</span></div>
+        <div style="padding:16px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
+          <div class="company-field"><label>HRA % of Basic</label><input id="m-hra" type="number" value="10" min="0" max="50"></div>
+          <div class="company-field"><label>DA % of Basic</label><input id="m-da" type="number" value="5" min="0" max="30"></div>
+          <div class="company-field"><label>Travel Allowance (₹)</label><input id="m-ta" type="number" value="500" min="0"></div>
+          <div class="company-field"><label>PF % (Employee)</label><input id="m-pf" type="number" value="12" min="0" max="20"></div>
+          <div class="company-field"><label>ESI % (Employee)</label><input id="m-esi" type="number" value="0.75" step="0.01" min="0" max="5"></div>
+          <div class="company-field"><label>ESI Wage Ceiling (₹)</label><input id="m-esiceil" type="number" value="21000"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SECURITY ═══ -->
+    <div class="pg" id="pg-security">
+      <div class="panel">
+        <div class="ph"><span class="ph-ic">🔒</span><span class="ph-t">Security Settings</span></div>
+        <div style="padding:16px">
+          <div class="sec-card">
+            <h3>🔑 Change Password</h3>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px">
+              <div class="form-group"><label class="fl">Current Password</label><input type="password" id="sec-old" placeholder="Current password"></div>
+              <div class="form-group"><label class="fl">New Password</label><input type="password" id="sec-new" placeholder="New password"></div>
+              <div class="form-group"><label class="fl">Confirm New Password</label><input type="password" id="sec-confirm" placeholder="Confirm new password"></div>
+              <div style="display:flex;align-items:flex-end"><button class="btn btn-g" onclick="changePassword()">🔑 Change Password</button></div>
+            </div>
+          </div>
+          <div class="sec-card">
+            <h3>🔐 Biometric / Fingerprint Login</h3>
+            <div class="sec-row">
+              <span style="color:var(--t2)">Fingerprint / Face ID login</span>
+              <div style="display:flex;gap:8px;align-items:center">
+                <span id="bio-status" style="font-size:11px;color:var(--t3)">Not set up</span>
+                <button class="btn btn-g btn-sm" id="bio-setup-btn" onclick="setupBiometric()">Setup</button>
+                <button class="btn btn-r btn-sm" id="bio-remove-btn" onclick="removeBiometric()" style="display:none">Remove</button>
+              </div>
+            </div>
+            <div style="font-size:11px;color:var(--t3);margin-top:8px;padding:8px;background:var(--s4);border-radius:8px">
+              💡 Biometric login uses your device's fingerprint sensor ya Face ID. Supported on modern phones and laptops.
+            </div>
+          </div>
+          <div class="sec-card">
+            <h3>🌐 App Info</h3>
+            <div class="sec-row"><span style="color:var(--t2)">App Name</span><span id="sec-appname" style="color:var(--gold)">HR Suite</span></div>
+            <div class="sec-row"><span style="color:var(--t2)">Version</span><span style="color:var(--text)">v4.0 — White Label Edition</span></div>
+            <div class="sec-row"><span style="color:var(--t2)">Install as PWA</span>
+              <button class="btn btn-g btn-sm" onclick="installApp()">📱 Install App</button>
+            </div>
+            <div class="sec-row"><span style="color:var(--t2)">Logout</span>
+              <button class="btn btn-r btn-sm" onclick="doLogout()">🔒 Logout</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+</div><!-- /app -->
+
+<!-- MODALS -->
+
+<!-- Add Worker -->
+<div class="ov" id="ov-add-worker">
+  <div class="modal">
+    <div class="mh"><span class="mt">New Worker</span><button class="mc" onclick="closeM('add-worker')">×</button></div>
+    <div class="fg">
+      <div class="form-group"><label class="fl">Worker ID</label><input id="nw-id" placeholder="Auto"></div>
+      <div class="form-group"><label class="fl">Full Name *</label><input id="nw-name" placeholder="Poora naam"></div>
+      <div class="form-group"><label class="fl">Father's Name</label><input id="nw-father" placeholder=""></div>
+      <div class="form-group"><label class="fl">Date of Birth</label><input id="nw-dob" type="date"></div>
+      <div class="form-group"><label class="fl">Department</label><select id="nw-dept"></select></div>
+      <div class="form-group"><label class="fl">Designation</label><input id="nw-desig" placeholder="Operator, Supervisor..."></div>
+      <div class="form-group"><label class="fl">Shift</label><select id="nw-shift"></select></div>
+      <div class="form-group"><label class="fl">Basic Salary (₹)</label><input id="nw-sal" type="number" placeholder="8000" oninput="calcCTC()"></div>
+      <div class="form-group"><label class="fl">Mobile</label><input id="nw-mob" placeholder="9XXXXXXXXX"></div>
+      <div class="form-group"><label class="fl">Aadhar Number</label><input id="nw-aad" placeholder="XXXX XXXX XXXX"></div>
+      <div class="form-group"><label class="fl">PAN Number</label><input id="nw-pan" placeholder="XXXXX0000X"></div>
+      <div class="form-group"><label class="fl">Bank Account No.</label><input id="nw-bank" placeholder="Account number"></div>
+      <div class="form-group"><label class="fl">IFSC Code</label><input id="nw-ifsc" placeholder="SBIN0XXXXXX"></div>
+      <div class="form-group"><label class="fl">PF Account No.</label><input id="nw-pf" placeholder="Auto-generate"></div>
+      <div class="form-group"><label class="fl">ESI No.</label><input id="nw-esi" placeholder="Auto-generate"></div>
+      <div class="form-group"><label class="fl">Join Date</label><input id="nw-join" type="date"></div>
+      <div class="form-group"><label class="fl">Employment Type</label><select id="nw-type"><option>Permanent</option><option>Contract</option><option>Probation</option><option>Trainee</option></select></div>
+      <div class="form-group fgf"><label class="fl">Address</label><textarea id="nw-addr" placeholder="Gaon, Taluka, District, PIN..."></textarea></div>
+      <div class="form-group fgf" style="background:rgba(240,180,41,.06);border-radius:8px;padding:10px;border:1px solid rgba(240,180,41,.15)">
+        <div style="font-size:11px;color:var(--gold);font-weight:600;margin-bottom:6px">AUTO-CALCULATED CTC</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;font-size:12px" id="ctc-preview">
+          <div><div style="color:var(--t3)">Basic</div><div style="font-family:'IBM Plex Mono',mono;color:var(--text)" id="ctc-basic">₹0</div></div>
+          <div><div style="color:var(--t3)" id="ctc-hra-lbl">HRA(10%)</div><div style="font-family:'IBM Plex Mono',mono;color:var(--text)" id="ctc-hra">₹0</div></div>
+          <div><div style="color:var(--t3)" id="ctc-da-lbl">DA(5%)</div><div style="font-family:'IBM Plex Mono',mono;color:var(--text)" id="ctc-da">₹0</div></div>
+          <div><div style="color:var(--gold);font-weight:600">CTC/Month</div><div style="font-family:'IBM Plex Mono',mono;color:var(--gold)" id="ctc-total">₹0</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="mf"><button class="btn btn-o" onclick="closeM('add-worker')">Cancel</button><button class="btn btn-g" onclick="addWorker()">💾 Save Worker</button></div>
+  </div>
+</div>
+
+<!-- Edit Worker -->
+<div class="ov" id="ov-edit-worker">
+  <div class="modal">
+    <div class="mh"><span class="mt">Edit Worker</span><button class="mc" onclick="closeM('edit-worker')">×</button></div>
+    <div class="fg">
+      <div class="form-group"><label class="fl">Worker ID</label><input id="ew-id" readonly style="background:var(--s4);color:var(--t3)"></div>
+      <div class="form-group"><label class="fl">Full Name</label><input id="ew-name"></div>
+      <div class="form-group"><label class="fl">Department</label><select id="ew-dept"></select></div>
+      <div class="form-group"><label class="fl">Shift</label><select id="ew-shift"></select></div>
+      <div class="form-group"><label class="fl">Basic Salary (₹)</label><input id="ew-sal" type="number"></div>
+      <div class="form-group"><label class="fl">Mobile</label><input id="ew-mob"></div>
+      <div class="form-group"><label class="fl">Designation</label><input id="ew-desig"></div>
+      <div class="form-group"><label class="fl">Status</label><select id="ew-status"><option>Active</option><option>Inactive</option><option>Terminated</option></select></div>
+      <div class="form-group"><label class="fl">PF No.</label><input id="ew-pf"></div>
+      <div class="form-group"><label class="fl">ESI No.</label><input id="ew-esi"></div>
+    </div>
+    <div class="mf"><button class="btn btn-o" onclick="closeM('edit-worker')">Cancel</button><button class="btn btn-r" onclick="deleteWorker()">🗑 Delete</button><button class="btn btn-g" onclick="saveEditWorker()">💾 Save</button></div>
+  </div>
+</div>
+
+<!-- Apply Leave -->
+<div class="ov" id="ov-apply-leave">
+  <div class="modal">
+    <div class="mh"><span class="mt">Apply Leave</span><button class="mc" onclick="closeM('apply-leave')">×</button></div>
+    <div class="fg">
+      <div class="form-group"><label class="fl">Worker</label><select id="lv-worker" style="width:100%"></select></div>
+      <div class="form-group"><label class="fl">Leave Type</label><select id="lv-type"></select></div>
+      <div class="form-group"><label class="fl">From Date</label><input id="lv-from" type="date" oninput="calcDays()"></div>
+      <div class="form-group"><label class="fl">To Date</label><input id="lv-to" type="date" oninput="calcDays()"></div>
+      <div class="form-group"><label class="fl">No. of Days</label><input id="lv-days" readonly style="background:var(--s4);color:var(--gold)"></div>
+      <div class="form-group"><label class="fl">Half Day?</label><select id="lv-half"><option>No — Full Day</option><option>Yes — Morning Half</option><option>Yes — Afternoon Half</option></select></div>
+      <div class="form-group fgf"><label class="fl">Reason</label><textarea id="lv-reason" placeholder="Leave ka karan..."></textarea></div>
+    </div>
+    <div class="mf"><button class="btn btn-o" onclick="closeM('apply-leave')">Cancel</button><button class="btn btn-g" onclick="applyLeave()">Submit Leave</button></div>
+  </div>
+</div>
+
+<!-- Apply WFH -->
+<div class="ov" id="ov-apply-wfh">
+  <div class="modal">
+    <div class="mh"><span class="mt">Apply Work From Home</span><button class="mc" onclick="closeM('apply-wfh')">×</button></div>
+    <div class="fg">
+      <div class="form-group"><label class="fl">Worker</label><select id="wfh-worker" style="width:100%"></select></div>
+      <div class="form-group"><label class="fl">Date</label><input id="wfh-date" type="date"></div>
+      <div class="form-group"><label class="fl">Duration</label><select id="wfh-dur"><option>Full Day</option><option>Morning Half</option><option>Afternoon Half</option></select></div>
+      <div class="form-group fgf"><label class="fl">Reason / Work Plan</label><textarea id="wfh-reason" placeholder="Kya kaam karoge ghar se..."></textarea></div>
+    </div>
+    <div class="mf"><button class="btn btn-o" onclick="closeM('apply-wfh')">Cancel</button><button class="btn btn-g" onclick="applyWFH()">Submit WFH</button></div>
+  </div>
+</div>
+
+<!-- Raise Ticket -->
+<div class="ov" id="ov-raise-ticket">
+  <div class="modal">
+    <div class="mh"><span class="mt">Raise Support Ticket</span><button class="mc" onclick="closeM('raise-ticket')">×</button></div>
+    <div class="fg">
+      <div class="form-group"><label class="fl">Your Name</label><select id="tk-worker" style="width:100%"></select></div>
+      <div class="form-group"><label class="fl">Category</label><select id="tk-cat"><option>Salary Issue</option><option>Attendance Correction</option><option>Leave Issue</option><option>Machine / Equipment</option><option>Safety Concern</option><option>HR Policy</option><option>Other</option></select></div>
+      <div class="form-group"><label class="fl">Priority</label><select id="tk-pri"><option>Low</option><option>Medium</option><option>High</option><option>Critical</option></select></div>
+      <div class="form-group fgf"><label class="fl">Subject</label><input id="tk-sub" placeholder="Brief subject..."></div>
+      <div class="form-group fgf"><label class="fl">Description</label><textarea id="tk-desc" placeholder="Poori baat likho..." style="min-height:80px"></textarea></div>
+    </div>
+    <div class="mf"><button class="btn btn-o" onclick="closeM('raise-ticket')">Cancel</button><button class="btn btn-g" onclick="raiseTicket()">Submit Ticket</button></div>
+  </div>
+</div>
+
+<!-- Raise Expense -->
+<div class="ov" id="ov-raise-exp">
+  <div class="modal">
+    <div class="mh"><span class="mt">Raise Expense</span><button class="mc" onclick="closeM('raise-exp')">×</button></div>
+    <div class="fg">
+      <div class="form-group"><label class="fl">Worker</label><select id="exp-worker" style="width:100%"></select></div>
+      <div class="form-group"><label class="fl">Date</label><input id="exp-date" type="date"></div>
+      <div class="form-group"><label class="fl">Category</label><select id="exp-cat"><option>Travel / Conveyance</option><option>Food / Meals</option><option>Materials / Tools</option><option>Medical</option><option>Communication</option><option>Other</option></select></div>
+      <div class="form-group"><label class="fl">Amount (₹)</label><input id="exp-amt" type="number" placeholder="0"></div>
+      <div class="form-group fgf"><label class="fl">Description</label><textarea id="exp-desc" placeholder="Expense ka detail..."></textarea></div>
+      <div class="form-group fgf"><label class="fl">Receipt No. (if any)</label><input id="exp-rec" placeholder="Receipt / Bill number"></div>
+    </div>
+    <div class="mf"><button class="btn btn-o" onclick="closeM('raise-exp')">Cancel</button><button class="btn btn-g" onclick="raiseExp()">Submit Expense</button></div>
+  </div>
+</div>
+
+<!-- Add Notice -->
+<div class="ov" id="ov-add-notice">
+  <div class="modal">
+    <div class="mh"><span class="mt">New Notice</span><button class="mc" onclick="closeM('add-notice')">×</button></div>
+    <div class="fg">
+      <div class="form-group"><label class="fl">Title</label><input id="nt-title" placeholder="Notice title..."></div>
+      <div class="form-group"><label class="fl">Priority</label><select id="nt-pri"><option>Normal</option><option>Important</option><option>Urgent</option></select></div>
+      <div class="form-group fgf"><label class="fl">Message</label><textarea id="nt-msg" placeholder="Notice content likho..." style="min-height:80px"></textarea></div>
+      <div class="form-group"><label class="fl">Valid Till</label><input id="nt-till" type="date"></div>
+      <div class="form-group"><label class="fl">Send To</label><select id="nt-to"><option>All Workers</option></select></div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-o" onclick="closeM('add-notice')">Cancel</button>
+      <button class="btn btn-wa" onclick="waNoticeNew()">📱 WhatsApp</button>
+      <button class="btn btn-g" onclick="addNotice()">📢 Post</button>
+    </div>
+  </div>
+</div>
+
+<!-- Payslip Modal -->
+<div class="ov" id="ov-payslip-modal">
+  <div class="modal" style="width:460px">
+    <div class="mh"><span class="mt">Payslip</span><button class="mc" onclick="closeM('payslip-modal')">×</button></div>
+    <div id="ps-modal-body"></div>
+    <div class="mf">
+      <button class="btn btn-o" onclick="closeM('payslip-modal')">Close</button>
+      <button class="btn btn-wa" onclick="waPay()">📱 WhatsApp</button>
+      <button class="btn btn-b" onclick="genPDF()">📄 PDF</button>
+      <button class="btn btn-g" onclick="printPS()">🖨 Print</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Candidate -->
+<div class="ov" id="ov-add-candidate">
+  <div class="modal">
+    <div class="mh"><span class="mt">Add Candidate</span><button class="mc" onclick="closeM('add-candidate')">×</button></div>
+    <div class="fg">
+      <div class="form-group"><label class="fl">Name</label><input id="c-name" placeholder="Candidate naam"></div>
+      <div class="form-group"><label class="fl">Mobile</label><input id="c-mob" placeholder="Mobile number"></div>
+      <div class="form-group"><label class="fl">Applied For</label><input id="c-role" placeholder="Role / position"></div>
+      <div class="form-group"><label class="fl">Source</label><select id="c-src"><option>Walk-in</option><option>Reference</option><option>Job Portal</option><option>WhatsApp</option></select></div>
+      <div class="form-group"><label class="fl">Stage</label><select id="c-stage"><option>Applied</option><option>Screening</option><option>Interview</option><option>Offered</option></select></div>
+      <div class="form-group"><label class="fl">Expected Salary</label><input id="c-sal" type="number" placeholder="Expected salary"></div>
+    </div>
+    <div class="mf"><button class="btn btn-o" onclick="closeM('add-candidate')">Cancel</button><button class="btn btn-g" onclick="addCandidate()">Add Candidate</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script>
+// ═══════════════════════════════════════
+// MASTER DATA (localStorage based)
+// ═══════════════════════════════════════
+function getLS(k,def){try{const v=localStorage.getItem(k);return v?JSON.parse(v):def;}catch{return def;}}
+function setLS(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch{}}
+
+let master=getLS('hr_master',{
+  company:'HR Suite',code:'HR',location:'India',gst:'',address:'',prefix:'WK',phone:'',
+  hra:10,da:5,ta:500,pf:12,esi:0.75,esiceil:21000
+});
+let depts=getLS('hr_depts',['Dyeing','Printing','Finishing','Quality','Packing','Maintenance','Admin']);
+let shifts=getLS('hr_shifts',['Morning (6AM-2PM)','Afternoon (2PM-10PM)','Night (10PM-6AM)','General (9AM-6PM)']);
+let lvtypes=getLS('hr_lvtypes',['Casual Leave (CL)','Sick Leave (SL)','Earned Leave (EL)','Maternity Leave','Compensatory Off']);
+
+// ═══════════════════════════════════════
+// AUTH / LOGIN
+// ═══════════════════════════════════════
+let bioCredId=getLS('hr_bio_cred',null);
+let isLoggedIn=false;
+let deferredInstall=null;
+
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e;document.getElementById('install-banner').classList.remove('install-banner-hide');});
+
+function setupLoginScreen(){
+  const co=master.company||'HR Suite';
+  document.getElementById('login-company-name').textContent=co;
+  document.getElementById('login-sub').textContent=co+' — HR Management';
+  document.getElementById('login-logo-mark').textContent=(master.code||'HR').substring(0,2);
+  const hasPass=!!localStorage.getItem('hr_pass');
+  if(!hasPass)document.getElementById('login-first-msg').style.display='block';
+  if(bioCredId)document.getElementById('bio-btn').style.display='flex';
+}
+
+async function doLogin(){
+  const pass=document.getElementById('login-pass').value;
+  const stored=localStorage.getItem('hr_pass')||btoa('admin123');
+  if(btoa(pass)===stored||!pass&&stored===btoa('admin123')){
+    loginSuccess();
+  } else {
+    document.getElementById('login-err').textContent='❌ Wrong password!';
+    setTimeout(()=>document.getElementById('login-err').textContent='',2000);
+  }
+}
+
+function loginSuccess(){
+  isLoggedIn=true;
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('main-app').style.display='flex';
+  applyMasterToUI();
+  init();
+}
+
+function doLogout(){
+  isLoggedIn=false;
+  document.getElementById('main-app').style.display='none';
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('login-pass').value='';
+}
+
+async function doBiometric(){
+  if(!bioCredId){showToast('Fingerprint not set up yet','wa');return;}
+  try{
+    const cred=await navigator.credentials.get({publicKey:{
+      challenge:new Uint8Array(32),
+      allowCredentials:[{type:'public-key',id:base64ToArr(bioCredId)}],
+      timeout:60000
+    }});
+    if(cred)loginSuccess();
+  }catch(e){
+    document.getElementById('login-err').textContent='❌ Biometric failed. Try password.';
+    setTimeout(()=>document.getElementById('login-err').textContent='',3000);
+  }
+}
+
+async function setupBiometric(){
+  if(!window.PublicKeyCredential){showToast('WebAuthn not supported on this device','wa');return;}
+  try{
+    const userId=new Uint8Array(16);crypto.getRandomValues(userId);
+    const cred=await navigator.credentials.create({publicKey:{
+      challenge:new Uint8Array(32),
+      rp:{name:master.company||'HR Suite',id:location.hostname||'localhost'},
+      user:{id:userId,name:'admin',displayName:'Admin'},
+      pubKeyCredParams:[{type:'public-key',alg:-7},{type:'public-key',alg:-257}],
+      authenticatorSelection:{authenticatorAttachment:'platform',userVerification:'required'},
+      timeout:60000
+    }});
+    const credId=arrToBase64(new Uint8Array(cred.rawId));
+    bioCredId=credId;setLS('hr_bio_cred',credId);
+    document.getElementById('bio-status').textContent='✅ Active';
+    document.getElementById('bio-setup-btn').style.display='none';
+    document.getElementById('bio-remove-btn').style.display='inline-flex';
+    document.getElementById('bio-btn').style.display='flex';
+    showToast('✅ Biometric login set up!','ok');
+  }catch(e){showToast('Setup failed: '+e.message,'wa');}
+}
+
+function removeBiometric(){
+  bioCredId=null;localStorage.removeItem('hr_bio_cred');
+  document.getElementById('bio-status').textContent='Not set up';
+  document.getElementById('bio-setup-btn').style.display='inline-flex';
+  document.getElementById('bio-remove-btn').style.display='none';
+  document.getElementById('bio-btn').style.display='none';
+  showToast('Biometric removed','ok');
+}
+
+function changePassword(){
+  const old=document.getElementById('sec-old').value;
+  const nw=document.getElementById('sec-new').value;
+  const cf=document.getElementById('sec-confirm').value;
+  const stored=localStorage.getItem('hr_pass')||btoa('admin123');
+  if(btoa(old)!==stored){showToast('❌ Current password wrong!','wa');return;}
+  if(nw.length<4){showToast('❌ Min 4 characters!','wa');return;}
+  if(nw!==cf){showToast('❌ Passwords do not match!','wa');return;}
+  localStorage.setItem('hr_pass',btoa(nw));
+  document.getElementById('sec-old').value='';document.getElementById('sec-new').value='';document.getElementById('sec-confirm').value='';
+  showToast('✅ Password changed!','ok');
+}
+
+function arrToBase64(arr){return btoa(String.fromCharCode(...arr));}
+function base64ToArr(s){return Uint8Array.from(atob(s),c=>c.charCodeAt(0));}
+
+function installApp(){
+  if(deferredInstall){deferredInstall.prompt();deferredInstall.userChoice.then(()=>{deferredInstall=null;});}
+  else showToast('Browser mein add to home screen use karo!','ok');
+}
+
+// ═══════════════════════════════════════
+// MASTER DATA UI
+// ═══════════════════════════════════════
+function applyMasterToUI(){
+  const co=master.company||'HR Suite';
+  document.title=co;
+  document.getElementById('app-title').textContent=co;
+  document.getElementById('sb-company').textContent=co;
+  document.getElementById('sf-company').textContent=co;
+  document.getElementById('sf-location').textContent=master.location||'';
+  document.getElementById('sb-mark').textContent=(master.code||'HR').substring(0,2);
+  document.getElementById('sec-appname').textContent=co;
+  // Update notice "to" options with depts
+  const nt=document.getElementById('nt-to');
+  if(nt){nt.innerHTML='<option>All Workers</option>'+depts.map(d=>`<option>${d} Dept</option>`).join('')+'<option>Supervisors Only</option><option>Admin Only</option>';}
+}
+
+function loadMasterForm(){
+  document.getElementById('m-company').value=master.company||'';
+  document.getElementById('m-code').value=master.code||'';
+  document.getElementById('m-location').value=master.location||'';
+  document.getElementById('m-gst').value=master.gst||'';
+  document.getElementById('m-address').value=master.address||'';
+  document.getElementById('m-prefix').value=master.prefix||'WK';
+  document.getElementById('m-phone').value=master.phone||'';
+  document.getElementById('m-hra').value=master.hra||10;
+  document.getElementById('m-da').value=master.da||5;
+  document.getElementById('m-ta').value=master.ta||500;
+  document.getElementById('m-pf').value=master.pf||12;
+  document.getElementById('m-esi').value=master.esi||0.75;
+  document.getElementById('m-esiceil').value=master.esiceil||21000;
+  renderTags('dept');renderTags('shift');renderTags('lvtype');
+}
+
+function saveMaster(){
+  master.company=document.getElementById('m-company').value||'HR Suite';
+  master.code=document.getElementById('m-code').value||'HR';
+  master.location=document.getElementById('m-location').value||'';
+  master.gst=document.getElementById('m-gst').value||'';
+  master.address=document.getElementById('m-address').value||'';
+  master.prefix=document.getElementById('m-prefix').value||'WK';
+  master.phone=document.getElementById('m-phone').value||'';
+  master.hra=parseFloat(document.getElementById('m-hra').value)||10;
+  master.da=parseFloat(document.getElementById('m-da').value)||5;
+  master.ta=parseFloat(document.getElementById('m-ta').value)||500;
+  master.pf=parseFloat(document.getElementById('m-pf').value)||12;
+  master.esi=parseFloat(document.getElementById('m-esi').value)||0.75;
+  master.esiceil=parseFloat(document.getElementById('m-esiceil').value)||21000;
+  setLS('hr_master',master);setLS('hr_depts',depts);setLS('hr_shifts',shifts);setLS('hr_lvtypes',lvtypes);
+  applyMasterToUI();populateSelects();
+  // Update PWA manifest
+  updateManifest();
+  showToast('✅ Master data saved!','ok');
+}
+
+function updateManifest(){
+  const manifest={name:master.company,short_name:master.code||'HR',start_url:'.',display:'standalone',background_color:'#07080f',theme_color:'#07080f',icons:[{src:'https://via.placeholder.com/192x192/f0b429/0e0a00?text='+(master.code||'HR'),sizes:'192x192',type:'image/png'},{src:'https://via.placeholder.com/512x512/f0b429/0e0a00?text='+(master.code||'HR'),sizes:'512x512',type:'image/png'}]};
+  const blob=new Blob([JSON.stringify(manifest)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  let link=document.getElementById('manifest-link');
+  if(!link){link=document.createElement('link');link.rel='manifest';link.id='manifest-link';document.head.appendChild(link);}
+  link.href=url;
+}
+
+function renderTags(type){
+  const map={dept:{arr:depts,id:'dept-tags'},shift:{arr:shifts,id:'shift-tags'},lvtype:{arr:lvtypes,id:'lvtype-tags'}};
+  const {arr,id}=map[type];
+  document.getElementById(id).innerHTML=arr.map((t,i)=>`<span class="tag-item">${t}<button onclick="removeTag('${type}',${i})">×</button></span>`).join('');
+}
+
+function addTag(type){
+  const map={dept:'new-dept',shift:'new-shift',lvtype:'new-lvtype'};
+  const inp=document.getElementById(map[type]);
+  const val=inp.value.trim();
+  if(!val)return;
+  if(type==='dept'&&!depts.includes(val)){depts.push(val);setLS('hr_depts',depts);}
+  else if(type==='shift'&&!shifts.includes(val)){shifts.push(val);setLS('hr_shifts',shifts);}
+  else if(type==='lvtype'&&!lvtypes.includes(val)){lvtypes.push(val);setLS('hr_lvtypes',lvtypes);}
+  inp.value='';
+  renderTags(type);populateSelects();
+  showToast('✅ Added!','ok');
+}
+
+function removeTag(type,i){
+  if(type==='dept'){depts.splice(i,1);setLS('hr_depts',depts);}
+  else if(type==='shift'){shifts.splice(i,1);setLS('hr_shifts',shifts);}
+  else if(type==='lvtype'){lvtypes.splice(i,1);setLS('hr_lvtypes',lvtypes);}
+  renderTags(type);populateSelects();
+}
+
+function populateSelects(){
+  // Dept selects
+  const deptOpts=depts.map(d=>`<option>${d}</option>`).join('');
+  ['nw-dept','ew-dept','dept-filter'].forEach(id=>{
+    const el=document.getElementById(id);if(!el)return;
+    const prev=el.value;
+    el.innerHTML=(id==='dept-filter'?'<option value="">All Departments</option>':'')+deptOpts;
+    if(prev)el.value=prev;
+  });
+  // Shift selects
+  const shiftOpts=shifts.map(s=>`<option>${s}</option>`).join('');
+  ['nw-shift','ew-shift'].forEach(id=>{
+    const el=document.getElementById(id);if(!el)return;el.innerHTML=shiftOpts;
+  });
+  // Leave type
+  const lvOpts=lvtypes.map(l=>`<option>${l}</option>`).join('');
+  const lvEl=document.getElementById('lv-type');if(lvEl)lvEl.innerHTML=lvOpts;
+  // Worker selects (leave, wfh, ticket, expense)
+  const wOpts=workers.map(w=>`<option value="${w.id}">${w.name} (${w.id})</option>`).join('');
+  ['lv-worker','wfh-worker','tk-worker','exp-worker'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.innerHTML=wOpts;
+  });
+  // CTC label update
+  const hraLbl=document.getElementById('ctc-hra-lbl');
+  const daLbl=document.getElementById('ctc-da-lbl');
+  if(hraLbl)hraLbl.textContent=`HRA(${master.hra}%)`;
+  if(daLbl)daLbl.textContent=`DA(${master.da}%)`;
+}
+
+// ═══════════════════════════════════════
+// WORKERS DATA
+// ═══════════════════════════════════════
+let workers=getLS('hr_workers',[]);
+if(!workers.length){
+  const fnames=['Ramesh','Suresh','Priya','Anil','Meena','Santosh','Kavita','Vijay','Lata','Deepak','Sunita','Raju','Pooja','Mahesh','Asha','Sachin','Rahul','Amol','Nitin','Rakesh'];
+  const lnames=['Patil','Jadhav','Shinde','Deshmukh','Sawant','More','Pawar','Kulkarni','Bhosale','Kadam'];
+  const ds=['Dyeing','Printing','Finishing','Quality','Packing','Maintenance','Admin'];
+  const ss=['Morning','Afternoon','Night','General'];
+  for(let i=1;i<=30;i++){
+    const fn=fnames[(i-1)%fnames.length],ln=lnames[(i-1)%lnames.length];
+    const pfx=master.prefix||'WK';
+    workers.push({id:`${pfx}-${String(i).padStart(3,'0')}`,name:`${fn} ${ln}`,
+      father:'',dob:'',dept:ds[(i-1)%ds.length],shift:ss[(i-1)%ss.length],
+      salary:7500+(i*100),mobile:`9876543${200+i}`,aadhar:'',pan:'',bank:'',ifsc:'',
+      pf:`MH/CHI/000${String(10000+i).padStart(8,'0')}`,esi:String(10000000+i+30).padStart(10,'0'),
+      joinDate:`2024-0${(i%9)+1}-${String((i%28)+1).padStart(2,'0')}`,status:'Active',
+      type:'Permanent',address:'',desig:'Worker'});
+  }
+  setLS('hr_workers',workers);
+}
+
+let editingId=null;
+const avColors=['rgba(240,180,41,.15)','rgba(96,165,250,.15)','rgba(52,211,153,.15)','rgba(167,139,250,.15)','rgba(248,113,113,.15)'];
+const avTxtColors=['var(--gold)','var(--blue)','var(--green)','var(--purple)','var(--red)'];
+
+function getAvColor(name,type){const i=name.charCodeAt(0)%5;return type==='bg'?avColors[i]:avTxtColors[i];}
+function getInitials(name){return name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();}
+
+function renderWorkers(list){
+  list=list||workers;
+  document.getElementById('w-tb').innerHTML=list.map(w=>`<tr>
+    <td><span style="font-family:'IBM Plex Mono',mono;font-size:11px;color:var(--t3)">${w.id}</span></td>
+    <td><div style="display:flex;align-items:center;gap:9px">
+      <div class="av" style="background:${getAvColor(w.name,'bg')};color:${getAvColor(w.name,'txt')}">${getInitials(w.name)}</div>
+      <div><div style="font-weight:600;color:var(--text)">${w.name}</div><div style="font-size:10px;color:var(--t3)">${w.mobile||'—'}</div></div>
+    </div></td>
+    <td><span class="bd bd-b">${w.dept}</span></td>
+    <td><span class="bd bd-gr">${w.shift.split(' ')[0]}</span></td>
+    <td><span style="font-family:'IBM Plex Mono',mono;color:var(--gold);cursor:pointer" onclick="openEditW('${w.id}')">₹${(w.salary||0).toLocaleString('en-IN')}</span></td>
+    <td style="font-size:10px;color:var(--t3);font-family:'IBM Plex Mono',mono">${w.pf||'—'}</td>
+    <td style="font-size:10px;color:var(--t3);font-family:'IBM Plex Mono',mono">${w.esi||'—'}</td>
+    <td style="font-size:11px;color:var(--t3)">${w.joinDate||'—'}</td>
+    <td><span class="bd ${w.status==='Active'?'bd-g':w.status==='Inactive'?'bd-gold':'bd-r'}">${w.status||'Active'}</span></td>
+    <td style="display:flex;gap:4px">
+      <button class="btn btn-o btn-xs" onclick="openEditW('${w.id}')">✏️ Edit</button>
+      <button class="btn btn-o btn-xs" onclick="showPS('${w.id}')">Payslip</button>
+    </td>
+  </tr>`).join('');
+  document.getElementById('d-total').textContent=workers.length;
+}
+
+function srchW(q){
+  if(!q){renderWorkers();return;}
+  renderWorkers(workers.filter(w=>w.name.toLowerCase().includes(q.toLowerCase())||w.id.toLowerCase().includes(q.toLowerCase())||w.dept.toLowerCase().includes(q.toLowerCase())));
+}
+
+function filtD(d){renderWorkers(d?workers.filter(w=>w.dept===d):null);}
+
+function addWorker(){
+  const name=document.getElementById('nw-name').value.trim();
+  if(!name){showToast('Name zaroori hai!','wa');return;}
+  const pfx=master.prefix||'WK';
+  const nextNum=Math.max(0,...workers.map(w=>{const n=parseInt(w.id.split('-')[1]);return isNaN(n)?0:n;}))+1;
+  const id=`${pfx}-${String(nextNum).padStart(3,'0')}`;
+  const sal=parseInt(document.getElementById('nw-sal').value)||8000;
+  workers.push({
+    id,name,father:document.getElementById('nw-father').value,dob:document.getElementById('nw-dob').value,
+    dept:document.getElementById('nw-dept').value,desig:document.getElementById('nw-desig').value,
+    shift:document.getElementById('nw-shift').value,salary:sal,mobile:document.getElementById('nw-mob').value,
+    aadhar:document.getElementById('nw-aad').value,pan:document.getElementById('nw-pan').value,
+    bank:document.getElementById('nw-bank').value,ifsc:document.getElementById('nw-ifsc').value,
+    pf:document.getElementById('nw-pf').value||`MH/CHI/${String(10000+nextNum).padStart(12,'0')}`,
+    esi:document.getElementById('nw-esi').value||String(10000000+nextNum).padStart(10,'0'),
+    joinDate:document.getElementById('nw-join').value,type:document.getElementById('nw-type').value,
+    address:document.getElementById('nw-addr').value,status:'Active'
+  });
+  setLS('hr_workers',workers);renderWorkers();populateSelects();updateDashboard();
+  closeM('add-worker');showToast(`✅ Worker ${id} added!`,'ok');
+  // Reset form
+  ['nw-name','nw-father','nw-mob','nw-aad','nw-pan','nw-bank','nw-ifsc','nw-pf','nw-esi','nw-addr','nw-desig'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('nw-sal').value='';
+}
+
+function openEditW(id){
+  const w=workers.find(x=>x.id===id);if(!w)return;
+  editingId=id;
+  document.getElementById('ew-id').value=w.id;
+  document.getElementById('ew-name').value=w.name;
+  document.getElementById('ew-sal').value=w.salary;
+  document.getElementById('ew-mob').value=w.mobile||'';
+  document.getElementById('ew-desig').value=w.desig||'';
+  document.getElementById('ew-pf').value=w.pf||'';
+  document.getElementById('ew-esi').value=w.esi||'';
+  // populate selects first
+  const dOpts=depts.map(d=>`<option${d===w.dept?' selected':''}>${d}</option>`).join('');
+  document.getElementById('ew-dept').innerHTML=dOpts;
+  const sOpts=shifts.map(s=>`<option${s===w.shift?' selected':''}>${s}</option>`).join('');
+  document.getElementById('ew-shift').innerHTML=sOpts;
+  const statusOpts=['Active','Inactive','Terminated'].map(s=>`<option${s===w.status?' selected':''}>${s}</option>`).join('');
+  document.getElementById('ew-status').innerHTML=statusOpts;
+  openM('edit-worker');
+}
+
+function saveEditWorker(){
+  const w=workers.find(x=>x.id===editingId);if(!w)return;
+  w.name=document.getElementById('ew-name').value;
+  w.salary=parseInt(document.getElementById('ew-sal').value)||w.salary;
+  w.dept=document.getElementById('ew-dept').value;
+  w.shift=document.getElementById('ew-shift').value;
+  w.mobile=document.getElementById('ew-mob').value;
+  w.desig=document.getElementById('ew-desig').value;
+  w.status=document.getElementById('ew-status').value;
+  w.pf=document.getElementById('ew-pf').value;
+  w.esi=document.getElementById('ew-esi').value;
+  setLS('hr_workers',workers);renderWorkers();populateSelects();
+  closeM('edit-worker');showToast('✅ Worker updated!','ok');
+}
+
+function deleteWorker(){
+  if(!confirm(`Delete worker ${editingId}? This cannot be undone.`))return;
+  workers=workers.filter(x=>x.id!==editingId);
+  setLS('hr_workers',workers);renderWorkers();populateSelects();updateDashboard();
+  closeM('edit-worker');showToast('Worker deleted.','ok');
+}
+
+function calcCTC(){
+  const sal=parseInt(document.getElementById('nw-sal').value)||0;
+  const hra=Math.round(sal*master.hra/100);
+  const da=Math.round(sal*master.da/100);
+  document.getElementById('ctc-basic').textContent='₹'+sal.toLocaleString('en-IN');
+  document.getElementById('ctc-hra').textContent='₹'+hra.toLocaleString('en-IN');
+  document.getElementById('ctc-da').textContent='₹'+da.toLocaleString('en-IN');
+  document.getElementById('ctc-total').textContent='₹'+(sal+hra+da+master.ta).toLocaleString('en-IN');
+}
+
+function editSal(id,val){
+  const n=parseInt(val.replace(/[^\d]/g,''));
+  const w=workers.find(x=>x.id===id);
+  if(w&&n>0){w.salary=n;setLS('hr_workers',workers);}
+}
+
+function exportCSV(){
+  const rows=[['ID','Name','Dept','Shift','Salary','PF','ESI','JoinDate','Status'],...workers.map(w=>[w.id,w.name,w.dept,w.shift,w.salary,w.pf,w.esi,w.joinDate,w.status])];
+  const csv=rows.map(r=>r.join(',')).join('\n');
+  const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.download=`${master.company||'HR'}_Workers.csv`;a.click();
+  showToast('📥 CSV exported!','ok');
+}
+
+// ═══════════════════════════════════════
+// ATTENDANCE
+// ═══════════════════════════════════════
+let attData={};
+function initAtt(){workers.forEach(w=>{if(!attData[w.id])attData[w.id]={status:'Present',in:'08:00',out:'17:00'};});}
+
+function renderAttendance(){
+  initAtt();
+  const list=workers.slice(0,20);
+  document.getElementById('att-tb').innerHTML=list.map(w=>{
+    const a=attData[w.id]||{status:'Present',in:'08:00',out:'17:00'};
+    return `<tr>
+      <td><div style="font-weight:600;color:var(--text)">${w.name}</div><div style="font-size:10px;color:var(--t3)">${w.id}</div></td>
+      <td><span class="bd bd-b">${w.dept}</span></td>
+      <td><input type="time" value="${a.in}" style="background:var(--s3);border:1px solid var(--border2);border-radius:6px;padding:3px 6px;font-size:11px;width:90px;color:var(--t2)" onchange="attData['${w.id}'].in=this.value"></td>
+      <td><input type="time" value="${a.out}" style="background:var(--s3);border:1px solid var(--border2);border-radius:6px;padding:3px 6px;font-size:11px;width:90px;color:var(--t2)" onchange="attData['${w.id}'].out=this.value"></td>
+      <td style="font-family:'IBM Plex Mono',mono;font-size:12px;color:var(--cyan)">8h</td>
+      <td><select style="padding:3px 6px;font-size:11px;width:110px" onchange="updAtt('${w.id}',this.value)">
+        ${['Present','Absent','Half Day','On Leave'].map(s=>`<option${s===a.status?' selected':''}>${s}</option>`).join('')}
+      </select></td>
+    </tr>`;
+  }).join('');
+  updateAttStats();
+  renderAttCal();
+}
+
+function updateAttStats(){
+  const vals=Object.values(attData);
+  document.getElementById('att-t').textContent=workers.length;
+  document.getElementById('att-p').textContent=vals.filter(a=>a.status==='Present').length;
+  document.getElementById('att-a').textContent=vals.filter(a=>a.status==='Absent').length;
+  document.getElementById('att-l').textContent=vals.filter(a=>a.status==='On Leave').length;
+}
+
+function renderAttCal(){
+  const now=new Date();
+  const y=now.getFullYear(),m=now.getMonth();
+  const mn=now.toLocaleString('en-IN',{month:'long',year:'numeric'});
+  document.getElementById('att-cal-title').textContent=mn;
+  const first=new Date(y,m,1).getDay();
+  const days=new Date(y,m+1,0).getDate();
+  const today=now.getDate();
+  let html=['Su','Mo','Tu','We','Th','Fr','Sa'].map(d=>`<div class="ac-h">${d}</div>`).join('');
+  for(let i=0;i<first;i++)html+=`<div></div>`;
+  for(let d=1;d<=days;d++){
+    const dow=new Date(y,m,d).getDay();
+    const cls=dow===0||dow===6?'h':d===today?'p td':d<today?Math.random()>.3?'p':'a':'';
+    html+=`<div class="ac-d ${cls}${d===today?' td':''}">${d}</div>`;
+  }
+  document.getElementById('att-cal').innerHTML=html;
+}
+
+function updAtt(id,val){attData[id]={...attData[id],status:val};updateAttStats();}
+function markAll(s){workers.forEach(w=>{attData[w.id]={...attData[w.id],status:s};});renderAttendance();showToast(`All marked ${s}!`,'ok');}
+function saveAtt(){showToast('✅ Attendance saved!','ok');}
+function exportAtt(){showToast('📥 Attendance exported!','ok');}
+
+// ═══════════════════════════════════════
+// LEAVE
+// ═══════════════════════════════════════
+let leaveData=getLS('hr_leaves',[
+  {worker:'WK-001',wname:'Worker One',type:'Sick Leave (SL)',from:'2025-06-10',to:'2025-06-11',days:2,reason:'Fever',status:'Pending'},
+  {worker:'WK-002',wname:'Worker Two',type:'Casual Leave (CL)',from:'2025-06-12',to:'2025-06-12',days:1,reason:'Family function',status:'Pending'},
+]);
+
+function renderLeave(){
+  const bm={Pending:'bd-gold',Approved:'bd-g',Rejected:'bd-r'};
+  document.getElementById('lv-tb').innerHTML=leaveData.map((l,i)=>`<tr>
+    <td><div style="font-weight:600;color:var(--text)">${l.wname}</div><div style="font-size:10px;color:var(--t3)">${l.worker}</div></td>
+    <td><span class="bd bd-b" style="font-size:9px">${l.type}</span></td>
+    <td style="font-size:11px;color:var(--t2)">${l.from}</td>
+    <td style="font-size:11px;color:var(--t2)">${l.to}</td>
+    <td style="font-family:'IBM Plex Mono',mono;color:var(--text)">${l.days}</td>
+    <td style="color:var(--t2);font-size:11px">${l.reason}</td>
+    <td><span class="bd ${bm[l.status]}">${l.status}</span></td>
+    <td>${l.status==='Pending'?`<button class="btn btn-gr btn-xs" onclick="appLv(${i})">✓</button> <button class="btn btn-r btn-xs" onclick="rejLv(${i})">✗</button>`:'—'}</td>
+  </tr>`).join('');
+  const pend=leaveData.filter(l=>l.status==='Pending').length;
+  document.getElementById('lv-nb').textContent=pend;
+  document.getElementById('lv-approved').textContent=leaveData.filter(l=>l.status==='Approved').length;
+  setLS('hr_leaves',leaveData);
+}
+
+function appLv(i){leaveData[i].status='Approved';renderLeave();showToast('✅ Leave approved!','ok');}
+function rejLv(i){leaveData[i].status='Rejected';renderLeave();showToast('Leave rejected.');}
+
+function calcDays(){
+  const f=document.getElementById('lv-from').value,t=document.getElementById('lv-to').value;
+  if(f&&t){const d=Math.round((new Date(t)-new Date(f))/(86400000))+1;document.getElementById('lv-days').value=d>0?d:1;}
+}
+
+function applyLeave(){
+  const wid=document.getElementById('lv-worker').value;
+  const w=workers.find(x=>x.id===wid);
+  if(!w){showToast('Worker select karo!','wa');return;}
+  leaveData.unshift({worker:wid,wname:w.name,type:document.getElementById('lv-type').value,
+    from:document.getElementById('lv-from').value,to:document.getElementById('lv-to').value,
+    days:parseInt(document.getElementById('lv-days').value)||1,
+    reason:document.getElementById('lv-reason').value||'—',status:'Pending'});
+  renderLeave();closeM('apply-leave');showToast('✅ Leave application submitted!','ok');
+}
+
+// ═══════════════════════════════════════
+// WFH
+// ═══════════════════════════════════════
+let wfhData=getLS('hr_wfh',[
+  {worker:'WK-001',wname:'Worker One',date:'2025-06-06',dur:'Full Day',reason:'Vendor calls',status:'Pending'},
+  {worker:'WK-002',wname:'Worker Two',date:'2025-06-07',dur:'Morning Half',reason:'Internet work',status:'Approved'},
+]);
+
+function renderWFH(){
+  const bm={Pending:'bd-gold',Approved:'bd-g',Rejected:'bd-r'};
+  document.getElementById('wfh-list').innerHTML=wfhData.map((w,i)=>`
+    <div class="wfh-row">
+      <div style="flex:1"><div style="font-weight:600;color:var(--text)">${w.wname}</div><div style="font-size:10px;color:var(--t3)">${w.date} — ${w.dur}</div></div>
+      <div style="font-size:11px;color:var(--t2);flex:1">${w.reason}</div>
+      <span class="bd ${bm[w.status]}" style="margin-right:8px">${w.status}</span>
+      ${w.status==='Pending'?`<button class="btn btn-gr btn-xs" onclick="appWFH(${i})">Approve</button> <button class="btn btn-r btn-xs" onclick="rejWFH(${i})">Reject</button>`:''}
+    </div>`).join('');
+  const pend=wfhData.filter(w=>w.status==='Pending').length;
+  document.getElementById('wfh-nb').textContent=pend;
+  document.getElementById('wfh-pending').textContent=pend;
+  document.getElementById('wfh-approved').textContent=wfhData.filter(w=>w.status==='Approved').length;
+  document.getElementById('wfh-total').textContent=wfhData.length;
+  setLS('hr_wfh',wfhData);
+}
+
+function appWFH(i){wfhData[i].status='Approved';renderWFH();showToast('✅ WFH approved!','ok');}
+function rejWFH(i){wfhData[i].status='Rejected';renderWFH();showToast('WFH rejected.');}
+
+function applyWFH(){
+  const wid=document.getElementById('wfh-worker').value;
+  const w=workers.find(x=>x.id===wid);
+  if(!w){showToast('Worker select karo!','wa');return;}
+  const date=document.getElementById('wfh-date').value;
+  if(!date){showToast('Date select karo!','wa');return;}
+  wfhData.unshift({worker:wid,wname:w.name,date,
+    dur:document.getElementById('wfh-dur').value,
+    reason:document.getElementById('wfh-reason').value||'WFH',status:'Pending'});
+  renderWFH();closeM('apply-wfh');showToast('✅ WFH request submitted!','ok');
+  document.getElementById('wfh-date').value='';document.getElementById('wfh-reason').value='';
+}
+
+// ═══════════════════════════════════════
+// PAYROLL
+// ═══════════════════════════════════════
+function calcPay(w){
+  const days=30,pDays=w.status==='Absent'?25:28;
+  const basic=Math.round(w.salary/days*pDays);
+  const hra=Math.round(w.salary*master.hra/100);
+  const da=Math.round(w.salary*master.da/100);
+  const ta=master.ta||500;
+  const gross=basic+hra+da+ta;
+  const esiElig=gross<=master.esiceil;
+  const empESI=esiElig?Math.round(gross*master.esi/100):0;
+  const empPF=Math.round(w.salary*master.pf/100);
+  const net=gross-empESI-empPF;
+  return{basic,hra,da,ta,gross,empESI,empPF,net,pDays};
+}
+
+function renderPayroll(){
+  let totalGross=0,totalNet=0,totalESI=0,totalPF=0;
+  document.getElementById('pay-tb').innerHTML=workers.slice(0,20).map((w,idx)=>{
+    const p=calcPay(w);const paid=idx%7===0;
+    totalGross+=p.gross;totalNet+=p.net;totalESI+=p.empESI;totalPF+=p.empPF;
+    return `<tr>
+      <td><div style="font-weight:600;color:var(--text)">${w.name}</div><div style="font-size:10px;color:var(--t3)">${w.id}</div></td>
+      <td><span class="bd bd-b">${w.dept}</span></td>
+      <td style="font-family:'IBM Plex Mono',mono">₹${w.salary.toLocaleString('en-IN')}</td>
+      <td style="font-family:'IBM Plex Mono',mono;color:var(--t2)">${p.pDays}/30</td>
+      <td style="font-family:'IBM Plex Mono',mono;color:var(--t2)">₹${p.hra.toLocaleString('en-IN')}</td>
+      <td style="font-family:'IBM Plex Mono',mono;color:var(--t2)">₹${p.da.toLocaleString('en-IN')}</td>
+      <td style="font-family:'IBM Plex Mono',mono;color:var(--gold);font-weight:600">₹${p.gross.toLocaleString('en-IN')}</td>
+      <td style="font-family:'IBM Plex Mono',mono;color:var(--red)">₹${p.empESI.toLocaleString('en-IN')}</td>
+      <td style="font-family:'IBM Plex Mono',mono;color:var(--red)">₹${p.empPF.toLocaleString('en-IN')}</td>
+      <td style="font-family:'IBM Plex Mono',mono;color:var(--orange)">—</td>
+      <td style="font-family:'IBM Plex Mono',mono;color:var(--green);font-weight:700">₹${p.net.toLocaleString('en-IN')}</td>
+      <td><span class="bd ${paid?'bd-g':'bd-gold'}">${paid?'Paid':'Pending'}</span></td>
+      <td><button class="btn btn-o btn-xs" onclick="showPS('${w.id}')">View</button></td>
+    </tr>`;
+  }).join('');
+  const fmt=v=>'₹'+(v/100000).toFixed(1)+'L';
+  document.getElementById('pay-total').textContent=fmt(totalGross);
+  document.getElementById('pay-net').textContent=fmt(totalNet);
+  document.getElementById('pay-esi').textContent='₹'+Math.round(totalESI/1000)+'K';
+  document.getElementById('pay-pf').textContent='₹'+Math.round(totalPF/1000)+'K';
+  document.getElementById('pay-workers').textContent=workers.length+' workers';
+  // dashboard update
+  document.getElementById('d-payroll').textContent=fmt(totalGross);
+  document.getElementById('d-esi').textContent='₹'+Math.round(totalESI/1000)+'K';
+  document.getElementById('d-pf').textContent='₹'+Math.round(totalPF/1000)+'K';
+}
+
+function processAll(){showToast(`⚡ Processing salary for ${workers.length} workers...`,'ok');}
+
+// ═══════════════════════════════════════
+// PAYSLIP
+// ═══════════════════════════════════════
+function renderPayslipSearch(){
+  document.getElementById('ps-results').innerHTML=workers.slice(0,8).map(w=>`
+    <div style="background:var(--s3);border:1px solid var(--border);border-radius:var(--r);padding:10px;cursor:pointer;transition:border-color .12s" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'" onclick="showPS('${w.id}')">
+      <div style="font-size:10px;color:var(--t3);font-family:'IBM Plex Mono',mono">${w.id}</div>
+      <div style="font-weight:600;color:var(--text);font-size:13px;margin:3px 0">${w.name}</div>
+      <div style="font-size:11px;color:var(--t2)">${w.dept}</div>
+      <div style="font-size:12px;color:var(--gold);font-family:'IBM Plex Mono',mono;margin-top:4px">₹${w.salary.toLocaleString('en-IN')}</div>
+    </div>`).join('');
+}
+
+function srchPS(q){
+  const res=workers.filter(w=>w.name.toLowerCase().includes(q.toLowerCase())||w.id.toLowerCase().includes(q.toLowerCase())).slice(0,8);
+  document.getElementById('ps-results').innerHTML=res.map(w=>`
+    <div style="background:var(--s3);border:1px solid var(--border);border-radius:var(--r);padding:10px;cursor:pointer" onclick="showPS('${w.id}')">
+      <div style="font-size:10px;color:var(--t3)">${w.id}</div>
+      <div style="font-weight:600;color:var(--text)">${w.name}</div>
+      <div style="font-size:11px;color:var(--t2)">${w.dept}</div>
+      <div style="font-size:12px;color:var(--gold);font-family:'IBM Plex Mono',mono">₹${w.salary.toLocaleString('en-IN')}</div>
+    </div>`).join('');
+}
+
+let currentPS=null;
+function showPS(id){
+  const w=workers.find(x=>x.id===id);if(!w)return;
+  currentPS=w;const p=calcPay(w);
+  const now=new Date();const mstr=now.toLocaleString('en-IN',{month:'long',year:'numeric'});
+  const co=master.company||'HR Suite';const loc=master.location||'';
+  const html=`<div class="payslip">
+    <div class="ps-head">
+      <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--gold)">${co}</div>
+      <div style="font-size:11px;color:var(--t2);margin-top:3px">${loc}${loc?' | ':''}PAYSLIP — ${mstr}</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:12px 16px;border-bottom:1px solid var(--border)">
+      <div style="font-size:11px"><span style="color:var(--t3)">Name: </span><span style="color:var(--text);font-weight:600">${w.name}</span></div>
+      <div style="font-size:11px"><span style="color:var(--t3)">ID: </span><span style="font-family:'IBM Plex Mono',mono;color:var(--gold)">${w.id}</span></div>
+      <div style="font-size:11px"><span style="color:var(--t3)">Department: </span><span style="color:var(--text)">${w.dept}</span></div>
+      <div style="font-size:11px"><span style="color:var(--t3)">Shift: </span><span style="color:var(--text)">${w.shift}</span></div>
+      <div style="font-size:11px"><span style="color:var(--t3)">PF No: </span><span style="color:var(--t2);font-size:10px">${w.pf||'—'}</span></div>
+      <div style="font-size:11px"><span style="color:var(--t3)">ESI No: </span><span style="color:var(--t2);font-size:10px">${w.esi||'—'}</span></div>
+      <div style="font-size:11px"><span style="color:var(--t3)">Days Worked: </span><span style="color:var(--text)">${p.pDays}/30</span></div>
+      <div style="font-size:11px"><span style="color:var(--t3)">Month: </span><span style="color:var(--text)">${mstr}</span></div>
+    </div>
+    <div class="ps-row"><span>Basic Salary (earned)</span><span>₹${p.basic.toLocaleString('en-IN')}</span></div>
+    <div class="ps-row"><span>HRA (${master.hra}%)</span><span>₹${p.hra.toLocaleString('en-IN')}</span></div>
+    <div class="ps-row"><span>DA (${master.da}%)</span><span>₹${p.da.toLocaleString('en-IN')}</span></div>
+    <div class="ps-row"><span>Travel Allowance</span><span>₹${p.ta.toLocaleString('en-IN')}</span></div>
+    <div class="ps-row" style="color:var(--blue);border-top:1px solid var(--border);padding-top:8px"><span style="color:var(--blue);font-weight:700">GROSS SALARY</span><span>₹${p.gross.toLocaleString('en-IN')}</span></div>
+    <div class="ps-row"><span style="color:var(--red)">ESI Deduction (${master.esi}%)</span><span style="color:var(--red)">−₹${p.empESI.toLocaleString('en-IN')}</span></div>
+    <div class="ps-row"><span style="color:var(--red)">PF Deduction (${master.pf}%)</span><span style="color:var(--red)">−₹${p.empPF.toLocaleString('en-IN')}</span></div>
+    <div class="ps-row" style="border-top:2px solid var(--border)"><span>NET PAY</span><span>₹${p.net.toLocaleString('en-IN')}</span></div>
+  </div>`;
+  document.getElementById('ps-modal-body').innerHTML=html;openM('payslip-modal');
+  document.getElementById('ps-view').style.display='block';
+  document.getElementById('ps-view').innerHTML=`<div class="panel">${html}</div>`;
+}
+
+function printPS(){window.print();}
+function waPay(){
+  if(!currentPS)return;const p=calcPay(currentPS);
+  const co=master.company||'HR Suite';
+  const msg=encodeURIComponent(`*${co}*\nPayslip\n\nWorker: ${currentPS.name} (${currentPS.id})\nDept: ${currentPS.dept}\n\nGross: ₹${p.gross.toLocaleString('en-IN')}\nESI: -₹${p.empESI.toLocaleString('en-IN')}\nPF: -₹${p.empPF.toLocaleString('en-IN')}\n*Net Pay: ₹${p.net.toLocaleString('en-IN')}*`);
+  window.open(`https://wa.me/?text=${msg}`,'_blank');
+}
+function genPDF(){showToast('📄 PDF generating — check downloads!','ok');}
+
+// ═══════════════════════════════════════
+// ESI / PF
+// ═══════════════════════════════════════
+function renderESIPF(){
+  const wl=workers.slice(0,15);
+  document.getElementById('esi-tb').innerHTML=wl.map(w=>{
+    const p=calcPay(w);const elig=p.gross<=master.esiceil;
+    return `<tr>
+      <td><div style="font-weight:600;color:var(--text)">${w.name}</div></td>
+      <td style="font-family:'IBM Plex Mono',mono">₹${p.gross.toLocaleString('en-IN')}</td>
+      <td><span class="bd ${elig?'bd-g':'bd-r'}">${elig?'Yes':'Above limit'}</span></td>
+      <td style="font-family:'IBM Plex Mono',mono;color:var(--red)">${elig?'₹'+p.empESI.toLocaleString('en-IN'):'—'}</td>
+      <td style="font-family:'IBM Plex Mono',mono;color:var(--orange)">${elig?'₹'+Math.round(p.gross*3.25/100).toLocaleString('en-IN'):'—'}</td>
+      <td style="font-family:'IBM Plex Mono',mono;color:var(--gold);font-weight:600">${elig?'₹'+(p.empESI+Math.round(p.gross*3.25/100)).toLocaleString('en-IN'):'—'}</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('pf-tb').innerHTML=wl.map(w=>{
+    const p=calcPay(w);const eps=Math.round(w.salary*8.33/100);
+    return `<tr>
+      <td><div style="font-weight:600;color:var(--text)">${w.name}</div></td>
+      <td style="font-family:'IBM Plex Mono',mono">₹${w.salary.toLocaleString('en-IN')}</td>
+      <td style="font-family:'IBM Plex Mono',mono;color:var(--red)">₹${p.empPF.toLocaleString('en-IN')}</td>
+      <td style="font-family:'IBM Plex Mono',mono;color:var(--orange)">₹${p.empPF.toLocaleString('en-IN')}</td>
+      <td style="font-family:'IBM Plex Mono',mono;color:var(--purple)">₹${eps.toLocaleString('en-IN')}</td>
+      <td style="font-family:'IBM Plex Mono',mono;color:var(--gold);font-weight:600">₹${(p.empPF*2).toLocaleString('en-IN')}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════
+// EXPENSE
+// ═══════════════════════════════════════
+let expData=getLS('hr_expense',[
+  {date:'2025-06-04',worker:'WK-001',wname:'Worker One',cat:'Travel / Conveyance',amt:350,desc:'Site visit',rec:'R001',status:'Approved'},
+  {date:'2025-06-05',worker:'WK-002',wname:'Worker Two',cat:'Food / Meals',amt:150,desc:'Client meeting',rec:'',status:'Pending'},
+]);
+
+function renderExpense(){
+  const bm={Approved:'bd-g',Pending:'bd-gold',Rejected:'bd-r'};
+  document.getElementById('exp-tb').innerHTML=expData.map((e,i)=>`<tr>
+    <td style="font-size:11px;color:var(--t3)">${e.date}</td>
+    <td><div style="font-weight:600;color:var(--text)">${e.wname}</div></td>
+    <td><span class="bd bd-p">${e.cat}</span></td>
+    <td style="font-family:'IBM Plex Mono',mono;color:var(--gold)">₹${(e.amt||0).toLocaleString('en-IN')}</td>
+    <td style="font-size:11px;color:var(--t2)">${e.desc}</td>
+    <td><span class="bd ${bm[e.status]}">${e.status}</span></td>
+    <td>${e.status==='Pending'?`<button class="btn btn-gr btn-xs" onclick="appExp(${i})">✓</button> <button class="btn btn-r btn-xs" onclick="rejExp(${i})">✗</button>`:'—'}</td>
+  </tr>`).join('');
+  setLS('hr_expense',expData);
+}
+
+function appExp(i){expData[i].status='Approved';renderExpense();showToast('✅ Expense approved!','ok');}
+function rejExp(i){expData[i].status='Rejected';renderExpense();showToast('Expense rejected.');}
+
+function raiseExp(){
+  const wid=document.getElementById('exp-worker').value;
+  const w=workers.find(x=>x.id===wid);if(!w)return;
+  expData.unshift({date:document.getElementById('exp-date').value||new Date().toISOString().split('T')[0],
+    worker:wid,wname:w.name,cat:document.getElementById('exp-cat').value,
+    amt:parseFloat(document.getElementById('exp-amt').value)||0,
+    desc:document.getElementById('exp-desc').value,rec:document.getElementById('exp-rec').value,status:'Pending'});
+  renderExpense();closeM('raise-exp');showToast('✅ Expense submitted!','ok');
+}
+
+// ═══════════════════════════════════════
+// TICKETS
+// ═══════════════════════════════════════
+const priBd={Low:'bd-gr',Medium:'bd-gold',High:'bd-r',Critical:'bd-r'};
+const stBd={Open:'bd-r','In Progress':'bd-gold',Resolved:'bd-g'};
+let ticketData=getLS('hr_tickets',[
+  {id:'TK-001',worker:'WK-001',wname:'Worker One',cat:'Salary Issue',pri:'High',sub:'Salary not credited',desc:'June salary account mein nahi aayi.',date:'2025-06-05',status:'Open'},
+  {id:'TK-002',worker:'WK-002',wname:'Worker Two',cat:'Machine / Equipment',pri:'Critical',sub:'Machine fault',desc:'Machine 3 kaam nahi kar rahi.',date:'2025-06-04',status:'In Progress'},
+]);
+
+function renderTickets(){
+  document.getElementById('ticket-list').innerHTML=ticketData.map((t,i)=>`
+    <div class="ticket-card">
+      <div class="tk-dot" style="background:${t.status==='Open'?'var(--red)':t.status==='In Progress'?'var(--gold)':'var(--green)'}"></div>
+      <div style="flex:1">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">
+          <span style="font-family:'IBM Plex Mono',mono;font-size:10px;color:var(--t3)">${t.id}</span>
+          <span class="bd ${priBd[t.pri]}" style="font-size:9px">${t.pri}</span>
+          <span class="bd ${stBd[t.status]}" style="font-size:9px">${t.status}</span>
+          <span style="margin-left:auto;font-size:10px;color:var(--t3)">${t.date}</span>
+        </div>
+        <div style="font-weight:600;color:var(--text);font-size:13px;margin-bottom:3px">${t.sub}</div>
+        <div style="font-size:11px;color:var(--t3);margin-bottom:5px">${t.wname} — ${t.cat}</div>
+        <div style="font-size:12px;color:var(--t2)">${t.desc}</div>
+      </div>
+      ${t.status!=='Resolved'?`<button class="btn btn-gr btn-xs" style="flex-shrink:0" onclick="resolveTk(${i})">Resolve</button>`:''}
+    </div>`).join('');
+  document.getElementById('tk-nb').textContent=ticketData.filter(t=>t.status!=='Resolved').length;
+  setLS('hr_tickets',ticketData);
+}
+
+function resolveTk(i){ticketData[i].status='Resolved';renderTickets();showToast('✅ Ticket resolved!','ok');}
+
+function raiseTicket(){
+  const wid=document.getElementById('tk-worker').value;
+  const w=workers.find(x=>x.id===wid);if(!w)return;
+  const id=`TK-${String(ticketData.length+1).padStart(3,'0')}`;
+  ticketData.unshift({id,worker:wid,wname:w.name,cat:document.getElementById('tk-cat').value,
+    pri:document.getElementById('tk-pri').value,sub:document.getElementById('tk-sub').value,
+    desc:document.getElementById('tk-desc').value,date:new Date().toISOString().split('T')[0],status:'Open'});
+  renderTickets();closeM('raise-ticket');showToast(`✅ Ticket ${id} raised!`,'ok');
+}
+
+// ═══════════════════════════════════════
+// NOTICES
+// ═══════════════════════════════════════
+let noticeData=getLS('hr_notices',[
+  {id:1,title:'June Salary 30 tarikh ko milegi',pri:'Important',msg:'Sabhi workers ko suchit kiya jaata hai ki June 2025 ki salary 30 June ko account mein transfer ki jaayegi.',date:'2025-06-05',to:'All Workers'},
+  {id:2,title:'Safety Meeting — 10 June 4 PM',pri:'Urgent',msg:'Sabhi supervisors ke liye mandatory safety meeting 10 June ko 4 PM pe hogi.',date:'2025-06-04',to:'Supervisors Only'},
+]);
+
+function renderNotices(){
+  const pm={Urgent:'urg',Important:'imp',Normal:'nor'};
+  const bm={Urgent:'bd-r',Important:'bd-gold',Normal:'bd-gr'};
+  document.getElementById('notice-board').innerHTML=noticeData.map((n,i)=>`
+    <div class="nc ${pm[n.pri]||'nor'}">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <span class="bd ${bm[n.pri]||'bd-gr'}">${n.pri}</span>
+        <span style="font-weight:700;color:var(--text);font-size:13px">${n.title}</span>
+        <span style="margin-left:auto;font-size:10px;color:var(--t3)">${n.date} | ${n.to}</span>
+        <button class="btn btn-wa btn-xs" onclick="waSingleNotice(${i})">📱</button>
+        <button class="btn btn-r btn-xs" onclick="deleteNotice(${i})">✕</button>
+      </div>
+      <p style="font-size:12px;color:var(--t2);line-height:1.6">${n.msg}</p>
+    </div>`).join('');
+  setLS('hr_notices',noticeData);
+}
+
+function addNotice(){
+  const title=document.getElementById('nt-title').value;
+  if(!title){showToast('Title zaroori hai!','wa');return;}
+  noticeData.unshift({id:Date.now(),title,pri:document.getElementById('nt-pri').value,
+    msg:document.getElementById('nt-msg').value,date:new Date().toISOString().split('T')[0],
+    to:document.getElementById('nt-to').value});
+  renderNotices();closeM('add-notice');
+  document.getElementById('nt-title').value='';document.getElementById('nt-msg').value='';
+  showToast('✅ Notice posted!','ok');
+}
+
+function deleteNotice(i){noticeData.splice(i,1);renderNotices();showToast('Notice deleted.');}
+
+function waSingleNotice(i){
+  const n=noticeData[i];const co=master.company||'HR Suite';
+  const msg=encodeURIComponent(`*${n.pri.toUpperCase()} NOTICE*\n*${co}*\n\n*${n.title}*\n\n${n.msg}\n\nDate: ${n.date}\nFor: ${n.to}`);
+  window.open(`https://wa.me/?text=${msg}`,'_blank');
+}
+
+function waNotice(){
+  const co=master.company||'HR Suite';
+  const msg=encodeURIComponent(`*${co} — Notice Board*\n\n${noticeData.slice(0,3).map(n=>`*${n.title}*\n${n.msg}`).join('\n\n---\n\n')}`);
+  window.open(`https://wa.me/?text=${msg}`,'_blank');
+}
+
+function waNoticeNew(){
+  const title=document.getElementById('nt-title').value;const msg=document.getElementById('nt-msg').value;
+  const co=master.company||'HR Suite';
+  const wa=encodeURIComponent(`*NOTICE — ${co}*\n\n*${title||'Notice'}*\n\n${msg}`);
+  window.open(`https://wa.me/?text=${wa}`,'_blank');
+}
+
+// ═══════════════════════════════════════
+// HIRING KANBAN
+// ═══════════════════════════════════════
+const stages=['Applied','Screening','Interview','Offered'];
+const stColors={'Applied':'var(--blue)','Screening':'var(--gold)','Interview':'var(--purple)','Offered':'var(--green)'};
+let candidates=getLS('hr_candidates',[
+  {name:'Sachin Jadhav',mob:'9876000001',role:'Dyeing Operator',src:'Walk-in',stage:'Interview',sal:9000},
+  {name:'Sunita More',mob:'9876000002',role:'Packing Worker',src:'Reference',stage:'Screening',sal:8000},
+  {name:'Rahul Kadam',mob:'9876000003',role:'Maintenance Tech',src:'Job Portal',stage:'Offered',sal:12000},
+]);
+
+function renderKanban(){
+  document.getElementById('kanban').innerHTML=stages.map(s=>{
+    const cs=candidates.filter(c=>c.stage===s);
+    return `<div class="kc">
+      <div class="kc-h"><span style="color:${stColors[s]}">${s}</span><span class="bd bd-gr">${cs.length}</span></div>
+      ${cs.map((c,ci)=>`<div class="kcard" onclick="moveCandidate(${candidates.indexOf(c)})">
+        <div class="kc-name">${c.name}</div>
+        <div class="kc-role">${c.role} | ${c.src}</div>
+        <div style="font-size:10px;color:var(--gold);margin-top:4px;font-family:'IBM Plex Mono',mono">₹${(c.sal||0).toLocaleString('en-IN')}/mo</div>
+      </div>`).join('')}
+    </div>`;
+  }).join('');
+}
+
+function moveCandidate(i){
+  const cur=candidates[i].stage;
+  const ni=stages.indexOf(cur);
+  if(ni<stages.length-1){candidates[i].stage=stages[ni+1];setLS('hr_candidates',candidates);renderKanban();showToast('✅ Candidate moved forward!','ok');}
+}
+
+function addCandidate(){
+  const name=document.getElementById('c-name').value;if(!name){showToast('Name required!','wa');return;}
+  candidates.push({name,mob:document.getElementById('c-mob').value,role:document.getElementById('c-role').value,
+    src:document.getElementById('c-src').value,stage:document.getElementById('c-stage').value,
+    sal:parseInt(document.getElementById('c-sal').value)||8000});
+  setLS('hr_candidates',candidates);renderKanban();closeM('add-candidate');
+  document.getElementById('c-name').value='';showToast('✅ Candidate added!','ok');
+}
+
+function renderOnboarding(){
+  const tasks=[
+    {done:true,task:'ID card issue karo',who:'Admin'},
+    {done:true,task:'Aadhar + PAN verification',who:'HR'},
+    {done:true,task:'Bank account details collect karo',who:'HR'},
+    {done:false,task:'PF + ESI registration',who:'HR'},
+    {done:false,task:'Safety training — Day 1',who:'Supervisor'},
+    {done:false,task:'Machine operation training',who:'Dept Head'},
+    {done:false,task:'Factory tour + team introduction',who:'Manager'},
+    {done:false,task:'Uniform + PPE issue',who:'Admin'},
+  ];
+  document.getElementById('onboard-list').innerHTML=tasks.map(t=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
+      <div style="width:18px;height:18px;border-radius:50%;border:2px solid ${t.done?'var(--green)':'var(--border3)'};background:${t.done?'rgba(52,211,153,.15)':'transparent'};display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--green);flex-shrink:0">${t.done?'✓':''}</div>
+      <span style="font-size:13px;color:${t.done?'var(--t3)':'var(--text)'};${t.done?'text-decoration:line-through':''};flex:1">${t.task}</span>
+      <span class="bd bd-gr">${t.who}</span>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════
+// DASHBOARD UPDATE
+// ═══════════════════════════════════════
+function updateDashboard(){
+  document.getElementById('d-total').textContent=workers.length;
+  const pres=Object.values(attData).filter(a=>a.status==='Present').length||Math.round(workers.length*.87);
+  document.getElementById('d-pres').textContent=pres;
+  document.getElementById('d-pct').textContent=workers.length?Math.round(pres/workers.length*100)+'% attendance':'—';
+  const pend=leaveData.filter(l=>l.status==='Pending').length+ticketData.filter(t=>t.status!=='Resolved').length;
+  document.getElementById('d-pending').textContent=pend;
+  document.getElementById('d-month').textContent=new Date().toLocaleString('en-IN',{month:'long',year:'numeric'});
+}
+
+// ═══════════════════════════════════════
+// CHARTS
+// ═══════════════════════════════════════
+let charts={};
+function buildCharts(){
+  const gold='rgba(240,180,41,',green='rgba(52,211,153,',blue='rgba(96,165,250,',red='rgba(248,113,113,',pur='rgba(167,139,250,';
+  const opts={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,255,255,.03)'},ticks:{color:'#4a5280',font:{size:10}}},y:{grid:{color:'rgba(255,255,255,.03)'},ticks:{color:'#4a5280',font:{size:10}}}}};
+  const noScales={...opts,scales:{}};
+  if(charts.att)charts.att.destroy();
+  charts.att=new Chart(document.getElementById('chart-att'),{type:'bar',
+    data:{labels:['1','5','10','15','20','25','30'],
+      datasets:[{data:[92,89,94,87,96,91,88],backgroundColor:`${green}0.7)`,borderRadius:4,borderSkipped:false}]},
+    options:{...opts,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.raw}% present`}}}}});
+  if(charts.dept)charts.dept.destroy();
+  const deptCounts=depts.map(d=>workers.filter(w=>w.dept===d).length);
+  charts.dept=new Chart(document.getElementById('chart-dept'),{type:'doughnut',
+    data:{labels:depts,datasets:[{data:deptCounts.length?deptCounts:[1],
+      backgroundColor:[`${gold}0.8)`,`${blue}0.8)`,`${green}0.8)`,`${red}0.8)`,`${pur}0.8)`,'rgba(251,146,60,0.8)','rgba(34,211,238,0.8)'],
+      borderWidth:0,borderRadius:3}]},
+    options:{...noScales,plugins:{legend:{display:true,position:'bottom',labels:{color:'#8892c4',font:{size:10},boxWidth:10,padding:8}}}}});
+  if(charts.pay)charts.pay.destroy();
+  charts.pay=new Chart(document.getElementById('chart-pay'),{type:'pie',
+    data:{labels:['Basic','HRA','DA','TA'],datasets:[{data:[65,master.hra,master.da,2],
+      backgroundColor:[`${gold}0.8)`,`${blue}0.8)`,`${green}0.8)`,`${pur}0.8)`],borderWidth:0}]},
+    options:{...noScales,plugins:{legend:{display:true,position:'bottom',labels:{color:'#8892c4',font:{size:10},boxWidth:8,padding:6}}}}});
+  if(charts.leave)charts.leave.destroy();
+  charts.leave=new Chart(document.getElementById('chart-leave'),{type:'bar',
+    data:{labels:lvtypes.map(l=>l.split('(')[0].trim().substring(0,3)),
+      datasets:[{label:'Approved',data:lvtypes.map(()=>Math.floor(Math.random()*10)+1),backgroundColor:`${green}0.8)`,borderRadius:3,borderSkipped:false},{label:'Pending',data:lvtypes.map(()=>Math.floor(Math.random()*3)),backgroundColor:`${gold}0.8)`,borderRadius:3,borderSkipped:false}]},
+    options:{...opts,plugins:{legend:{display:true,labels:{color:'#8892c4',font:{size:10},boxWidth:10,padding:6}}}}});
+  if(charts.shift)charts.shift.destroy();
+  const shiftCounts=shifts.map(s=>workers.filter(w=>w.shift===s||w.shift.startsWith(s.split(' ')[0])).length);
+  charts.shift=new Chart(document.getElementById('chart-shift'),{type:'doughnut',
+    data:{labels:shifts.map(s=>s.split(' ')[0]),
+      datasets:[{data:shiftCounts.length?shiftCounts:[1],backgroundColor:[`${gold}0.8)`,`${blue}0.8)`,`${pur}0.8)`,`${green}0.8)`,'rgba(251,146,60,0.8)'],borderWidth:0,borderRadius:3}]},
+    options:{...noScales,plugins:{legend:{display:true,position:'bottom',labels:{color:'#8892c4',font:{size:10},boxWidth:10,padding:6}}}}});
+}
+
+// ═══════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════
+const pgMeta={
+  dashboard:{t:'Dashboard',s:'Overview'},workers:{t:'Workers',s:'Employee Register'},
+  onboarding:{t:'Hiring & Onboarding',s:'Pipeline'},attendance:{t:'Time & Attendance',s:'Daily tracking'},
+  leave:{t:'Leave Management',s:'Apply & Approve'},wfh:{t:'Work From Home',s:'WFH Requests'},
+  payroll:{t:'Payroll',s:'Auto-calculated'},payslip:{t:'View Payslip',s:'Worker payslips'},
+  esipf:{t:'ESI / PF',s:'Statutory compliance'},expense:{t:'Expense Claims',s:'Raise & Approve'},
+  tickets:{t:'Support Tickets',s:'Raise & Resolve'},notices:{t:'Notice Board',s:'Company notices'},
+  master:{t:'Master Data',s:'Company Settings'},security:{t:'Security',s:'Password & Biometric'}
+};
+
+const actMap={
+  workers:()=>openM('add-worker'),attendance:saveAtt,leave:()=>openM('apply-leave'),
+  wfh:()=>openM('apply-wfh'),payroll:processAll,expense:()=>openM('raise-exp'),
+  tickets:()=>openM('raise-ticket'),notices:()=>openM('add-notice'),
+  onboarding:()=>openM('add-candidate'),dashboard:()=>{updateDashboard();showToast('Dashboard refreshed!','ok');},
+  payslip:()=>{},esipf:exportCSV,master:saveMaster,security:()=>{}
+};
+
+let curPage='dashboard';
+function pg(name,el){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+  document.getElementById('pg-'+name).classList.add('on');
+  if(el)el.classList.add('on');
+  const m=pgMeta[name]||{t:name,s:''};
+  document.getElementById('tb-t').textContent=m.t;
+  document.getElementById('tb-s').textContent='— '+m.s;
+  curPage=name;
+  if(name==='master')loadMasterForm();
+  if(name==='security')loadSecurityPage();
+}
+
+function tbAct(){if(actMap[curPage])actMap[curPage]();}
+
+function loadSecurityPage(){
+  document.getElementById('bio-status').textContent=bioCredId?'✅ Active':'Not set up';
+  document.getElementById('bio-setup-btn').style.display=bioCredId?'none':'inline-flex';
+  document.getElementById('bio-remove-btn').style.display=bioCredId?'inline-flex':'none';
+}
+
+// ═══════════════════════════════════════
+// SHARE
+// ═══════════════════════════════════════
+function shareApp(){
+  const url=window.location.href;
+  if(navigator.share){navigator.share({title:master.company||'HR Suite',url});}
+  else{navigator.clipboard.writeText(url).then(()=>showToast('🔗 Link copied!','ok'));}
+}
+
+function waShare(){
+  const co=master.company||'HR Suite';
+  const msg=encodeURIComponent(`*${co} — HR Suite*\nComplete HR Management System\nWorkers: ${workers.length} | Join: ${window.location.href}`);
+  window.open(`https://wa.me/?text=${msg}`,'_blank');
+}
+
+// ═══════════════════════════════════════
+// MODAL
+// ═══════════════════════════════════════
+function openM(n){document.getElementById('ov-'+n).classList.add('on');}
+function closeM(n){document.getElementById('ov-'+n).classList.remove('on');}
+
+// ═══════════════════════════════════════
+// TOAST + CLOCK
+// ═══════════════════════════════════════
+function showToast(msg,type=''){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast on '+(type||'');
+  setTimeout(()=>t.classList.remove('on'),3000);
+}
+
+function startClock(){
+  setInterval(()=>{
+    const n=new Date();
+    document.getElementById('clk').textContent=n.toLocaleTimeString('en-IN');
+    const d=n.toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+    document.getElementById('sb-date').textContent=d;
+  },1000);
+}
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+function init(){
+  populateSelects();
+  initAtt();
+  renderWorkers();
+  renderAttendance();
+  renderLeave();
+  renderWFH();
+  renderPayroll();
+  renderPayslipSearch();
+  renderESIPF();
+  renderExpense();
+  renderTickets();
+  renderNotices();
+  renderKanban();
+  renderOnboarding();
+  updateDashboard();
+  startClock();
+  setTimeout(buildCharts,100);
+  updateManifest();
+}
+
+// Start with login screen
+setupLoginScreen();
+</script>
+</body>
+</html>
